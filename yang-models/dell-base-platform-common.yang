@@ -1524,28 +1524,6 @@ module dell-base-platform-common {
   grouping pld {
     description "Attributes of a programmable logic device (PLD)";
 
-    leaf oper-status {
-      description "Operational status";
-      type base-cmn:oper-status-type;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: Valid only if entity present
-      //               admin-status == testing => oper-status == down
-      // Persistent: N/A
-      // Notification: Yes; parameters (oper_status)
-    }
-
-    leaf fault-type {
-      description "Cause of fault";
-      type fault-type;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: Valid only if entity present and
-      //               if oper-status == fail
-      // Persistent: N/A
-      // Notification: Yes; parameters (fault_type)
-    }
-
     leaf version {
       description "PLD firmware version";
       type string;
@@ -1554,19 +1532,6 @@ module dell-base-platform-common {
       // Dependencies: Valid only if entity present
       // Persistent: N/A
       // Notification: No
-    }
-
-    leaf fw_filename {
-      description "File containing new PLD firmware";
-      type string;
-      config true;
-      // Qualifiers: target
-      // Dependencies: Valid only if entity present
-      // Default: N/A
-      // Persistent: N/A
-      // Notification: No
-      // Notes: Writing this attribute triggers an upgrade of the
-      //               PLD's firmware Flash memory.
     }
   }
 
