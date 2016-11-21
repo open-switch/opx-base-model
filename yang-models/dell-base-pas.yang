@@ -36,7 +36,7 @@ module dell-base-pas {
   // FReD subcategory
 
   container fred {
-      description "Attributes of chassis";
+      description "Attributes of FReD component in Starlynx";
 
       uses platform:fred;
   }
