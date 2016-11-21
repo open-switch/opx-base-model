@@ -241,7 +241,8 @@ module dell-base-l2-mac {
     }
 
     list list{
-    	description "List of mac entries to be pusblished when event occurs in npu";
+    	description "List of mac entries to be pusblished when event occurs in npu. This will be published as
+    				embedded list";
     	list entries{
     		uses entry;
 		}
