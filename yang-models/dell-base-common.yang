@@ -433,5 +433,34 @@ module dell-base-common {
       }
     }
   }
+  grouping breakout-capabilities {
+        list br-cap {
+        description "List of breakout capabilities with max port speeds.";
+            leaf breakout-mode {
+                description "this is the new mode to configure.";
+                type base-cmn:breakout-type ;
+            }
+            leaf port-speed {
+                type base-if:speed;
+                description "list of supported speeds in the interface";
+            }
+            leaf skip-ports {
+                type uint32;
+                description "skip port";
+            }
+        }
+    }
+
+
+  typedef phy-mode-type {
+    type enumeration {
+      enum ETHERNET {
+        value 1;
+      }
+      enum FC {
+        value 2;
+      }
+    }
+  }
 
 }

@@ -58,6 +58,10 @@ BASE_CMN_OPER_STATUS_TYPE_TESTING=3
 BASE_CMN_OPER_STATUS_TYPE_UNKNOWN=4
 BASE_CMN_OPER_STATUS_TYPE_UP=1
 --obj base-cmn:oper-status-type end
+++obj base-cmn:phy-mode-type
+BASE_CMN_PHY_MODE_TYPE_ETHERNET=1
+BASE_CMN_PHY_MODE_TYPE_FC=2
+--obj base-cmn:phy-mode-type end
 ++obj base-cmn:stat-type
 BASE_CMN_STAT_TYPE_BUFFER_STAT=5
 BASE_CMN_STAT_TYPE_FLOW_STAT=2

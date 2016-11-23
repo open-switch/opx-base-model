@@ -121,6 +121,13 @@ module dell-base-if-phy {
             type uint32;
             description "Offset from system base MAC Address. MAC address of the port is calculated by adding mac_offset in base MAC address";
         }	
+
+		leaf breakout-mode {
+			config false;
+			type base-cmn:breakout-type;
+		}
+		
+        uses base-cmn:breakout-capabilities;
 	}
 		
 	list hardware-port {
