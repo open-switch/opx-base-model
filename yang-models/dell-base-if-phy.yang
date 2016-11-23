@@ -217,6 +217,11 @@ module dell-base-if-phy {
         leaf loopback {
            type base-cmn:loopback-type;
         }
+
+        leaf identification-led {
+            description "Led state to set OFF(0) / ON (1)";
+            type boolean;
+        }
         	
         uses base-if:mac-learn-limit;
 
