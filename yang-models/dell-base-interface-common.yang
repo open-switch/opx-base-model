@@ -81,6 +81,14 @@ module dell-base-interface-common {
                 value 8;
                 description "The speed is dependent on the media type.";
             }
+            enum 20GIGE {
+                value 9;
+                description "20G data rate.";
+            }
+            enum 50GIGE {
+                value 10;
+                description "50G data rate.";
+            }
         }
     }
 
@@ -251,5 +259,39 @@ module dell-base-interface-common {
             }
         }
     }
+  typedef phy-mode-type {
+    type enumeration {
+      enum ETHERNET {
+        value 1;
+      }
+      enum FC {
+        value 2;
+      }
+    }
+  }
+  grouping breakout-capabilities {
+        list br-cap {
+        key "phy-mode breakout-mode";
+        description "List of breakout capabilities with max port speeds.";
+            leaf phy-mode {
+                description " PHysical layer mode , FC or Ethernet";
+                type phy-mode-type;
+            }
+            leaf breakout-mode {
+                description "this is the new mode to configure.";
+                type base-cmn:breakout-type ;
+            }
+            leaf port-speed {
+                type base-if:speed;
+                description "list of supported speeds in the interface";
+            }
+            leaf skip-ports {
+                type uint32;
+                description "skip port";
+            }
+        }
+    }
+
+
 }
 

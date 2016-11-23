@@ -127,7 +127,7 @@ module dell-base-if-phy {
 			type base-cmn:breakout-type;
 		}
 		
-        uses base-cmn:breakout-capabilities;
+        uses base-if:breakout-capabilities;
 	}
 		
 	list hardware-port {
@@ -259,6 +259,9 @@ module dell-base-if-phy {
 	        leaf breakout-mode {
 				type breakout-mode ;
 			}	
+            leaf port-speed {
+                type base-if:speed;
+            }
 	    }
 	}
 
@@ -284,4 +287,3 @@ module dell-base-if-phy {
 	}
 
 }
-
