@@ -1,0 +1,97 @@
+module dell-fcoe-mapper {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-fcoe-map";
+    prefix "base-fc-map";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-yang-types {
+        prefix "yang";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions for creating fcoe
+        map";
+
+    revision 2016-11-21 {
+        description "Initial version";
+    }
+
+    typedef fcmac_mode {
+        type enumeration {
+            enum "FPMA_MODE" {
+                value 1;
+            }
+            enum "NULL_MODE" {
+                value 2;
+            }
+            enum "USER_MODE" {
+                value 3;
+            }
+         }
+    }
+
+    list entry {
+        key "mapper-id";
+
+        description "FCoE mapper object attributes";
+
+        leaf mapper-id {
+            type uint32;
+            description "Unique FCoE mapper ID generated or passed upon Create request.
+                         Subsequent Modify and Delete request requires
+                         this  ID to be passed";
+        }
+
+        leaf map-prefix {
+            type yang:phys-address;
+            description "Fiber channel mapper prefix";
+        }
+
+        leaf ingress-src-mac {
+            type yang:phys-address;
+            description
+             "Ingress source MAC for mapper";
+        }
+
+        leaf ingress-dest-mac {
+            type yang:phys-address;
+            description
+             "Ingress destination MAC";
+        }
+
+        leaf fcoe_pkt_vlanid {
+            type base-cmn:vlan-id;
+            description
+             "FCoE packet vlan-id";
+        }
+
+        leaf tag_protocol_id {
+            type uint16;
+            description
+             "Tag Protocol id for FCoE packet";
+        }
+
+        leaf priority {
+            type base-cmn:dot1p;
+            description
+             " Default priority for vlan tag";
+        }
+
+        leaf vft_header {
+            type uint32;
+            description
+             "Virtual Fabric Tagging ID or header";
+        }
+
+    }
+}
+
