@@ -501,22 +501,22 @@ module dell-interface {
             type yang:counter64;
         }
         leaf tx-lpi-count {
-            type uint64;
+            type yang:counter64;
             description
                 "Tx LPI event count";
         }
         leaf tx-lpi-duration {
-            type uint64;
+            type yang:counter64;
             description
                 "Tx LPI duration";
         }
         leaf rx-lpi-count {
-            type uint64;
+            type yang:counter64;
             description
                 "Rx LPI event count";
         }
         leaf rx-lpi-duration {
-            type uint64;
+            type yang:counter64;
             description
                 "Rx LPI duration";
         }
