@@ -1,7 +1,7 @@
 module dell-fcoe-mapper {
 
     namespace "http://www.dell.com/esg/networking/os10/dell-fcoe-mapper";
-    prefix "dell-fcoe-map";
+    prefix "dell-fcoe-mapper";
 
     import dell-base-common {
         prefix "base-cmn";
