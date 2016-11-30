@@ -1,7 +1,7 @@
 module dell-fcoe-mapper {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-fcoe-map";
-    prefix "base-fc-map";
+    namespace "http://www.dell.com/esg/networking/os10/dell-fcoe-mapper";
+    prefix "dell-fcoe-map";
 
     import dell-base-common {
         prefix "base-cmn";
@@ -45,7 +45,7 @@ module dell-fcoe-mapper {
         description "FCoE mapper object attributes";
 
         leaf mapper-id {
-            type uint32;
+            type base-cmn:base-obj-id-type;
             description "Unique FCoE mapper ID generated or passed upon Create request.
                          Subsequent Modify and Delete request requires
                          this  ID to be passed";
