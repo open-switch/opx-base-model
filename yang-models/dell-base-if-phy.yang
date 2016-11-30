@@ -125,7 +125,12 @@ module dell-base-if-phy {
 		leaf breakout-mode {
 			config false;
 			type base-cmn:breakout-type;
+            description "Breakout mode of the front panel port";
 		}
+        leaf port-speed {
+            type base-if:speed;
+            description "port speed of the front panel port";
+        }
 		
         uses base-if:breakout-capabilities;
 	}
@@ -183,11 +188,13 @@ module dell-base-if-phy {
 		
         leaf-list breakout-capabilities {
 			type breakout-mode ;
+            description "Will be deprecated"
 		}
 		
 		leaf fanout-mode {
 			config false;
 			type breakout-mode;
+            description "Will be deprecated"
 		}
 		
         leaf phy-media {

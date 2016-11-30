@@ -281,9 +281,9 @@ module dell-base-interface-common {
                 description "this is the new mode to configure.";
                 type base-cmn:breakout-type ;
             }
-            leaf port-speed {
+            leaf-leaf port-speed {
                 type base-if:speed;
-                description "list of supported speeds in the interface";
+                description "list of supported line speeds by the port";
             }
             leaf skip-ports {
                 type uint32;
