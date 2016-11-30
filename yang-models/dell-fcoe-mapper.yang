@@ -51,6 +51,12 @@ module dell-fcoe-mapper {
                          this  ID to be passed";
         }
 
+        leaf mac_mode {
+             type fcmac_mode;
+             description "Specifies how MAC address is to be formed";
+
+        }
+
         leaf map-prefix {
             type yang:phys-address;
             description "Fiber channel mapper prefix";
