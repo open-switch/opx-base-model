@@ -512,6 +512,10 @@ module dell-base-platform-common {
               value 34;
               description "Pluggable optics 4x1_1000BASE_T";
           }
+          enum AR_QSFP_40GBASE_CR4_HAL_M {
+              value 35;
+              description "Pluggable optics QSFP_40GBASE_CR4_HAL_M (deprecated)";
+          }
           enum AR_QSFP_40GBASE_CR4_HALFM {
               value 35;
               description "Pluggable optics QSFP_40GBASE_CR4_HALFM";
@@ -547,6 +551,10 @@ module dell-base-platform-common {
           enum AR_QSFP_40GBASE_CR4 {
               value 43;
               description "Pluggable optics QSFP_40GBASE_CR4";
+          }
+          enum AR_4x10_10GBASE_CR1_HAL_M {
+              value 44;
+              description "Pluggable optics 4x10_10GBASE_CR1_HAL_M (deprecated)";
           }
           enum AR_4x10_10GBASE_CR1_HALFM {
               value 44;
@@ -680,6 +688,10 @@ module dell-base-platform-common {
               value 76;
               description "Pluggable optics AR_QSFP28_100GBASE_AOC";
           }
+          enum AR_QSFP28_100GBASE_CR4_HAL_M {
+              value 77;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_HALFM (deprecated)";
+          }
           enum AR_QSFP28_100GBASE_CR4_HALFM {
               value 77;
               description "Pluggable optics AR_QSFP28_100GBASE_CR4_HALFM";
@@ -716,6 +728,10 @@ module dell-base-platform-common {
               value 85;
               description "Pluggable optics QSFP28_100GBASE_CR4_50M";
           }
+          enum 4X25_25GBASE_CR1_HALF_M {
+              value 86;
+              description "Pluggable optics 4X25_25GBASE_CR1_HALF_M (deprecated)";
+          }
           enum 4X25_25GBASE_CR1_HALFM {
               value 86;
               description "Pluggable optics 4X25_25GBASE_CR1_HALFM";
@@ -739,6 +755,10 @@ module dell-base-platform-common {
           enum 4X25_25GBASE_CR1 {
               value 91;
               description "Pluggable optics 4X25_25GBASE_CR1";
+          }
+          enum 2X50_50GBASE_CR2_HALF_M {
+              value 92;
+              description "Pluggable optics 2X50_50GBASE_CR2_HALF_M (deprecated)";
           }
           enum 2X50_50GBASE_CR2_HALFM {
               value 92;
@@ -767,6 +787,10 @@ module dell-base-platform-common {
           enum SFP28_25GBASE_CR1 {
               value 98;
               description "Pluggable optics SFP28_25GBASE_CR1";
+          }
+          enum SFP28_25GBASE_CR1_HALF_M {
+              value 99;
+              description "Pluggable optics SFP28_25GBASE_CR1_HALF_M (deprecated)";
           }
           enum SFP28_25GBASE_CR1_HALFM {
               value 99;
