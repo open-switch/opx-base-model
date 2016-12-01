@@ -89,6 +89,22 @@ module dell-base-interface-common {
                 value 10;
                 description "50G data rate.";
             }
+            enum 4GFC {
+                value 11;
+                description "4G FC data rate.";
+            }
+            enum 8GFC {
+                value 12;
+                description "8G FC data rate.";
+            }
+            enum 16GFC {
+                value 13;
+                description "16G FC data rate.";
+            }
+            enum 32GFC {
+                value 14;
+                description "32G FC data rate.";
+            }
         }
     }
 
