@@ -188,13 +188,13 @@ module dell-base-if-phy {
 		
         leaf-list breakout-capabilities {
 			type breakout-mode ;
-            description "Will be deprecated"
+            description "Will be deprecated";
 		}
 		
 		leaf fanout-mode {
 			config false;
 			type breakout-mode;
-            description "Will be deprecated"
+            description "Will be deprecated";
 		}
 		
         leaf phy-media {

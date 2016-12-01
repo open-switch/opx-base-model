@@ -274,20 +274,20 @@ module dell-base-interface-common {
         key "phy-mode breakout-mode";
         description "List of breakout capabilities with max port speeds.";
             leaf phy-mode {
-                description " PHysical layer mode , FC or Ethernet";
                 type phy-mode-type;
+                description " Physical layer mode , FC or Ethernet";
             }
             leaf breakout-mode {
-                description "this is the new mode to configure.";
                 type base-cmn:breakout-type ;
+                description "Breakout mode capability.";
             }
-            leaf-leaf port-speed {
+            leaf-list port-speed {
                 type base-if:speed;
-                description "list of supported line speeds by the port";
+                description "List of supported line speeds by the port";
             }
             leaf skip-ports {
                 type uint32;
-                description "skip port";
+                description "Skip ports between two active port for the breakout mode";
             }
         }
     }
