@@ -28,12 +28,17 @@ module dell-fcoe-mapper {
     typedef fcmac_mode {
         type enumeration {
             enum "FPMA_MODE" {
+                description
+                  "24 bit FC DID will be prefixed with 24 bit address
+                         configured on fcoe-map for generating mac address";
                 value 1;
             }
             enum "NULL_MODE" {
+                description "The mac address will be zero";
                 value 2;
             }
             enum "USER_MODE" {
+                description "The mac address will be configured by the user";
                 value 3;
             }
          }
@@ -51,27 +56,38 @@ module dell-fcoe-mapper {
                          this  ID to be passed";
         }
 
-        leaf mac_mode {
+        leaf src_mac_mode {
              type fcmac_mode;
-             description "Specifies how MAC address is to be formed";
+             description "Specifies how source MAC address is to be formed";
 
         }
 
-        leaf map-prefix {
-            type yang:phys-address;
-            description "Fiber channel mapper prefix";
+        leaf src_map-prefix {
+            type uint32;
+            description "Fiber channel mapper prefix for source address";
         }
 
         leaf ingress-src-mac {
             type yang:phys-address;
             description
-             "Ingress source MAC for mapper";
+             "Source MAC provided by user and depends on the mac_mode configured";
+        }
+
+        leaf dest_mac_mode {
+             type fcmac_mode;
+             description "Specifies how destination MAC address is to be formed";
+
+        }
+
+        leaf dest_map-prefix {
+            type uint32;
+            description "Fiber channel mapper prefix for destination address";
         }
 
         leaf ingress-dest-mac {
             type yang:phys-address;
             description
-             "Ingress destination MAC";
+             "Ingress destination MAC for mapper";
         }
 
         leaf fcoe_pkt_vlanid {
