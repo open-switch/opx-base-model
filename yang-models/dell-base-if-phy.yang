@@ -122,6 +122,11 @@ module dell-base-if-phy {
             description "Offset from system base MAC Address. MAC address of the port is calculated by adding mac_offset in base MAC address";
         }	
 
+        leaf phy-mode {
+            type base-if:phy-mode-type;
+            description "Port PHY mode, Ethernet or FC";
+        }
+
 		leaf breakout-mode {
 			config false;
 			type base-cmn:breakout-type;
@@ -181,6 +186,11 @@ module dell-base-if-phy {
             description "This is the physical hardware port";
         }
 
+        leaf phy-mode {
+            type base-if:phy-mode-type;
+            description "Port PHY mode, Ethernet or FC";
+        }
+
 		leaf front-panel-number {
 			type uint32;
             description "depreciated.";
@@ -188,13 +198,13 @@ module dell-base-if-phy {
 		
         leaf-list breakout-capabilities {
 			type breakout-mode ;
-            description "Will be deprecated";
+            description "status deprecated";
 		}
 		
 		leaf fanout-mode {
 			config false;
 			type breakout-mode;
-            description "Will be deprecated";
+            description "status deprecated";
 		}
 		
         leaf phy-media {
