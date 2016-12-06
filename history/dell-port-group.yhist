@@ -43,8 +43,8 @@ PORT_GROUP_PORT_GROUP_SKIP_PORTS=9
 PORT_GROUP_PORT_GROUP_SPEED=8
 --obj cps_api_obj_CAT_PORT_GROUP end
 ++obj global
-cps_api_obj_CAT_BASE_PG=264
-cps_api_obj_CAT_DELL_BASE_PG=263
-cps_api_obj_CAT_DELL_PG=262
-cps_api_obj_CAT_PORT_GROUP=261
+cps_api_obj_CAT_BASE_PG=270
+cps_api_obj_CAT_DELL_BASE_PG=269
+cps_api_obj_CAT_DELL_PG=268
+cps_api_obj_CAT_PORT_GROUP=267
 --obj global end
