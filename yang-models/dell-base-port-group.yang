@@ -2,7 +2,6 @@ module dell-base-port-group {
     namespace "http://www.dell.com/esg/networking/os10/dell-base-port-group";
     prefix "base-pg";
 
-
     import dell-port-group { prefix "dell-pg"; }
 
     organization "Dell Inc";
@@ -14,10 +13,10 @@ module dell-base-port-group {
         description "Initial version.";
     }
 
-    augment "/dell-pg:port-group" {
+    augment "/dell-pg:port-groups-state/dell-pg:port-group-state" {
         leaf-list hwport-list {
             type uint32;
-            description "List of hwardware ports belonging to this port-group";
+            description "List of hardware ports belonging to this port-group";
         }
     }
 }
