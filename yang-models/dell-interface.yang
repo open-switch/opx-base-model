@@ -63,8 +63,7 @@ module dell-interface {
 
   // Phy and LAG
   augment "/if:interfaces/if:interface" {
-    when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'ianaift:ieee8023adLag'
-            or  if:type = 'ianaift:fibreChannel'";
+    when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'ianaift:ieee8023adLag'";
 
     leaf mode {
       type base-if:mode;
@@ -122,24 +121,6 @@ module dell-interface {
         }
       }
 
-  // FC Phy specific
-  augment "/if:interfaces/if:interface" {
-        when "if:type = 'ianaift:fibreChannel'";
-
-        leaf bb-credit {
-          type uint32;
-          description "The Buffer-to-Buffer Credit allocation";
-        }
-        leaf bb-credit-recovery {
-          type uint32;
-          description "The Buffer-to-Buffer Credit Recovery";
-        }
-
-        leaf fc-mapper {
-        type base-cmn:base-obj-id-type;
-        description " FC Mapper Profile Associated with the Fc interface";
-        }
-    }
 
     augment "/if:interfaces-state/if:interface" {
 
