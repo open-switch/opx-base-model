@@ -1,9 +1,9 @@
 # writing history/dell-base-if-fc.yhist
-++obj base-if-fc:fcmac_mode
+++obj base-if-fc:fcmac-mode
 BASE_IF_FC_FCMAC_MODE_FPMA_MODE=1
 BASE_IF_FC_FCMAC_MODE_NULL_MODE=2
 BASE_IF_FC_FCMAC_MODE_USER_MODE=3
---obj base-if-fc:fcmac_mode end
+--obj base-if-fc:fcmac-mode end
 ++obj cps_api_obj_CAT_BASE_IF_FC
 BASE_IF_FC_IF_INTERFACES_INTERFACE_BB_CREDIT=1
 BASE_IF_FC_IF_INTERFACES_INTERFACE_BB_CREDIT_RECOVERY=2

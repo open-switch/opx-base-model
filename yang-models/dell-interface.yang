@@ -123,6 +123,9 @@ module dell-interface {
 
 
     augment "/if:interfaces-state/if:interface" {
+        when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'
+             or  if:type = 'ianaift:fibreChannel'";
+
 
         leaf duplex {
           type base-cmn:duplex-type;

@@ -22,7 +22,7 @@ module dell-base-if-fc {
         description "Initial version";
     }
 
-    typedef fcmac_mode {
+    typedef fcmac-mode {
         type enumeration {
             enum "FPMA_MODE" {
                 description
@@ -53,12 +53,12 @@ module dell-base-if-fc {
           description "The Buffer-to-Buffer Credit Recovery";
         }
 
-        leaf src_mac_mode {
-             type fcmac_mode;
+        leaf src-mac-mode {
+             type fcmac-mode;
              description "Specifies how source MAC address is to be formed";
         }
 
-        leaf src_map-prefix {
+        leaf src-map-prefix {
             type uint32;
             description "Fiber channel mapper prefix for source address";
         }
@@ -69,13 +69,13 @@ module dell-base-if-fc {
              "Source MAC provided by user and depends on the mac_mode configured";
         }
 
-        leaf dest_mac_mode {
-             type fcmac_mode;
+        leaf dest-mac-mode {
+             type fcmac-mode;
              description "Specifies how destination MAC address is to be formed";
 
         }
 
-        leaf dest_map-prefix {
+        leaf dest-map-prefix {
             type uint32;
             description "Fiber channel mapper prefix for destination address";
         }
@@ -86,13 +86,13 @@ module dell-base-if-fc {
              "Ingress destination MAC for mapper";
         }
 
-        leaf fcoe_pkt_vlanid {
+        leaf fcoe-pkt-vlanid {
             type base-cmn:vlan-id;
             description
              "FCoE packet vlan-id";
         }
 
-        leaf tag_protocol_id {
+        leaf tag-protocol-id {
             type uint16;
             description
              "Tag Protocol id for FCoE packet";
@@ -104,7 +104,7 @@ module dell-base-if-fc {
              " Default priority for vlan tag";
         }
 
-        leaf vft_header {
+        leaf vft-header {
             type uint32;
             description
              "Virtual Fabric Tagging ID or header";
