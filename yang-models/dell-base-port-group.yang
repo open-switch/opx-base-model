@@ -13,6 +13,10 @@ module dell-base-port-group {
         description "Initial version.";
     }
 
+    augment "/dell-pg:port-groups/dell-pg:port-group" {
+
+    }
+
     augment "/dell-pg:port-groups-state/dell-pg:port-group-state" {
         leaf-list hwport-list {
             type uint32;
