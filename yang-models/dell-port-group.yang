@@ -51,7 +51,7 @@ module dell-port-group {
     }
 
     container port-groups-state {
-
+        config false;
         list port-group-state {
             key "id";
 
