@@ -1,0 +1,58 @@
+
+module dell-base-if-mgmt {
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-mgmt";
+
+    prefix "base-if-mgmt";
+
+	import ietf-interfaces {
+		prefix "if";
+	}
+	
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import dell-base-interface-common {
+        prefix "base-if";
+    }
+
+    organization "Dell Inc";
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model augments the standard interface and adds Dell specific
+    				extensions.  This model contains the entry point for the
+    				interface object extensions.";
+
+    revision "2016-01-22" {
+        description "Initial version.";
+    }
+	
+	augment "/if:interfaces/if:interface" {
+        when "if:type = 'base-if:management' ";
+        description " MGMT Interface configuration attributes";
+	}
+    augment "/if:interfaces-state/if:interface" {
+        when "if:type = 'base-if:management' ";
+        description " MGMT Interface state attributes";
+	}
+    augment "/if:interfaces-state/if:interface/if:statistics" {
+        when "if:type = 'base-if:management' ";
+        description "Interface counter attributes";
+    }
+
+    rpc if_name_change {
+        description "Management interface name change request RPC";
+
+        input {
+            leaf name {
+                type string;
+                description "Management interface name.";
+            }
+
+            leaf new_name {
+                type string;
+                description "Management interface new name.";
+            }
+        }
+    }
+}

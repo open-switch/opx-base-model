@@ -1,0 +1,219 @@
+module dell-base-etl {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-etl";
+
+    prefix base-etl;
+
+    import dell-base-etl-common {
+        prefix base-etl-common;
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions for ETL objects";
+
+    revision 2015-04-21 {
+        description "Initial revision.";
+    }
+
+    typedef notification-type {
+        type enumeration {
+            enum "event-action-alarm" {
+                value "1";
+                description "Event notification for Alarm";
+            }
+            enum "event-action-trap" {
+                value "2";
+                description "Event notification for Trap";
+            }
+            enum "event-action-alarm-trap" {
+                value "3";
+                description "Event notification for Alarm and Trap";
+            }
+            enum "event-action-alarm-clear" {
+                value "4";
+                description "Event notification for clearing Alarm";
+            }
+            enum "event-action-external" {
+                value "5";
+                description "Event notification for external usage";
+            }
+        }
+    }
+
+    list log-event-object {
+        key "event-notification-type";
+        description "ETL Event Object Attributes";
+
+        leaf event-notification-type {
+            type notification-type;
+            description "Event notification type";
+        }
+        leaf event-type {
+            type uint64;
+            description "Event type (identifier)";
+        }
+        leaf event-severity-level {
+            type base-etl-common:severity-level-type;
+            description "Event severity level";
+        }
+        leaf unit-role {
+            type uint32;
+            description "Unit role (primary, standby, member)";
+        }
+        leaf card-name {
+            type string;
+            description "Card name (hostname)";
+        }
+        leaf event-source {
+            type string;
+            description "Source of the events; source format {<Tag>.value-<Tag>.value};
+                         stack or chassis source example {Node.1-Unit.1} or
+                         cluster source eample {Cluster.1-Node.1-Unit.3}";
+        }
+        leaf service-name {
+            type string;
+            description "Service name (process name)";
+        }
+        leaf thread-name {
+            type string;
+            description "Thread name (module name)";
+        }
+        leaf event-name {
+            type string;
+            description "Event name";
+        }
+        leaf event-log-descr {
+            type string;
+            description "Dell defined event log descriptions";
+        }
+        leaf event-log-timestamp {
+            type string;
+            description "Event log timestamp using this format [Month Day Hour:Minute:Second]";
+        }
+        leaf event-detail-descr {
+            type string;
+            description "Detail event log descriptions";
+        }
+        leaf event-device-name {
+            type string;
+            description "Event device name";
+        }
+        leaf event-device-id {
+            type uint32;
+            description "Event device id";
+        }
+    }
+
+    list  log-output-object {
+        key "output-type";
+        description "ETL Output Object Attributes";
+
+        leaf output-type {
+            type base-etl-common:log-output-type;
+            description "Output type";
+        }
+        leaf log-msg {
+            type string;
+            description "Log messages";
+        }
+    }
+
+    list  log-config-object {
+        key "config-type";
+        description "ETL Config Object Attributes";
+
+        leaf config-type {
+            type base-etl-common:log-config-type;
+            description "Config type";
+        }
+        leaf all-log-enable{
+            type boolean;
+            description "All logging enable or disable";
+        }
+        leaf buffer-level {
+            type base-etl-common:severity-level-type;
+            description "Buffer severity level - all events with severity level above the configured
+                         buffer severity level will be logged";
+        }
+        leaf buffer-size {
+            type uint32;
+            units megabytes;
+            description "Buffer size - size of the log buffer(file) in MB";
+        }
+        leaf buffer-enable{
+            type boolean;
+            description "Buffer logging is enable or disable";
+        }
+        leaf console-level {
+            type base-etl-common:severity-level-type;
+            description "Console severity level - all events with severity level above the configured
+                         console severity level wiill be logged to the console";
+        }
+        leaf console-enable {
+            type boolean;
+            description "Console logging is enable or disable";
+        }
+        leaf monitor-level {
+            type base-etl-common:severity-level-type;
+            description "Monitor severity level - all events with severity level above the configured
+                         monitor severity level will be logged to the monitor";
+        }
+        leaf monitor-enable {
+            type boolean;
+            description "Monitor logging is enable or disable";
+        }
+        leaf history-level {
+            type base-etl-common:severity-level-type;
+            description "History severity level - all events with severity level above the configured
+                         history severity level will be logged to the history buffer";
+        }
+        leaf history-msg-size {
+            type uint32;
+            units messages;
+            description "Number of log messages to be stored in history buffer";
+        }
+        leaf history-enable {
+            type boolean;
+            description "History logging is enable or disable";
+        }
+    }
+
+    container dn-event-table {
+        description "Provide attribute id to use this when event source publish predefined
+            event";
+        leaf event-id {
+            type uint64;
+            description "System wide unique event id.";
+        }
+        leaf event-detail-description {
+            type string;
+            description "Full description of event.";
+        }
+        leaf event-logging {
+            type boolean;
+            description "Indicates this event need to be logged or not.";
+        }
+        leaf event-process-name {
+            type string;
+            description "Process name.";
+        }
+        leaf event-thread-name {
+            type string;
+            description "Thread name.";
+        }
+        leaf event-device-name {
+            type string;
+            description "Device name.";
+        }
+        leaf event-device-id {
+            type uint32;
+            description "Device id.";
+        }
+    }
+}

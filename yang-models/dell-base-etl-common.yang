@@ -1,0 +1,99 @@
+module dell-base-etl-common {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-etl-common";
+
+    prefix base-etl-common;
+
+    organization
+        "Dell Inc";
+
+    contact
+        "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of common YANG definitions for ETL logging and event notification objects.";
+
+    revision 2015-04-21 {
+        description "Initial revision.";
+    }
+
+    typedef severity-level-type {
+        type enumeration {
+            enum "log-emerg" { 
+                value "0";
+                description "Emergency level - enum definition starts at 0 due to
+                             required mapping to Linux syslog severity level definitions";
+            }
+            enum "log-alert" { 
+                value "1";
+                description "Alert level";
+            }
+            enum "log-crit" { 
+                value "2";
+                description "Critical level";
+            }
+            enum "log-err" { 
+                value "3";
+                description "Error level";
+            }
+            enum "log-warning" { 
+                value "4";
+                description "Warning level";
+            }
+            enum "log-notice" { 
+                value "5";
+                description "Notice level";
+            }
+            enum "log-info" { 
+                value "6";
+                description "Info level";
+            }
+            enum "log-debug" { 
+                value "7";
+                description "Debug level";
+            }
+        }
+    }
+
+    typedef log-output-type {
+        type enumeration {
+            enum "console" {
+                value "1";
+                description "Console output";
+            }
+            enum "terminal-monitor" {
+                value "2";
+                description "Terminal monitor output";
+            }
+            enum "history" {
+                value "3";
+                description "History output";
+            }
+        }
+    }
+
+    typedef log-config-type {
+        type enumeration {
+            enum "buffer" { 
+                value "1";
+                description "Buffer configuration";
+            }
+            enum "console" { 
+                value "2";
+                description "Console configuration";
+            }
+            enum "terminal-monitor" { 
+                value "3";
+                description "Terminal monitor configuration";
+            }
+            enum "history" { 
+                value "4";
+                description "History configuration";
+            }
+            enum "all-log-enable" { 
+                value "5";
+                description "All logging enable configuration";
+            }
+        }
+    }
+}

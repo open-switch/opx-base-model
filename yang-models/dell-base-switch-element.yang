@@ -1,0 +1,461 @@
+module dell-base-switch-element {
+
+namespace "http://www.dell.com/esg/networking/os10/dell-base-switch-element";
+prefix "base-switch";
+
+import dell-base-common {
+    prefix "base-cmn";
+}
+
+organization
+"Dell Inc";
+
+contact
+    "http://www.dell.com/support/softwarecontacts";
+
+description
+"This module contains a collection of YANG definitions for
+managing configuration and operational data for Dell Switch Element";
+
+revision 2014-08-06 {
+description
+"Initial revision.";
+}
+
+/*
+* Typedefs
+*/
+
+/*
+* Identities
+*/
+
+identity switch-element-base {
+	description "Base identity from which specific routing protocols are derived.";
+}
+
+/*
+* Configuration of the core elements of the Switch
+*/
+
+typedef hash-algorithm {
+    type enumeration {
+	      enum "XOR" {
+	        value 1;
+	      }
+	      enum "CRC" {
+	      	value 2;
+	      }
+	      enum "RANDOM" {
+	      	value 3;
+	      }
+    }
+}
+
+typedef switching-mode {
+    type enumeration {
+	      enum "cut-through" {
+	        value 1;
+	      }
+	      enum "store-and-forward" {
+	      	value 2;
+	      }
+    }
+}
+
+typedef hash-fields {
+    type enumeration {
+	      enum "src-ip" {
+	        value 1;
+	      }
+	      enum "dest-ip" {
+	        value 2;
+	      }
+	      enum "vlan-id" {
+	        value 3;
+	      }
+	      enum "ip-protocol" {
+	        value 4;
+	      }
+	      enum "ethertype" {
+	        value 5;
+	      }
+	      enum "l4-src-port" {
+	        value 6;
+	      }
+	      enum "l4-dest-port" {
+	        value 7;
+	      }
+	      enum "src-mac" {
+	        value 8;
+	      }
+	      enum "dest-mac" {
+	        value 9;
+	      }
+	      enum "in-port" {
+	        value 10;
+	      }
+    }
+}
+
+    typedef subsystem{
+        description "Switch Subsystem Ids";
+        type enumeration{
+            enum "unspecified"{
+                value 1;
+            }
+            enum "switch"{
+                value 2;
+            }
+            enum "port"{
+                value 3;
+            }
+            enum "fdb"{
+                value 4;
+            }
+            enum "vlan"{
+                value 5;
+            }
+            enum "virtual-router"{
+                value 6;
+            }
+             enum "route"{
+                value 7;
+            }
+            enum "next-hop"{
+                value 8;
+            }
+            enum "next-hop-group"{
+                value 9;
+            }
+            enum "router-interface"{
+                value 10;
+            }
+            enum "neighbor"{
+                value 11;
+            }
+            enum "acl"{
+                value 12;
+            }
+             enum "host_interface"{
+                value 13;
+            }
+            enum "mirror"{
+                value 14;
+            }
+            enum "samplepacket"{
+                value 15;
+            }
+            enum "stp"{
+                value 16;
+            }
+            enum "lag"{
+                value 17;
+            }
+            enum "policer"{
+                value 18;
+            }
+             enum "wred"{
+                value 19;
+            }
+            enum "qos-maps"{
+                value 20;
+            }
+            enum "qos-queue"{
+                value 21;
+            }
+            enum "scheduler"{
+                value 22;
+            }
+            enum "scheduler-group"{
+                value 23;
+            }
+            enum "all"{
+
+            }
+        }
+    }
+
+    typedef log-level{
+        description "Switch Subsystem log levels";
+        type enumeration{
+            enum "debug"{
+                value 1;
+            }
+            enum "info"{
+                value 2;
+            }
+            enum "notice"{
+                value 3;
+            }
+            enum "warning"{
+                value 4;
+            }
+            enum "error"{
+                value 5;
+            }
+            enum "critical"{
+                value 6;
+            }
+        }
+    }
+
+list switching-entity-env {
+    key "switch-id";
+    description  "the list of switching entities environment.";
+
+    leaf switch-id {
+        type base-cmn:logical-switch-id;
+        description "Switch Identifier";
+    }
+
+    leaf temperature {
+        type int32;
+        description "Current temperature of NPU";
+    }
+}
+
+container switching-entities {
+
+  description "switching entity configuration parameters.";
+  leaf switch-count {
+    type uint32;
+    description "The number of virtual switches on the platform";
+  }
+
+  list switching-entity {
+    key "switch-id";
+    description  "the list of switching entities.";
+	
+    leaf switch-id {
+        type base-cmn:logical-switch-id;
+        description "Switch Identifier";
+    }
+
+    leaf switch-mode {
+    	type switching-mode;
+    	description "the default mode for switching packets";
+    }
+
+    leaf lag-hash-algorithm {
+    	type hash-algorithm;
+    	description "The switches hash algorithm setting";
+    }
+
+    leaf-list lag-hash-fields {
+    	type hash-fields;
+    	description "The switches hash fields used for lags";
+    }
+
+    leaf-list npu-identifiers {
+        type base-cmn:npu-id;
+        description "The NPUs associated with the virtual switch";
+    }
+
+    leaf operational-status{
+        config false;
+        type base-cmn:oper-status-type;
+    }
+
+    leaf admin-status{
+        type base-cmn:admin-status-type;
+    }
+
+    leaf bridge-table-size {
+    	config false;
+        type uint32;
+        description "Size of Layer2 FDB";
+    }
+
+    leaf max-supported-lags {
+        config false;
+        type uint32;
+        description "The maximum number of lags this device supports";
+    }
+
+    leaf ecmp-hash-algorithm {
+    	type hash-algorithm;
+    	description "The switch ecmp hash algorithm setting";
+    }
+
+    leaf-list ecmp-hash-fields {
+    	type hash-fields;
+    	description "The fields used for hasing in the case of ecmp";
+    }
+
+    leaf ecmp-group-size {
+        type uint32;
+        description "Maximum number of ECMP groups";
+    }
+    leaf max-ecmp-entry-per-group {
+        type uint32;
+        description "Maximum ECMP entries per group";
+    }
+    leaf ipv4-route-table-size {
+        type uint32;
+        description "Size of IPv4 Routing table";
+    }
+
+    leaf ipv6-route-table-size {
+        type uint32;
+        description "Size of IPv6 Routing table";
+    }
+
+    leaf ipv4-host-size {
+        type uint32;
+        description "Size of IPv4 NBR table";
+    }
+
+    leaf ipv6-host-size {
+        type uint32;
+        description "Size of IPv6 NBR table";
+    }
+
+    leaf num-unicast-queues-per-port {
+        type uint32;
+    }
+
+    leaf num-multicast-queues-per-port {
+        type uint32;
+    }
+
+    leaf num-queues-per-port {
+        type uint32;
+        default 8;
+    }
+
+    leaf num-queues-cpu-port {
+        type uint32;
+    }
+
+    leaf qos-rate-adjust {
+        type uint32;
+        default 0;
+        description "QoS rate adjustment due to internal overhead bytes";
+    }
+
+    leaf ingress-flow-table-size {
+        type uint32;
+        default 4096; /* 4K entries */
+    }
+
+    leaf egress-flow-table-size {
+        type uint32;
+        default 2048; /* 2K entries */
+    }
+
+    leaf mac-age-timer {
+        type uint32;
+        description "Timeout period for dynamically leanrt MAC Addresses";
+    }
+
+    leaf default-vlan-id {
+       type base-cmn:vlan-id;
+       description "The default vlan-id for this switch";
+    }
+
+    leaf disable-default-vlan {
+         type boolean;
+         description "Disable the default vlan for the switch";
+    }
+
+    leaf default-mac-address {
+    	type base-cmn:mac-address;
+    	description "This will be the default MAC address for the switch.";
+    }
+    leaf temperature { /* Deprecated, moved temperature leaf to switching-entity-env object */
+        type int32;
+        description "Current temperature of NPU";
+    }
+
+    leaf acl-table-min-priority {
+    	type uint32;
+       config false;
+    	description "Lowest ACL table priority supported.";
+    }
+    leaf acl-table-max-priority {
+        type uint32;
+        config false;
+        description "Highest ACL table priority supported.";
+    }
+    leaf acl-entry-min-priority {
+        type uint32;
+        config false;
+        description "Lowest ACL entry priority supported.";
+    }
+    leaf acl-entry-max-priority {
+        type uint32;
+        config false;
+        description "Highest ACL entry priority supported.";
+    }
+    leaf max-mtu {
+        type uint32;
+        config false;
+        description "Maximum MTU supported.";
+    }
+    leaf total-buffer-size {
+        type uint32;
+        config false;
+        description "switch total buffer size in KB.";
+    }
+    leaf ingress-buffer-pool-num {
+        type uint32;
+        config false;
+        description "switch total number of ingress buffer pools";
+    }
+    leaf egress-buffer-pool-num {
+        type uint32;
+        config false;
+        description "switch total number of egress buffer pools";
+    }
+    leaf counter-refresh-interval{
+        type uint32;
+        description "Time interval in seconds at which the counters will be read from NPU";
+    }
+
+  }
+}
+
+
+rpc diag_shell {
+	description "This RPC allows debug access to the switch to perform some basic status
+		commands.";
+    input {
+        leaf command {
+            type string;
+            description "A valid diagnostic shell command.";
+        }
+    }
+    output {
+        leaf result {
+            type string;
+            description "The commmand output as a string.  This string will need to be parsed
+            	and is not standard.";
+        }
+    }
+}
+
+rpc set_log {
+    description
+    "This RPC allows to change the switch subsystem log level";
+
+    input {
+        leaf subsystem-id {
+            type subsystem;
+            description "Subsytem id of the switch";
+        }
+
+        leaf level {
+            type log-level;
+            description "Log level to be set";
+        }
+    }
+}
+
+}
+
+
+
+
+
+

@@ -1,0 +1,102 @@
+module dell-base-env-tempctl {
+  namespace "http://www.dell.com/esg/networking/os10/dell-base-env-tempctl";
+  prefix base-env-tempctl;
+
+  import dell-base-platform-common {
+    prefix platform;
+  }
+
+  organization "Dell Inc";
+  contact
+    "http://www.dell.com/support/softwarecontacts";
+  description
+    "Configuration and Operational Data for Dell OS10 Environmental Temperature Control Service";
+
+  revision 2015-08-17 {
+    description
+      "Cleanup according to new DELL OS10 yang modelling guidelines";
+  }
+  revision 2015-08-17 {
+    description
+      "Adding ability to set threshold values for various severity levels";
+  }
+  revision 2015-05-20 {
+    description
+      "Moved fault-value type to dell-base-platform-common.yang";
+  }
+  revision 2015-05-08 {
+    description
+      "Clean-up according to DELL OS10 yang Modelling guidelines";
+  }
+  revision 2015-04-29 {
+    description
+      "Initial revision.";
+  }
+
+  list fault {
+    description
+      "Attributes of environmental temperature control service's faults";
+
+    key "entity-type slot sensor-name";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf sensor-name {
+      description "Printable name for sensor";
+      type string;
+    }
+
+    leaf temperature {
+      description "Current temperature of the sensor showing tc-fault";
+      type platform:temperature-type;
+      config false;
+    }
+
+    leaf fault-type {
+        description "Severity of current temperature control fault present";
+        type platform:fault-severity;
+        config false;
+    }
+  }
+
+  list fault-threshold {
+    description
+      "Mapping of tc-fault's severity levels to threshold values";
+
+    key "entity-type slot sensor-name severity";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf sensor-name {
+      description "Printable name for sensor";
+      type string;
+    }
+
+    leaf severity {
+      description "Severity level of a temperature control fault";
+      type platform:fault-severity;
+    }
+
+    leaf threshold {
+      description "threshold temperature corresponding to severity above";
+      type platform:temperature-type;
+      config true;
+    }
+  }
+}

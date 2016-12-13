@@ -1,0 +1,6 @@
+# writing history/dell-extensions.yhist
+++obj cps_api_obj_CAT_OS10_EXT
+--obj cps_api_obj_CAT_OS10_EXT end
+++obj global
+cps_api_obj_CAT_OS10_EXT=39
+--obj global end

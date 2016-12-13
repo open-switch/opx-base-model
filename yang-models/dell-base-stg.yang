@@ -1,0 +1,127 @@
+module dell-base-stg {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-stg";
+    prefix "base-stg";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+    "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions provided
+          by platform for managing STG objects";
+
+    revision 2014-12-30 {
+        description
+            "Initial revision";
+    }
+
+    typedef interface-state {
+        type enumeration {
+            enum DISABLED {
+                value 0;
+                description
+                    "Indicates STP state of the interface is disabled";
+            }
+            enum LISTENING {
+                value 1;
+                description
+                    "Indicates STP state of the interface is listening";
+            }
+            enum LEARNING {
+                value 2;
+                description
+                    "Indicates STP state of the interface is learning";
+            }
+            enum FORWARDING {
+                value 3;
+                description
+                    "Indicates STP state of the interface is forwarding";
+            }
+            enum BLOCKING {
+                value 4;
+                description
+                    "Indicates STP state of the interface is blocking";
+            }
+        }
+    }
+
+    container default-stg{
+        leaf id{
+            config false;
+            type uint32;
+            description "Default STG instance id";
+        }
+
+        leaf state{
+            type interface-state;
+            description
+                "Default STP state of the all interfaces for default STG instance";
+        }
+    }
+
+
+    list entry {
+
+        key "id";
+
+        description
+            "Spanning Tree Group instance attributes";
+
+        leaf id {
+            type uint32;
+            description
+                "Identifier of the Spanning Tree Group instance";
+        }
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            status obsolete;
+            description
+                "Logical Switch to which this STG instance belongs.";
+        }
+
+        leaf-list vlan {
+            type base-cmn:vlan-id;
+            description
+                "List of VLANs to be associated with the STG instance";
+        }
+
+        list intf {
+            key "if";
+            description
+                "List of interfaces and its STP state to be changed
+                for the given STG instance";
+
+            choice  if {
+                case index {
+                    leaf ifindex {
+                        type base-cmn:logical-ifindex;
+                        description
+                            "Interface Index which is unique across switch to identify
+                            logical/physical interface";
+                    }
+                }
+                case name {
+                    leaf ifname {
+                        type string;
+                        description
+                            "Interface name which is unique across switch to identify
+                            logical/physical interface";
+                    }
+                }
+            }
+            leaf state {
+                type interface-state;
+                description
+                    "STP state of the interface";
+            }
+        }
+    }
+}

@@ -1,0 +1,248 @@
+module dell-base-l2-mac {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-l2-mac";
+    prefix "base-mac";
+
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions provided
+         by OS10 base for managing MAC objects
+
+         Copyright(c) 2015-2016 by Dell, Inc.
+         All rights reserved.";
+
+    revision 2015-10-30 {
+        description
+            "Removed switch-id from key, updated some description";
+    }
+
+    revision 2015-05-13 {
+        description
+            "Updated key, added command request type, added source drop packet action";
+    }
+
+    revision 2014-12-31 {
+        description
+            "Initial revision";
+    }
+    typedef packet-action {
+
+        type enumeration {
+            enum DROP {
+                value 1;
+                description
+                    "Do not forward, drop the packet if this entry is hit";
+            }
+            enum FORWARD {
+                value 2;
+                description
+                    "Forward the packet if this entry is hit";
+            }
+            enum TRAP {
+                value 3;
+                description
+                    "Copy the packet to CPU if this entry is hit";
+            }
+            enum LOG {
+                value 4;
+                description
+                    "Forward the packet and copy to the CPU
+                    if this entry is hit";
+            }
+            enum SOURCE_DROP {
+                value 5;
+                description
+                    "Discard the packet if incoming source matches this entry";
+            }
+        }
+    }
+
+    typedef command-request-type {
+
+        type enumeration {
+            enum CMD_TYPE_VLAN {
+                value 1;
+                description
+                    "vlan specific command request";
+            }
+            enum CMD_TYPE_ADDRESS {
+                value 2;
+                description
+                    "mac address specific command request";
+            }
+            enum CMD_TYPE_INTERFACE {
+                value 3;
+                description
+                    "interface specific command request";
+            }
+            enum CMD_TYPE_COUNT {
+                value 4;
+                description
+                    "command request based on count option";
+            }
+            enum CMD_TYPE_ALL {
+                value 5;
+                description
+                    "command request for all details";
+            }
+        }
+    }
+    grouping entry {
+        description "This list defines MAC entry";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            status obsolete;
+            description
+                "Logical Switch to which this MAC entry belongs to";
+        }
+
+        leaf-list npu-id {
+            type base-cmn:npu-id;
+            description
+                "Optional subset of NPUs on which this MAC entry needs to be programmed.
+                If this attribute is not specified then the MAC entry will be created in all the NPUs
+                in the Logical switch to which the Entry belongs.";
+        }
+
+        leaf vlan {
+            type base-cmn:vlan-id;
+            description
+            	"Vlan ID to which MAC belongs to";
+        }
+
+        leaf ifindex {
+            type base-cmn:logical-ifindex;
+            description
+                "System wide unique identifier of the interface
+                associated with this MAC entry.  This will be the physical port or LAG ifindex";
+        }
+
+      	leaf ifname {
+            type string;
+            description
+                "Interface name associated with this MAC entry";
+        }
+
+        leaf mac-address {
+            type base-cmn:mac-address;
+            description
+                "MAC Address configured with this entry";
+        }
+
+        leaf static {
+            type boolean;
+            description
+                "Whether the MAC entry is configured as static. It will not age out";
+        }
+
+        leaf actions {
+            type packet-action;
+            description
+                "Action for packet when this MAC entry is hit";
+        }
+
+        leaf configure-os{
+            type boolean;
+            default false;
+            description
+                "If this entry needs to be configured in the OS";
+        }
+
+        leaf configure-npu{
+            type boolean;
+            default true;
+            description
+                "If this entry needs to be configured in the npu. Default behaviour is to
+                 configure it in the NPU";
+        }
+    }
+
+    list table {
+            description
+                "MAC table list.
+                 Each entry is uniquely identified by vlan/mac-address combination within
+                 a switch domain";
+            key "vlan mac-address";
+
+            uses entry;
+    }
+
+    list query {
+            description
+                "MAC entry specific query list";
+
+            key "vlan mac-address";
+
+            uses entry;
+
+            leaf request-type {
+                type command-request-type;
+                description
+                    "Command request type for data retrieval";
+            }
+
+            leaf count {
+                type uint32;
+                description
+                    "Count based on command request type";
+            }
+    }
+
+    container flush-management{
+        description "To manage mac flush when interface status changes";
+
+        leaf enable{
+            type boolean;
+            default true;
+            description "To enable/disable auto flush of mac entries when
+            interface state changes";
+        }
+    }
+
+    rpc flush {
+    description "Flush the mac-addresses learned on a VLAN
+                 and/or an interface";
+    input {
+        list filter {
+            description "List of VLAN and/or interface";
+            leaf vlan {
+                type base-cmn:vlan-id;
+                description
+                    "Vlan ID where mac flush is to be done";
+            }
+
+            leaf ifindex {
+                type base-cmn:logical-ifindex;
+                description
+                    "System wide unique identifier of the interface
+                     where MAC flush is to be done.";
+            }
+
+            leaf ifname {
+                type string;
+                description
+                    "Interface name associated with this MAC entry";
+            }
+        		
+            leaf all {
+                type boolean;
+                default false;
+                description
+                    "By default only dynamic entries will be flushed. It this
+                     option is set then static and dynamic shall be flushed.";
+                }
+            }
+        }
+    }
+}

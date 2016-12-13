@@ -1,0 +1,287 @@
+module dell-base-packet {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-packet";
+    prefix "base-packet";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+    "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions provided
+         by platform to manage control packet handling";
+
+    revision 2016-03-23 {
+        description
+            "Initial revision";
+    }
+
+    typedef packet-match-type {
+        description "Enumeration of all possible packet fields that can be
+                     used to match packets.";
+
+        type enumeration {
+
+            enum SRC_MAC {
+                value 1;
+                description "Match based on Src MAC Address";
+            }
+
+            enum DST_MAC {
+                value 2;
+                description "Match based on Dst MAC Address";
+            }
+
+            enum SRC_IPV6 {
+                value 3;
+                description "Match based on Src IPv6 Address";
+            }
+
+            enum DST_IPV6 {
+                value 4;
+                description "Match based on Dst IPv6 Address";
+            }
+
+            enum SRC_IP {
+                value 5;
+                description "Match based on Src IPv4 Address";
+            }
+
+            enum DST_IP {
+                value 6;
+                description "Match based on Dst IPv4 Address";
+            }
+
+            enum IN_PORTS {
+                value 7;
+                description "Match packets incoming on any of the specified list of Ports";
+            }
+
+            enum OUT_PORTS {
+                value 8;
+                description "Match packets outgoing on any of the specified list of Ports";
+            }
+
+            enum OUTER_VLAN_ID {
+                value 9;
+                description "Match based on Outer Vlan-Id";
+            }
+
+            enum INNER_VLAN_ID {
+                value 10;
+                description "Match based on Inner Vlan-Id";
+            }
+
+            enum ETHER_TYPE {
+                value 11;
+                description "Match based on EtherType";
+            }
+
+            enum IP_PROTOCOL {
+                value 12;
+                description "Match based on IP Protocol";
+            }
+
+            enum HOSTIF_TRAP_ID {
+                value 13;
+                description "Match based on Host Intf Trap Id";
+            }
+
+            enum HOSTIF_USER_TRAP_ID {
+                value 14;
+                description "Match based on Host Intf User Trap Id";
+            }
+
+            enum OFFSET {
+                value 15;
+                description "Match based on Packet offset";
+            }
+        }
+    }
+
+    typedef packet-direction-type {
+            description "Match based on packet direction";
+
+        type enumeration {
+            enum DIR_IN {
+                value 1;
+                description "Match on Ingress Packet";
+            }
+
+            enum DIR_OUT {
+                value 2;
+                description "Match on Egress Packet";
+            }
+        }
+    }
+
+    typedef packet-action-type {
+        description "Enumeration of packet actions";
+
+        type enumeration {
+
+            enum REDIRECT-IF {
+              value 1;
+                description "Redirect the packet to a specified interface";
+            }
+
+            enum REDIRECT-SOCK {
+              value 2;
+                description "Redirect the packet to a specified socket. Not a valid action for DIR_OUT";
+            }
+
+            enum COPY-TO-SOCK {
+              value 3;
+                description "Copy the packet to a specified socket. Not a valid action for DIR_OUT";
+            }
+        }
+    }
+
+    grouping offset-match {
+        description "Match up to twelve bytes from a specified offset.
+                     Match start from the offset-pos for the next len bytes";
+
+        leaf data {
+           type binary {
+               length "12";
+           }
+        }
+
+        leaf mask {
+           type binary {
+               length "12";
+           }
+        }
+
+        leaf len {
+            type uint32;
+        }
+
+        leaf offset-pos {
+            type uint32;
+        }
+    }
+
+    grouping match-parameters {
+        description "Specify the match-parameter. Only ONE field of packet-match-type must be
+                     filled as part of one match criteria.
+                     For e.g., if match-type is SRC_IPV6, then provide the leaf-attribute <ipv6>
+                     Similarly if match-type is OUTER_VLAN_ID or TRAP_ID, then provide vlan-id or
+                     trap-id value in leaf-attribute <data>";
+
+        leaf type {
+            type packet-match-type;
+        }
+
+        leaf ipv4 {
+            type base-cmn:ipv4-address;
+        }
+
+        leaf ipv6 {
+            type base-cmn:ipv6-address;
+        }
+
+        leaf mac-addr {
+            type base-cmn:mac-address;
+        }
+
+        leaf-list ports {
+            type base-cmn:logical-ifindex;
+        }
+
+        leaf data {
+            type uint64;
+        }
+
+        container offset-value {
+            when "../type = OFFSET";
+            uses offset-match;
+        }
+    }
+
+    grouping action-parameters {
+
+        leaf type {
+            type packet-action-type;
+        }
+
+        leaf redirect-if {
+            type base-cmn:logical-ifindex;
+        }
+
+        container socket-address {
+            description
+                "Address that applications need to open UDP socket to receive matched packets";
+
+            leaf ip {
+                type base-cmn:ipv4-address;
+                default 127.0.0.2;
+            }
+
+            leaf udp-port {
+                type uint16;
+                default 20002;
+            }
+        }
+    }
+
+    list rule {
+        description "List of control packet software filter entries. Every rule is intended to be matched
+                     and corresponding action taken. Currently, there is no priority matching or any conflict
+                     resolution. Each rule can have a list of match-parameters and a list of actions.
+                     For e.g.:
+                     <rule1> <match-1><match-2> <action-1>, then both match-1 AND 2 must match for action-1.
+                     If you need an OR operation then create rules as below:
+                     <rule1> <match-1> <action-1>
+                     <rule2> <match-1> <atcion-1>
+
+                     Default packet action is:
+                      Ingress -> Forward packet to the kernel tap interface mapped to front-panel npu port
+                      Egress  -> Forward packet to the npu port corresponding to the mapped tap interface
+
+                     If the matched-rule has only action as COPY-TO-SOCK, then default action shall ALSO be applied.
+                     In all other cases, the default action is NOT taken";
+
+        key "id";
+
+        leaf id {
+            description  "Id to uniquely identify a packet match criteria";
+            type uint32;
+        }
+
+        leaf direction {
+            description  "Rule to be applied on either Ingress or Egress packets";
+
+            type packet-direction-type;
+            default DIR_IN;
+        }
+
+        list match {
+            description  "Match-filter list";
+
+            key "type";
+            min-elements "1";
+            uses match-parameters;
+        }
+
+        list action {
+            description "List of actions";
+
+            key "type";
+            uses action-parameters;
+        }
+
+        leaf stop {
+            description  "Stop processing further rules";
+
+            type boolean;
+            default true;
+        }
+    }
+}

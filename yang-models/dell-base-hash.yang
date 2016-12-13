@@ -1,0 +1,105 @@
+module dell-base-hash {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-hash";
+    prefix "base-traffic-hash";
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions for managing
+        hashing on NPUs";
+
+    revision 2016-04-27 {
+        description "Initial version";
+    }
+
+    typedef traffic {
+        type enumeration {
+    	    enum "ECMP_NON_IP" {
+    	    	value 1;
+    	    }
+    	    enum "LAG_NON_IP" {
+    	    	value 2;
+    	    }
+    	    enum "ECMP_IPV4" {
+    	    	value 3;
+    	    }
+    	    enum "ECMP_IPV4_IN_IPV4" {
+    	    	value 4;
+    	    }
+    	    enum "ECMP_IPV6" {
+    	    	value 5;
+    	    }
+    	    enum "LAG_IPV4" {
+    	    	value 6;
+    	    }
+    	    enum "LAG_IPV4_IN_IPV4" {
+    	    	value 7;
+    	    }
+    	    enum "LAG_IPV6" {
+    	    	value 8;
+    	    }
+        }
+    }
+
+    typedef field {
+        type enumeration {
+    	    enum "src-ip" {
+    	      value 1;
+    	    }
+    	    enum "dest-ip" {
+    	      value 2;
+    	    }
+            enum "inner-src-ip" {
+              value 3;
+            }
+            enum "inner-dst-ip" {
+              value 4;
+            }
+    	    enum "vlan-id" {
+    	      value 5;
+    	    }
+    	    enum "ip-protocol" {
+    	      value 6;
+    	    }
+    	    enum "ethertype" {
+    	      value 7;
+    	    }
+    	    enum "l4-src-port" {
+    	      value 8;
+    	    }
+    	    enum "l4-dest-port" {
+    	      value 9;
+    	    }
+    	    enum "src-mac" {
+    	      value 10;
+    	    }
+    	    enum "dest-mac" {
+    	      value 11;
+    	    }
+    	    enum "in-port" {
+    	      value 12;
+    	    }
+        }
+    }
+
+    list entry {
+        key "obj-type";
+        description "Specifies the kind of traffic";
+
+        leaf obj-type {
+            type traffic;
+            description "Type of traffic for which these has fields are used";
+        }
+
+        leaf-list std-hash-field {
+            type field;
+            description "Packet header fields used for hashing various traffic types";
+        }
+    }
+}
+

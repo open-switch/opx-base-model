@@ -1,0 +1,35 @@
+module dell-base-if-vlan {
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-vlan";
+
+    prefix "base-if-vlan";
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+    import ietf-yang-types {
+        prefix "yang";
+    }
+	
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization "Dell Inc";
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model augments the standard interface and adds Dell specific
+    				vlan extensions.";
+
+    revision "2016-01-01" {
+        description "Initial version.";
+    }
+	
+    augment "/if:interfaces/if:interface" {
+        when "if:type = 'ianaift:l2vlan' or if:type = 'ianaift:l3vlan'";
+
+        leaf id {
+            type base-cmn:vlan-id;
+            description "the vlan id associated with interface";
+        }	
+    }
+}

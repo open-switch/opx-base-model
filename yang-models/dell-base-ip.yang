@@ -1,0 +1,88 @@
+
+
+module dell-base-ip {
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-ip";
+    prefix "base-ip";
+
+    import dell-base-interface-common {
+        prefix "base-if";
+    }
+
+    organization "Dell Inc";
+
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model will support the configruation of IP address.
+
+    	";
+
+    revision 2015-08-12 {
+        description "Initial version.";
+    }
+
+
+	grouping common-ip-config-params {
+	    leaf ifindex {
+	     	type base-cmn:logical-ifindex;
+	      	description "The interface index";
+	    }		
+		leaf enabled {
+			type boolean;
+			description "This is true if IPv4 is enabled.";
+		}		
+		leaf forwarding {
+			type boolean;
+			description "This will be set true if the system has IP forwarding enabled.
+			This will only set the kernel IP forwarding flags.";			
+		}		
+		leaf vrf-id {
+			type uint32;
+			description "A numerical value of the vrf that contains the interface.  Use 0 for the default.";
+		}
+		leaf name {
+			type string;
+			description "The interfaces's name.";
+		}
+	}
+
+	list ipv4 {
+		key "vrf-id ifindex";
+		
+		uses common-ip-config-params;
+		
+		list address {			
+			key "ip";
+		    leaf ip {
+		      	type base-cmn:ip-address;
+		      	description "IP address";
+		    }
+		    leaf prefix-length {
+		    	type uint8;
+		    }
+		     			
+		}		
+	}
+	
+	list ipv6 {
+		key "vrf-id ifindex";
+		
+		uses common-ip-config-params;
+
+		leaf dup-addr-detect-transmits {
+			type uint32;			
+		}
+		
+		list address {			
+			key "ip";
+		    leaf ip {
+		      	type base-cmn:ip-address;
+		      	description "IP address";
+		    }
+		    leaf prefix-length {
+		    	type uint32;
+		    }
+		     			
+		}		
+	}
+	
+}	

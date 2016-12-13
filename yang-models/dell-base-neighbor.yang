@@ -1,0 +1,49 @@
+module dell-base-neighbor {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-neighbor";
+    prefix "base-neighbor";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+    import dell-base-routing {
+        prefix "base-route";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions for
+        managing configuration and operational data for Neighbor Object";
+
+    revision 2016-11-03 {
+        description
+            "Initial revision.";
+    }
+
+    /* 1. Proactive resolution for Route associated NH or apps (PBR, ER-SPAN) desired NH.
+       2. To program blackhole (drop) or forward entry in the NPU */
+    augment "/base-route:obj/base-route:nbr" {
+        leaf phy_ifindex {
+            type base-cmn:logical-ifindex;
+            description "Incase of VLAN IP routing, this holds the physical interface through which the MAC is learnt.";
+        }
+    }
+
+    /* To flush the Nbr entries on admin down */
+    augment "/if:interfaces-state/if:interface" {
+        leaf if-index {
+            type base-cmn:logical-ifindex;
+            description "Flush the neighbor entries configured/learnt on this interface";
+        }
+    }
+}

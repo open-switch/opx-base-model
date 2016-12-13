@@ -1,0 +1,275 @@
+module dell-base-if-phy {
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-phy";
+
+    prefix "base-if-phy";
+
+	import ietf-interfaces {
+		prefix "if";
+	}
+	
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+	import dell-base-interface-common {
+		prefix "base-if";
+	}
+
+    import dell-base-platform-common {
+       prefix "platform";
+    }
+    	
+    organization "Dell Inc";
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model augments the standard interface and adds Dell specific
+    				physical port extensions.";
+
+    revision "2016-01-01" {
+        description "Initial version.";
+    }
+
+	typedef breakout-mode {
+		type enumeration {
+			enum DISABLED {
+                          value 1;
+                        }
+		 	enum BREAKOUT_4x1 {
+                          value 2;
+                        }
+		 	enum BREAKOUT_2x1 {
+                          value 3;
+                        }
+		 	enum BREAKOUT_1x1 {
+                          value 4;
+                        }
+		}
+	}
+
+    typedef mac-learn-mode{
+        description "FDB Learning mode of the interface";
+
+        type enumeration{
+
+            enum DROP{
+              value 1;
+                description "Drop packets with unkown source mac address. Do not learn, Do not forward";
+            }
+
+            enum DISABLE{
+              value 2;
+                description "Do not learn new source MAC. Forward Based on destination MAC";
+            }
+
+            enum HW{
+              value 3;
+                description "Hardware Learning. Learn source MAC. Forward based on destination";
+            }
+
+            enum CPU_TRAP{
+              value 4;
+                description "Trap packets with unknown source MAC to CPU. Do not learn. Do not forward";
+            }
+
+            enum CPU_LOG{
+              value 5;
+                description "Trap packets with unknown source MAC to CPU. Do not learn. Forward based on destination MAC";
+            }
+        }
+    }	
+	
+
+	list front-panel-port {
+        key "front-panel-port";
+
+        description "This map contains the front panel ports and the
+           NPU ports associated with with the front panel ports.";
+
+        leaf front-panel-port {
+            type uint32;
+            description "ID of the front panel port (indexed from 1 to max front panel port)";
+        }
+
+        leaf npu-id {
+            type base-cmn:npu-id;
+            description "The npu that owns the port";
+        }
+
+        leaf media-id {
+            type uint32;
+            description "The media ID of the port - use this to check the corresponding PAS object to get
+            	the acutal media details";
+        }
+
+        leaf-list port {
+        	type base-cmn:npu-port-id;
+        	description "This list contains all of the hardware ports that are contained.  Look up the details on the lane in the
+        	npu-port-lane object";
+        }
+
+        leaf control-port {
+        	type base-cmn:npu-port-id;
+        	description "Use this port for significant operations";
+        }
+
+        leaf default-name {
+        	type string;
+        	description "This is the default name of the port.";
+        }
+
+        leaf mac-offset {
+            type uint32;
+            description "Offset from system base MAC Address. MAC address of the port is calculated by adding mac_offset in base MAC address";
+        }	
+	}
+		
+	list hardware-port {
+        key "npu-id hw-port";
+        description "This entity holds the details of which front panel port corresponds to a specific NPU/hardware port.  This
+                    list is not dynamic and therefore will not change for a single instance of a product.";
+
+        leaf npu-id {
+            type uint32;
+            description "NPU id ";
+        }
+        leaf hw-port {
+            type uint32;
+            description "The hardware ports that are owned by the front panel port.";
+        }
+
+        leaf hw-control-port {
+            type uint32;
+            description "The hardware port that is the master.  Normally one hardware port will be designated master and on this port
+                a user will be able to change the breakout configuration.";
+        }
+
+        leaf subport-id {
+            type uint32;
+            description "the physical lane on which this port exists.";
+        }
+
+		leaf front-panel-port {
+			type uint32;
+            description "The hardware ports that are owned by the front panel port.";
+		}
+		
+		leaf fanout-mode {
+			config false;
+			type breakout-mode;
+		}
+	}
+	
+    list physical {
+        key "npu-id port-id";
+
+        uses base-if:physical-port-address;
+
+        leaf hardware-port-id {
+            type base-cmn:npu-port-id;
+            description "This is the physical hardware port";
+        }
+
+		leaf front-panel-number {
+			type uint32;
+            description "depreciated.";
+		}
+		
+        leaf-list breakout-capabilities {
+			type breakout-mode ;
+		}
+		
+		leaf fanout-mode {
+			config false;
+			type breakout-mode;
+		}
+		
+        leaf phy-media {
+            type platform:media-type;
+            description "Physical media type ";
+        }
+						
+        leaf loopback {
+           type base-cmn:loopback-type;
+        }
+
+        leaf-list supported-speed {
+            type base-if:speed;
+            description "list of supported speeds in the interface";
+        }
+
+    }
+	
+	augment "/if:interfaces/if:interface" {
+		uses base-if:physical-port-address;
+		
+        leaf phy-media {
+            type platform:media-type;
+            description "Physical media type ";
+        }
+
+        leaf loopback {
+           type base-cmn:loopback-type;
+        }
+        	
+        uses base-if:mac-learn-limit;
+
+        leaf learn-mode{
+            type mac-learn-mode;
+            description "Mode in which mac adresses are learned on this interface";
+        }
+
+        leaf tagging-mode {
+        	type enumeration {
+        		enum UNTAGGED {
+                          value 1;
+        			description "port accepts untagged packets only.";
+        		}
+        		enum TAGGED {
+                          value 2;
+        			description "port accepts tagged packets only.";
+        		}
+        		enum HYBRID {
+                          value 3;
+        			description "port accepts both untagged and tagged packets.";
+        		}
+        	}
+        }
+	}		
+	rpc breakout {
+		description "This method allows the change of the breakout mode on a front panel port and
+			at the same time will create logical interfaces based on the provided names";
+	    input {
+	        leaf front-panel-port {
+	            type uint32;
+	            description "The hardware ports that are owned by the front panel port.";
+	        }
+	        	
+	        leaf breakout-mode {
+				type breakout-mode ;
+			}	
+	    }
+	}
+
+	rpc set-breakout-mode {
+		description "This RPC just changes the breakout mode on a front panel port object but
+					doesn't effect any of the logical interfaces.  The expectation is that
+					all logical interfaces are deleted before this operation is executed";
+	    input {
+    	    uses base-if:physical-port-address;
+	        	
+	        leaf breakout-mode {
+	        	description "this is the new mode to configure.";
+				type breakout-mode ;
+			}	
+
+			leaf-list  effected-port {
+				type base-cmn:npu-port-id;
+            	description "These are the ports that are effected by this change.
+            	When breaking out, this should be one port and when breaking in, this should
+            	be all of the ports that need to be convered.";			
+			}
+	    }
+	}
+
+}
+

@@ -1,0 +1,19 @@
+Source: opx-base-model
+Section: net
+Priority: optional
+Maintainer: Dell <support@dell.com>
+Build-Depends:
+ debhelper (>=9), dh-autoreconf, libopx-cps-dev, opx-yang-utils-dev
+Standards-Version: 3.9.3
+Vcs-Browser: https://github.com/open-switch/opx-base-model
+Vcs-Git: https://github.com/open-switch/opx-base-model.git
+
+Package: libopx-base-model1
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Description: Openswitch base model - object models for all services
+
+Package: libopx-base-model-dev
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, libopx-base-model1, libopx-cps-dev
+Description: Openswitch base model - provides APIs prototype and IDs to access objects

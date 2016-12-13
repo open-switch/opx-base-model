@@ -1,0 +1,243 @@
+module dell-base-udf {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-udf";
+    prefix "base-udf";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-inet-types {
+        prefix "inet";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions
+        for managing User Defined Filters (UDFs).
+
+        Copyright (c) 2015-2016 by Dell, Inc.
+        All rights reserved.";
+
+    revision 2016-10-04 {
+        description "Initial revision";
+    }
+
+    typedef udf-group-type {
+        type enumeration {
+            enum GENERIC {
+                value 1;
+                description "Generic UDF Group";
+            }
+
+            enum HASH {
+                value 2;
+                description "UDF Group for HASH";
+            }
+        }
+    }
+
+    list udf-group {
+        key "id";
+
+        description
+            "List contains attributes of UDF Group object.";
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ID generated upon Create request.
+                         Subsequent Modify and Delete request required
+                         this Group ID to be passed in.";
+        }
+
+        leaf type {
+            mandatory true;
+            type udf-group-type;
+            description "Type of UDF Group to be created";
+        }
+
+        leaf length {
+            mandatory true;
+            type uint8;
+            description "Length of bytes for the UDF objects in the group";
+        }
+
+        leaf-list udf-id-list {
+            config false;
+            type base-cmn:base-obj-id-type;
+            description "List of UDF object IDs associated with this UDF Group";
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional subset of NPUs on which this UDF Group needs to be installed.
+                 If this atttribute is not specified then the UDF Group is installed on
+                 all NPUs to which the UDF Group belongs.";
+        }
+    }
+
+    typedef udf-match-type {
+        type enumeration {
+            enum NON_TUNNEL {
+                value 1;
+                description "Match packets without tunnel encapsulation.";
+            }
+
+            enum GRE_TUNNEL {
+                value 2;
+                description "Match packets with GRE tunnel encapsulation.";
+            }
+        }
+    }
+
+    list udf-match {
+        key "id";
+
+        description
+            "List contains attributes of UDF Match object.";
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ID generated upon Create request.
+                         Subsequent Modify and Delete request required
+                         this Match ID to be passed in.";
+        }
+
+        leaf priority {
+            mandatory true;
+            type uint8;
+            description "UDF Match priority.";
+        }
+
+        leaf type {
+            mandatory true;
+            type udf-match-type;
+            description "Specify encapsulation type of packets this UDF Match
+                         object is going to match";
+        }
+
+        container NON_TUNNEL_VALUE {
+            when "../type = NON_TUNNEL";
+
+            leaf l2-type {
+                mandatory true;
+                type uint16;
+                description "Protocol type of L2 header";
+            }
+
+            leaf l2-type-mask {
+                type uint16;
+                description "Protocol type mask of L2 header";
+            }
+
+            leaf l3-type {
+                mandatory true;
+                type uint8;
+                description "Protocol type of L3 header";
+            }
+
+            leaf l3-type-mask {
+                type uint8;
+                description "Protocol type mask of L3 header";
+            }
+        }
+
+        container GRE_TUNNEL_VALUE {
+            when "../type = GRE_TUNNEL";
+
+            leaf inner-type {
+                mandatory true;
+                type inet:ip-version;
+                description "Type of inner IP header";
+            }
+
+            leaf outer-type {
+                type inet:ip-version;
+                description "Type of outer IP header";
+            }
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional subset of NPUs on which this UDF Match needs to be installed.
+                 If this atttribute is not specified then the UDF Match is installed on
+                 all NPUs to which the UDF Match belongs.";
+        }
+    }
+
+    typedef udf-base-type {
+        type enumeration {
+            enum L2 {
+                value 1;
+                description "UDF offset base L2 header";
+            }
+
+            enum L3 {
+                value 2;
+                description "UDF offset base L3 header";
+            }
+
+            enum L4 {
+                value 3;
+                description "UDF offset base L4 header";
+            }
+        }
+    }
+
+    list udf-obj {
+        key "id";
+
+        description
+            "List contains attributes of UDF object.";
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ID generated upon Create request.
+                         Subsequent Modify and Delete request required
+                         this UDF ID to be passed in.";
+        }
+
+        leaf group-id {
+            mandatory true;
+            type base-cmn:base-obj-id-type;
+            description "UDF Group ID associated with this UDF object";
+        }
+
+        leaf match-id {
+            mandatory true;
+            type base-cmn:base-obj-id-type;
+            description "UDF Match ID associated with this UDF object";
+        }
+
+        leaf base {
+            mandatory true;
+            type udf-base-type;
+            description "Base of the UDF";
+        }
+
+        leaf offset {
+            type uint32;
+            description "Offset from the base of the UDF";
+        }
+
+        leaf-list hash-mask {
+            type uint8;
+            description "Hash mask bytes to be used for the UDF Hash field";
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional subset of NPUs on which this UDF Object needs to be installed.
+                 If this atttribute is not specified then the UDF Object is installed on
+                 all NPUs to which the UDF Object belongs.";
+        }
+    }
+}

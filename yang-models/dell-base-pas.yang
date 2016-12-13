@@ -1,0 +1,383 @@
+module dell-base-pas {
+
+  namespace "http://www.dell.com/esg/networking/os10/dell-base-pas";
+
+  prefix "base-pas";
+
+  import dell-base-platform-common {
+    prefix "platform";
+  }
+
+  organization "Dell Inc";
+
+  contact "http://www.dell.com/support/softwarecontacts";
+
+  description "Configuration and operational data for OS10 Platform Abtraction Service";
+
+  revision 2015-04-03 {
+    description "Initial revision.";
+  }
+
+  //PAS Notify subcategory
+
+  list ready {
+    description "PAS status notification";
+
+    key "slot";
+
+    leaf slot {
+      description "Slot number";
+      type uint8;
+    }
+
+    uses platform:pas_notify;
+  }
+
+  // Chassis subcategory
+
+  container chassis {
+    description "Attributes of a chassis";
+
+    uses platform:chassis;
+  }
+
+  // Entity subcategory
+
+  list entity {
+    description "Attributes of an entity (FRU)";
+
+    key "entity-type slot";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    uses platform:entity;
+  }
+
+  // PSU subcategory
+
+  list psu {
+    description "Attributes of a power supply";
+
+    key "slot";
+
+    leaf slot {
+        description "PSU slot";
+        type uint8;
+    }
+
+    uses platform:psu;
+  }
+
+  // Fan tray subcategory
+
+  list fan-tray {
+    description "Attributes of a fan tray";
+
+    key "slot";
+
+    leaf slot {
+        description "Fan tray slot";
+        type uint8;
+    }
+
+    uses platform:fan-tray;
+  }
+
+  // Card subcategory
+
+  list card {
+    description "Attributes of a card";
+
+    key "slot";
+
+    leaf slot {
+        description "Card slot";
+        type uint8;
+    }
+
+    uses platform:card;
+  }
+
+  // Fan subcategory
+
+  list fan {
+    description "Attributes of a (PSU or fan tray) fan";
+
+    key "entity-type slot fan-index";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf fan-index {
+        description "Index of fan on entity";
+        type uint8;
+    }
+
+    uses platform:fan;
+  }
+
+  // LED subcategory
+
+  list led {
+    description "Attributes of an LED";
+
+    key "entity-type slot name";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf name {
+      description "Printable name for LED";
+      type string;
+    }
+
+    uses platform:led;
+  }
+
+  // Display subcategory
+
+  list display {
+    description "Attributes of a text message display";
+
+    key "entity-type slot name";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf name {
+      description "Printable name for display";
+      type string;
+    }
+
+    uses platform:display;
+  }
+
+  // Temperature sensor subcategory
+
+  list temperature {
+    description "Attributes of a temperature sensor";
+
+    key "entity-type slot name";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf name {
+      description "Printable name for sensor";
+      type string;
+    }
+
+    uses platform:temperature;
+  }
+
+  // Temperature sensor range threshold subcategory
+
+  list temp_threshold {
+    description "Attributes of a temperature sensor threshold";
+
+    key "entity-type slot name threshold-index";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf name {
+      description "Printable name for sensor";
+      type string;
+    }
+
+    leaf threshold-index {
+        description "Index of threshold for sensor";
+        type uint8;
+    }
+
+    uses platform:temp_threshold;
+  }
+
+  // PLD subcategory
+
+  list pld {
+    description "Attributes of a programmable logic device (PLD)";
+
+    key "entity-type slot name";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf name {
+      description "Printable name for PLD";
+      type string;
+    }
+
+    uses platform:pld;
+  }
+
+  // Port module subcategory
+
+  list port-module {
+    description "Attributes of a linecard port module";
+
+    key "slot port-module-slot";
+
+    leaf slot {
+        description "Card slot";
+        type uint8;
+    }
+
+    leaf port-module-slot {
+        description "Slot of port module on card";
+        type uint8;
+    }
+
+    uses platform:port-module;
+  }
+
+  /* PAS Media releated configuration */
+
+  list media-config {
+    description "PAS media configuration.";
+
+    key "node-id slot";
+
+    leaf node-id {
+      description "Node Id (Chassis id / stackId)";
+      type uint32;
+    }
+
+    leaf slot {
+      description "Card slot number";
+      type uint32;
+    }
+
+    uses platform:pas-media-config;
+  }
+
+  // Optical media adapter subcategory
+
+  list media {
+    description "Attributes of an optical media adapter";
+
+    key "slot port-module-slot port";
+
+    leaf slot {
+        description "Card slot";
+        type uint8;
+    }
+
+    leaf port-module-slot {
+        description "Slot of port module on card";
+        type uint8;
+    }
+    
+    leaf port {
+        description "Port on port module";
+        type uint8;
+    }
+
+    uses platform:media;
+  }
+
+  // Optical media adapter channel subcategory
+
+  list media-channel {
+    description "Attributes of a channel of an optical media adapter";
+
+    key "slot port-module-slot port channel";
+
+    leaf slot {
+        description "Card slot";
+        type uint8;
+    }
+
+    leaf port-module-slot {
+        description "Slot of port module on card";
+        type uint8;
+    }
+    
+    leaf port {
+        description "Port on port module";
+        type uint8;
+    }
+
+    leaf channel {
+        description "Channel of given port";
+        type uint8;
+    }
+
+    uses platform:media-channel;
+  }
+
+  // PHY subcategory
+
+  list phy {
+    description "Attributes of a port PHY";
+
+    key "slot port-module-slot port";
+
+    leaf slot {
+        description "Card slot";
+        type uint8;
+    }
+
+    leaf port-module-slot {
+        description "Slot of port module on card";
+        type uint8;
+    }
+    
+    leaf port {
+        description "Port on port module";
+        type uint8;
+    }
+
+    uses platform:phy;
+  }
+}

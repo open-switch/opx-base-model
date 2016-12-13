@@ -1,0 +1,8 @@
+# writing history/dell-base-if-vlan.yhist
+++obj cps_api_obj_CAT_BASE_IF_VLAN
+BASE_IF_VLAN_IF_INTERFACES_INTERFACE_ID=1
+BASE_IF_VLAN_IF_INTERFACES_INTERFACE_OBJ=2
+--obj cps_api_obj_CAT_BASE_IF_VLAN end
+++obj global
+cps_api_obj_CAT_BASE_IF_VLAN=18
+--obj global end

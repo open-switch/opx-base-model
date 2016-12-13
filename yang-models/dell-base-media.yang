@@ -1,0 +1,63 @@
+module dell-base-media {
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-media";
+    prefix "base-media";
+
+    import dell-base-interface-common {
+        prefix "base-if";
+    }
+
+    import dell-base-common {
+       prefix "base-cmn";
+    }
+
+    organization "Dell Inc";
+
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model will support the configruation of params on interfaces";
+
+    revision 2016-01-11 {
+        description "Initial version.";
+    }
+
+    list media-info {
+        key "media-type";
+        description "This grouping defines the default settings for the media type";
+
+        leaf media-type {
+            config false;
+            type uint32;
+            description "The media type of the physical media";
+        }
+
+        leaf media-name {
+            config false;
+            type string;
+            description "The physical Media name";
+        }
+
+        leaf speed {
+            config false;
+            type base-if:speed;
+            description "default speed configuration for this physical media";
+        }
+
+        leaf autoneg {
+            config false;
+            type boolean;
+            description "default auto negotiation configuration for this physical media";
+        }
+
+        leaf duplex {
+            config false;
+            type base-cmn:duplex-type;
+            description "default duplex configuration for this physical media";
+        }
+
+        leaf-list supported-speed {
+            config false;
+            type base-if:speed;
+            description " List of supported speed on this physical media";
+        }
+    }
+}

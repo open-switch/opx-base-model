@@ -1,0 +1,1631 @@
+module dell-base-acl {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-acl";
+    prefix "base-acl";
+
+    import ietf-inet-types {
+        prefix "inet";
+    }
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-yang-types {
+        prefix "yang";
+    }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions
+         for managing Access Control Lists (ACLs).
+
+         Copyright (c) 2015-2016 by Dell, Inc.
+         All rights reserved.";
+
+    revision 2014-12-01 {
+        description "Initial revision";
+    }
+
+    typedef udf-match-bytes {
+        type binary {
+            length "16";
+        }
+    }
+
+    typedef counter-type {
+        type enumeration {
+            enum PACKET {
+              value 1;
+            }
+            enum BYTE {
+              value 2;
+            }
+        }
+    }
+
+    typedef match-type {
+        description "Enumeration of all possible packet fields that can be
+                     used to match packets.";
+
+        type enumeration {
+            enum SRC_IPV6 {
+              value 1;
+                description "Match based on Src IPv6 Address";
+            }
+
+            enum DST_IPV6 {
+              value 2;
+                description "Match based on Dst IPv6 Address";
+            }
+
+            enum SRC_MAC {
+              value 3;
+                description "Match based on Src MAC Address";
+            }
+
+            enum DST_MAC {
+              value 4;
+                description "Match based on Dst MAC Address";
+            }
+
+            enum SRC_IP {
+              value 5;
+                description "Match based on Src IPv4 Address";
+            }
+
+            enum DST_IP {
+              value 6;
+                description "Match based on Dst IPv4 Address";
+            }
+
+            enum IN_PORTS {
+              value 7;
+                description "Match packets incoming on any of the specified list of Ports";
+              status obsolete;
+            }
+
+            enum OUT_PORTS {
+              value 8;
+                description "Match packets outgoing on any of the specified list of Ports";
+              status obsolete;
+            }
+
+            enum IN_PORT {
+              value 9;
+                description "Match packets incoming on specified Port";
+              status obsolete;
+            }
+
+            enum OUT_PORT {
+              value 10;
+                description "Match packets outgoing on specified Port";
+              status obsolete;
+            }
+
+            enum OUTER_VLAN_ID {
+              value 11;
+                description "Match based on Outer Vlan-Id";
+            }
+
+            enum OUTER_VLAN_PRI {
+              value 12;
+                description "Match based on Outer Vlan-Priority";
+            }
+
+            enum OUTER_VLAN_CFI {
+              value 13;
+                description "Match based on Outer Vlan CFI or DEI bit";
+            }
+
+            enum INNER_VLAN_ID {
+              value 14;
+                description "Match based on Inner Vlan-Id";
+            }
+
+            enum INNER_VLAN_PRI {
+              value 15;
+                description "Match based on Inner Vlan-Priority";
+            }
+
+            enum INNER_VLAN_CFI {
+              value 16;
+                description "Match based on Inner Vlan CFI or DEI bit";
+            }
+
+            enum L4_SRC_PORT {
+              value 17;
+                description "Match based on L4 Src Port";
+            }
+
+            enum L4_DST_PORT {
+              value 18;
+                description "Match based on L4 Dst Port";
+            }
+
+            enum ETHER_TYPE {
+              value 19;
+                description "Match based on EtherType";
+            }
+
+            enum IP_PROTOCOL {
+              value 20;
+                description "Match based on IP Protocol";
+            }
+
+            enum DSCP {
+              value 21;
+                description "Match based on Ip Dscp";
+            }
+
+            enum TTL {
+              value 22;
+                description "Match based on Ip Ttl";
+            }
+
+            enum TOS {
+              value 23;
+                description "Match based on Ip Tos";
+            }
+
+            enum IP_FLAGS {
+              value 24;
+                description "Match based on Ip Flags";
+            }
+
+            enum TCP_FLAGS {
+              value 25;
+                description "Match based on Tcp Flags";
+            }
+
+            enum IP_TYPE {
+              value 26;
+                description "Match based on Packet type - IPv4 or IPv6 or ARP";
+            }
+
+            enum IP_FRAG {
+              value 27;
+                description "Match based on IP Fragment";
+            }
+
+            enum IPV6_FLOW_LABEL {
+              value 28;
+                description "Match based on IPv6 Flow label";
+            }
+
+            enum TC {
+              value 29;
+                description "Match packets by the QoS Traffic Class assigned to them";
+            }
+
+            enum ECN {
+              value 30;
+                description "Match based on IP ECN bits";
+            }
+
+            enum ICMP_TYPE {
+              value 31;
+                description "Match based on ICMP Type field";
+            }
+
+            enum ICMP_CODE {
+              value 32;
+                description "Match based on ICMP Code field";
+            }
+
+            enum SRC_PORT {
+              value 33;
+                description "Match packets incoming on specified Port or LAG";
+              status obsolete;
+            }
+
+            enum DST_PORT {
+              value 34;
+                description "Match packets outgoing on specified Port or LAG";
+              status obsolete;
+            }
+
+            enum NEIGHBOR_DST_HIT {
+              value 35;
+                description "Packet destionation IP address match in neighbor table";
+            }
+
+            enum ROUTE_DST_HIT {
+              value 36;
+                description "Packet destionation IP address match in routing table";
+            }
+
+            enum IN_INTFS {
+              value 37;
+                description "Match packets incoming on any of the specified list of Interfaces";
+            }
+
+            enum OUT_INTFS {
+              value 38;
+                description "Match packets outgoing on any of the specified list of Interfaces";
+            }
+
+            enum IN_INTF {
+              value 39;
+                description "Match packets incoming on specified Interface";
+            }
+
+            enum OUT_INTF {
+              value 40;
+                description "Match packets outgoing on specified Interface";
+            }
+
+            enum SRC_INTF {
+              value 41;
+                description "Match packets incoming on specified Front-panel or LAG interface";
+            }
+
+            enum UDF {
+              value 42;
+                description "Match packets based on UDF byte list";
+            }
+        }
+    }
+
+    typedef packet-action-type {
+        description "Enumeration of packet actions";
+
+        type enumeration {
+            enum DROP {
+              value 1;
+                description "Do NOT forward packet in the data path (does not
+                             affect CPU copy behavior)";
+            }
+
+            enum FORWARD {
+              value 2;
+                description "Forward Packet in the data path - overrides lower
+                             priority DROP action (does not affect CPU copy
+                             behavior)";
+            }
+
+            enum COPY_TO_CPU {
+              value 3;
+                description "Copy Packet to CPU (does not affect data path
+                             forwarding behavior)";
+            }
+
+            enum COPY_TO_CPU_CANCEL {
+              value 4;
+                description "Overrides lower priority Copy Packet to CPU action
+                             (does not affect data path forwarding behavior)";
+            }
+
+            enum TRAP_TO_CPU {
+              value 5;
+                description "Copy Packet to CPU + Drop";
+            }
+
+            enum COPY_TO_CPU_AND_FORWARD {
+              value 6;
+                description "Copy Packet to CPU + Forward";
+            }
+
+            enum COPY_TO_CPU_CANCEL_AND_DROP {
+              value 7;
+                description "Copy Packet to CPU Cancel + Drop";
+            }
+
+            enum COPY_TO_CPU_CANCEL_AND_FORWARD {
+              value 8;
+                description "Copy Packet to CPU Cancel + Forward";
+            }
+        }
+    }
+
+    typedef action-type {
+        description "Enumeration of all possible actions that can be performed
+            on matched packets in a acl entry.";
+
+        type enumeration {
+
+            enum REDIRECT_PORT {
+              value 1;
+                description "Redirect Packet to Port or LAG (Link Aggregated Trunk).";
+              status obsolete;
+            }
+
+            enum REDIRECT_IP_NEXTHOP {
+              value 2;
+                description "Redirect Packet to NextHop";
+            }
+
+            enum PACKET_ACTION {
+              value 3;
+                description "Drop, Forward and Trap or Copy to CPU";
+            }
+
+            enum FLOOD {
+              value 4;
+                description "Flood Packet to all ports in Vlan";
+            }
+
+            enum MIRROR_INGRESS {
+              value 5;
+                description "Ingress Mirror";
+            }
+
+            enum MIRROR_EGRESS {
+              value 6;
+                description "Egress Mirror";
+            }
+
+            enum SET_COUNTER {
+              value 7;
+                description "Associate Counter for ACL entry hit stats";
+            }
+
+            enum SET_POLICER {
+              value 8;
+                description "Assosiate with policer";
+            }
+
+            enum DECREMENT_TTL {
+              value 9;
+                description "Decrement TTL";
+            }
+
+            enum SET_TC {
+              value 10;
+                 description "Assign a new QoS Traffic class for the packet";
+            }
+
+            enum SET_INNER_VLAN_ID {
+              value 11;
+                description "Set Packet Inner Vlan-Id";
+            }
+
+            enum SET_INNER_VLAN_PRI {
+              value 12;
+                description "Set Packet Inner Vlan-Priority";
+            }
+
+            enum SET_OUTER_VLAN_ID {
+              value 13;
+                description "Set Packet Outer Vlan-Id";
+            }
+
+            enum SET_OUTER_VLAN_PRI {
+              value 14;
+                description "Set Packet Outer Vlan-Priority";
+            }
+
+            enum SET_SRC_MAC {
+              value 15;
+                description "Set Packet Src MAC Address";
+            }
+
+            enum SET_DST_MAC {
+              value 16;
+                description "Set Packet Dst MAC Address";
+            }
+
+            enum SET_SRC_IP {
+              value 17;
+                description "Set Packet Src IPv4 Address";
+            }
+
+            enum SET_DST_IP {
+              value 18;
+                description "Set Packet Src IPv4 Address";
+            }
+
+            enum SET_SRC_IPV6 {
+              value 19;
+                description "Set Packet Src IPv6 Address";
+            }
+
+            enum SET_DST_IPV6 {
+              value 20;
+                description "Set Packet Src IPv6 Address";
+            }
+
+            enum SET_DSCP {
+              value 21;
+                description "Set Packet DSCP";
+            }
+
+            enum SET_L4_SRC_PORT {
+              value 22;
+                description "Set Packet L4 Src Port";
+            }
+
+            enum SET_L4_DST_PORT {
+              value 23;
+                description "Set Packet L4 Src Port";
+            }
+
+            enum SET_CPU_QUEUE {
+              value 24;
+                description "Select the CPU queue for packets sent to CPU Port";
+            }
+
+            enum EGRESS_MASK {
+              value 25;
+                description "Block packets that are destined to the given port list";
+              status obsolete;
+            }
+
+            enum REDIRECT_PORT_LIST {
+              value 26;
+                description "Redirect packets to the given port list";
+              status obsolete;
+            }
+
+            enum REDIRECT_INTF {
+              value 27;
+                description "Redirect Packet to Front panel or LAG (Link Aggregated Trunk).";
+            }
+
+            enum EGRESS_INTF_MASK {
+              value 28;
+                description "Block packets that are destined to the given interface list";
+            }
+
+            enum REDIRECT_INTF_LIST {
+              value 29;
+                description "Redirect packets to the given interface list";
+            }
+
+            enum SET_USER_TRAP_ID {
+              value 30;
+                description "Set user defined trap id";
+            }
+        }
+    }
+
+    typedef match-ip-frag {
+        type enumeration {
+            enum ANY {
+              value 1;
+                description "Any Fragment of Fragmented Packet";
+            }
+
+            enum NON_FRAG {
+              value 2;
+                description "Non-Fragmented Packet";
+            }
+
+            enum NON_FRAG_OR_HEAD {
+              value 3;
+                description "Non-Fragmented or First Fragment";
+            }
+
+            enum HEAD {
+              value 4;
+                description "First Fragment of Fragmented Packet";
+            }
+
+            enum NON_HEAD {
+              value 5;
+                description "Not the First Fragment";
+            }
+        }
+    }
+
+    typedef match-ip-type {
+        type enumeration {
+            enum ANY {
+              value 1;
+                description "Don't care";
+            }
+
+            enum IP {
+              value 2;
+                description "IPv4 and IPv6 packets";
+            }
+
+            enum NON_IP {
+              value 3;
+                description "Non-Ip packet";
+            }
+
+            enum IPV4ANY {
+              value 4;
+                description "Any IPv4 packet";
+            }
+
+            enum NON_IPV4 {
+              value 5;
+                description "Anything but IPv4 packets";
+            }
+
+            enum IPV6ANY {
+              value 6;
+                description "IPv6 packet";
+            }
+
+            enum NON_IPV6 {
+              value 7;
+                description "Anything but IPv6 packets";
+            }
+
+            enum ARP {
+              value 8;
+                description "ARP/RARP";
+            }
+
+            enum ARP_REQUEST {
+              value 9;
+                description "ARP Request";
+            }
+
+            enum ARP_REPLY {
+              value 10;
+                description "ARP Reply";
+            }
+        }
+    }
+
+    typedef stage {
+        type enumeration {
+            enum INGRESS {
+              value 1;
+                description "Ingress Stage";
+            }
+            enum EGRESS {
+              value 2;
+                description "Egress Stage";
+            }
+        }
+    }
+
+    typedef vlan-dot1p-field {
+        type uint8 {range "0..7";}
+    }
+
+    typedef vlan-cfi-field {
+        type uint8 {range "0..1";}
+    }
+
+    grouping ipv6-match {
+        leaf addr {
+            mandatory true;
+            type base-cmn:ipv6-address;
+        }
+        leaf mask {
+            mandatory true;
+            type base-cmn:ipv6-address;
+        }
+    }
+
+    grouping mac-match {
+        leaf addr {
+            mandatory true;
+            type base-cmn:mac-address;
+        }
+        leaf mask {
+            mandatory true;
+            type base-cmn:mac-address;
+        }
+    }
+
+    grouping ipv4-match {
+        leaf addr {
+            mandatory true;
+            type base-cmn:ipv4-address;
+        }
+        leaf mask {
+            mandatory true;
+            type base-cmn:ipv4-address;
+        }
+    }
+
+    grouping uint32-match {
+        leaf data {
+            mandatory "true";
+            type uint32;
+        }
+        leaf mask {
+            type uint32;
+        }
+    }
+
+    grouping uint16-match {
+        leaf data {
+            mandatory "true";
+            type uint16;
+        }
+        leaf mask {
+            type uint16;
+        }
+    }
+
+    grouping uint8-match {
+        leaf data {
+            mandatory "true";
+            type uint8;
+        }
+        leaf mask {
+            type uint8;
+        }
+    }
+
+    grouping udf-match {
+        leaf udf-group-id {
+            mandatory "true";
+            type base-cmn:base-obj-id-type;
+        }
+        leaf match-data {
+            mandatory "true";
+            type udf-match-bytes;
+        }
+        leaf match-mask {
+            type udf-match-bytes;
+        }
+    }
+
+    grouping mirror-value {
+        leaf index {
+            type uint32;
+            mandatory "true";
+            description
+                "Refers to the Mirror session entry
+                defined in Mirroring data model.
+                Yang Ref:  dell-base-mirror/entry/id
+                Multiple ACL entries can refer to the
+                same mirroring session.";
+        }
+
+        leaf data {
+            type base-cmn:mirror-opaque-data;
+            mandatory "true";
+            description
+                "Opaque blob containing hardware specific mirroring data.
+                Yang Ref:  dell-base-mirror/entry/opaque-data
+                To get the opaque data, the Application needs to do a
+                GET operation on the above Mirroring attribute
+                only AFTER a successful Observed state change is published
+                for the Mirroring configuration.
+                NOTE: The Application has to perform this GET every time
+                the Mirroring session is configured on a new NPU.
+                It then needs to pass this blob as an attribute to the
+                ACL Entry object.";
+        }
+    }
+
+    grouping match-parameters
+    {
+        leaf type {
+            type match-type;
+        }
+
+        /**** Possible Match values -
+         *  Specify ONLY ONE of these depending on the match type
+         */
+        container SRC_IPV6_VALUE {
+            description "Value for Src IPv6 Address";
+            when "../type = SRC_IPV6";
+            uses ipv6-match;
+        }
+
+        container DST_IPV6_VALUE {
+            description "Value for Dest IPv6 Address";
+            when "../type = DST_IPV6";
+            uses ipv6-match;
+        }
+
+        container SRC_MAC_VALUE {
+            description "Value for Src MAC Address";
+            when "../type = SRC_MAC";
+            uses mac-match;
+        }
+
+        container DST_MAC_VALUE {
+            description "Value for Dst MAC Address";
+            when "../type = DST_MAC";
+            uses mac-match;
+        }
+
+        container SRC_IP_VALUE {
+            description "Value for Src IPv4 Address";
+            when "../type = SRC_IP";
+            uses ipv4-match;
+        }
+
+        container DST_IP_VALUE {
+            description "Value for Dst IPv4 Address";
+            when "../type = DST_IP";
+            uses ipv4-match;
+        }
+
+        leaf-list IN_PORTS_VALUE {
+            when "../type = IN_PORTS";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that are received
+                from any 1 of the ports specified in this list.";
+            type base-cmn:logical-ifindex;
+            status obsolete;
+        }
+
+        leaf-list OUT_PORTS_VALUE {
+            when "../type = OUT_PORTS";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that will be
+                transmitted out on any 1 of the ports specified
+                in this list.";
+            type base-cmn:logical-ifindex;
+            status obsolete;
+        }
+
+        leaf IN_PORT_VALUE {
+            when "../type = IN_PORT";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that are received
+                from the port specified.";
+            type base-cmn:logical-ifindex;
+            status obsolete;
+        }
+
+        leaf OUT_PORT_VALUE {
+            when "../type = OUT_PORT";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that will be
+                transmitted out on the port specified.";
+            type base-cmn:logical-ifindex;
+            status obsolete;
+        }
+
+        container OUTER_VLAN_ID_VALUE {
+            when "../type = OUTER_VLAN_ID";
+            uses uint16-match;
+            description
+                "This field should be matched against the 12 LSB
+                 bits of the IEEE 802.1Q Vlan tag in the packet.
+                 Valid range: 1-4095 inclusive";
+        }
+        container OUTER_VLAN_PRI_VALUE {
+            when "../type = OUTER_VLAN_PRI";
+            uses uint8-match;
+            description
+                "This field should be matched against the 3 MSB
+                 bits of the IEEE 802.1Q Vlan tag in the packet.
+                 Valid range: 0-7 inclusive";
+        }
+        leaf OUTER_VLAN_CFI_VALUE {
+            when "../type = OUTER_VLAN_CFI";
+            type vlan-cfi-field;
+            description
+                "This field should be matched against the 4th MSB
+                bit of the IEEE 802.1Q Vlan tag in the packet.";
+        }
+
+        container INNER_VLAN_ID_VALUE {
+            when "../type = INNER_VLAN_ID";
+            uses uint16-match;
+            description
+                "This field should be matched against the 12 LSB
+                 bits of the inner IEEE 802.1Q Vlan tag in a
+                 double tagged packet.
+                 Valid range: 1-4095 inclusive";
+        }
+        container INNER_VLAN_PRI_VALUE {
+            when "../type = INNER_VLAN_PRI";
+            uses uint8-match;
+            description
+                "This field should be matched against the 3 MSB
+                 bits of the inner IEEE 802.1Q Vlan tag in a
+                 double tagged packet.
+                 Valid range: 0-7 inclusive";
+        }
+        leaf INNER_VLAN_CFI_VALUE {
+            when "../type = INNER_VLAN_CFI";
+            type vlan-cfi-field;
+            description
+                "This field should be matched against the 4th MSB
+                bit of the inner IEEE 802.1Q Vlan tag in a
+                double tagged packet.";
+        }
+
+        container L4_SRC_PORT_VALUE {
+            when "../type = L4_SRC_PORT";
+            description "Value of L4 Source Port to match";
+            uses uint16-match;
+        }
+
+        container L4_DST_PORT_VALUE {
+            when "../type = L4_DST_PORT";
+            description "Value of L4 Dest Port to match";
+            uses uint16-match;
+        }
+
+        container ETHER_TYPE_VALUE {
+            description "Value for EtherType";
+            when "../type = ETHER_TYPE";
+            uses uint16-match;
+        }
+
+        container IP_PROTOCOL_VALUE {
+            when "../type = IP_PROTOCOL";
+            uses uint8-match;
+            description
+                "Match packets with given value in IP Protocol field";
+        }
+
+        container DSCP_VALUE {
+            when "../type = DSCP";
+            uses uint8-match;
+            description
+                "Match packets with given dscp value.
+                 Valid range: 0-63 inclusive";
+        }
+
+        container TTL_VALUE {
+            description "Value for Ip Ttl";
+            when "../type = TTL";
+            uses uint8-match;
+        }
+
+        container TOS_VALUE {
+            description "Value for Ip Tos";
+            when "../type = TOS";
+            uses uint8-match;
+        }
+
+        container IP_FLAGS_VALUE {
+            description "Value for Ip Flags.
+                         Valid range: 0-63 inclusive";
+            when "../type = IP_FLAGS";
+            uses uint8-match;
+        }
+
+        container TCP_FLAGS_VALUE {
+            description "Value for Tcp Flags";
+            when "../type = TCP_FLAGS";
+            uses uint8-match;
+        }
+
+        leaf IP_TYPE_VALUE {
+            when "../type = IP_TYPE";
+            type match-ip-type;
+        }
+
+        leaf IP_FRAG_VALUE {
+            when "../type = IP_FRAG";
+            type match-ip-frag;
+        }
+
+        container IPV6_FLOW_LABEL_VALUE {
+            when "../type = IPV6_FLOW_LABEL";
+            uses uint32-match;
+            description "Value for Ipv6 Flow label.
+                         Valid range: 0x0-0xfffff inclusive";
+        }
+
+        container TC_VALUE {
+            description
+                "Match packets based on the QoS Traffic class assigned to them";
+            when "../type = TC";
+            uses uint8-match;
+        }
+
+        container ECN_VALUE {
+            when "../type = ECN";
+            uses uint8-match;
+            description "Value for ECN.
+                         Valid range: 0-3 inclusive";
+        }
+
+        container ICMP_TYPE_VALUE {
+            when "../type = ICMP_TYPE";
+            uses uint8-match;
+            description "Value for ICMP Type.";
+        }
+
+        container ICMP_CODE_VALUE {
+            when "../type = ICMP_CODE";
+            uses uint8-match;
+            description "Value for ICMP Code.";
+        }
+
+        leaf SRC_PORT_VALUE {
+            when "../type = SRC_PORT";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that are received
+                from the port specified.";
+            type base-cmn:logical-ifindex;
+            status obsolete;
+        }
+
+        leaf DST_PORT_VALUE {
+            when "../type = DST_PORT";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that will be
+                transmitted out on the port specified.";
+            type base-cmn:logical-ifindex;
+            status obsolete;
+        }
+
+        leaf-list IN_INTFS_VALUE {
+            when "../type = IN_INTFS";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that are received
+                from any 1 of the ports specified in this list.";
+            type if:interface-ref;
+        }
+
+        leaf-list OUT_INTFS_VALUE {
+            when "../type = OUT_INTFS";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that will be
+                transmitted out on any 1 of the ports specified
+                in this list.";
+            type if:interface-ref;
+        }
+
+        leaf IN_INTF_VALUE {
+            when "../type = IN_INTF";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that are received
+                from the port specified.";
+            type if:interface-ref;
+        }
+
+        leaf OUT_INTF_VALUE {
+            when "../type = OUT_INTF";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that will be
+                transmitted out on the port specified.";
+            type if:interface-ref;
+        }
+
+        leaf SRC_INTF_VALUE {
+            when "../type = SRC_INTF";
+            description
+                "This field does not refer to a packet field.
+                Its presence means that this Acl-Entry should
+                ONLY be applied to packets that are received
+                from the port specified.";
+            type if:interface-ref;
+        }
+
+        container UDF_VALUE {
+            when "../type = UDF";
+            uses udf-match;
+            description "Value for UDF byte array.";
+        }
+    }
+
+    grouping action-parameters {
+        leaf type {
+            type action-type;
+        }
+
+        /**** Possible Action values -
+         *  Specify ONLY ONE of these depending on the Action type
+         */
+
+        leaf REDIRECT_PORT_VALUE {
+            type base-cmn:logical-ifindex;
+            description "Port or LAG trunk to Redirect Packet on";
+            when "../type = REDIRECT_PORT";
+            status obsolete;
+        }
+
+        leaf REDIRECT_VLAN_VALUE {
+            type base-cmn:vlan-id;
+            description "Vlan to Redirect Packet on";
+            when "../type = REDIRECT_VLAN";
+        }
+
+        container IP_NEXTHOP_GROUP_VALUE {
+            description "This refers to the next-hop group id
+                defined in the Routing data model. Packets will be
+                redirected to the next-hop router referred by
+                this group-id.";
+            when "../type = REDIRECT_IP_NEXTHOP";
+
+            leaf id {
+                type uint32;
+                description
+                    "Refers to the Next-Hop group entry defined in the
+                     Routing data model. Multiple ACL entries can refer
+                     to the same next-hop group ID.";
+                status obsolete;
+            }
+
+            leaf vrf_id {
+                type uint32;
+                mandatory "true";
+                description "VRF ID";
+            }
+
+            leaf af {
+                type base-cmn:af-type;
+                mandatory "true";
+                description "Address Family";
+            }
+
+            leaf dest-addr {
+                type base-cmn:ip-address;
+                mandatory "true";
+                description "Route/Nexthop address to be tracked";
+            }
+
+            leaf data {
+                type base-cmn:ip-nexthop-group-opaque-data;
+                mandatory "true";
+                description
+                    "Opaque blob containing hardware specific data for
+                     the Next-Hop Group defined in the Routing data model.";
+            }
+        }
+
+        leaf PACKET_ACTION_VALUE {
+            when "../type = PACKET_ACTION";
+            type packet-action-type;
+            description "Drop or allow or copy packet to CPU";
+        }
+
+        list MIRROR_INGRESS_VALUE {
+            when "../type = MIRROR_INGRESS";
+            key index;
+            uses mirror-value;
+            description "This refers to the mirroring session defined
+                         in the mirroring data model. It can take a
+                         list of ingress mirroring sessions.
+                         To add/remove sessions to an existing Mirroring action
+                         the entire modified list needs to be provided.
+                         The existing action will be overwritten with the
+                         new list of mirroring sessions.";
+        }
+
+        list MIRROR_EGRESS_VALUE {
+            when "../type = MIRROR_EGRESS";
+            key index;
+            uses mirror-value;
+            description "This refers to the mirroring session defined
+                         in the mirroring data model. It can take a
+                         list of egress mirroring sessions.
+                         To add/remove sessions to an existing Mirroring action
+                         the entire modified list needs to be provided.
+                         The existing action will be overwritten with the
+                         new list of mirroring sessions.";
+        }
+
+        leaf COUNTER_VALUE {
+            when "../type = SET_COUNTER";
+            type base-cmn:base-obj-id-type;
+            description "This refers to the ACL counter object id
+                         Yang Ref: dell-base-acl/counter/id.
+                         This counter should belong to the same ACL Table
+                         as the Entry";
+        }
+
+        container POLICER_VALUE {
+            when "../type = SET_POLICER";
+            leaf index {
+                type base-cmn:base-obj-id-type;
+                mandatory "true";
+                description "Refers to the policer entry
+                    defined in QoS data model.
+                    Yang Ref: dell-base-qos/meter/id.
+                    Multiple ACL entries can refer to the
+                    same policer in which case packets
+                    matching all those ACL entries are
+                    cumulatively metered to the
+                    specified rate.";
+            }
+
+            leaf data {
+                type base-cmn:qos-meter-opaque-data;
+                mandatory "true";
+                description
+                    "Opaque blob containing hardware specific meter data.
+                    Yang Ref: dell-base-qos/meter/data.
+                    To get the opaque data, the Application needs to do a
+                    GET operation on the above QoS Meter attribute
+                    only AFTER a successful Observed state change is
+                    published for the Meter configuration.
+                    The Application has to perform this GET every time
+                    the Meter is configured on a new NPU.
+                    It then needs to pass this blob as an attribute
+                    to the ACL Entry object.
+                    Dependency - The Meter should have been successfully
+                    configured on all the NPUs specified in the ACL
+                    entry";
+            }
+        }
+
+        leaf NEW_TC_VALUE {
+            when "../type = SET_TC";
+            type base-cmn:traffic-class;
+            description
+                "New QoS Traffic Class value to be assigned to packets
+                 matching this ACL entry. This determines the type
+                 of Quality of Service this packet receives at egress";
+        }
+
+        leaf NEW_INNER_VLAN_ID_VALUE {
+            description "Value for action Set Packet Inner Vlan-Id.
+                         Valid range: 1-4095 inclusive";
+            when "../type = SET_INNER_VLAN_ID";
+            type base-cmn:vlan-id;
+        }
+
+        leaf NEW_INNER_VLAN_PRI_VALUE {
+            description "Value for action Mark Inner Vlan Dot1p.
+                         Valid range: 0-7 inclusive";
+            when "../type = SET_INNER_VLAN_PRI";
+            type base-cmn:dot1p;
+        }
+
+        leaf NEW_OUTER_VLAN_ID_VALUE {
+            description "Value for action Set Packet Outer Vlan-Id.
+                         Valid range: 1-4095 inclusive";
+            when "../type = SET_OUTER_VLAN_ID";
+            type base-cmn:vlan-id;
+        }
+
+        leaf NEW_OUTER_VLAN_PRI_VALUE {
+            description "Value for action Mark Dot1p.
+                         Valid range: 0-7 inclusive";
+            when "../type = SET_OUTER_VLAN_PRI";
+            type base-cmn:dot1p;
+        }
+
+        leaf NEW_SRC_MAC_VALUE {
+            description "Value for action Set Packet Src MAC Address";
+            when "../type = SET_SRC_MAC";
+            type base-cmn:mac-address;
+        }
+
+
+        leaf NEW_DST_MAC_VALUE {
+            description "Value for action Set Packet Dst MAC Address";
+            when "../type = SET_DST_MAC";
+            type base-cmn:mac-address;
+        }
+
+        leaf NEW_SRC_IP_VALUE {
+            description "Value for action Set Packet Src IPv4 Address";
+            when "../type = SET_SRC_IP";
+            type base-cmn:ipv4-address;
+        }
+
+        leaf NEW_DST_IP_VALUE {
+            description "Value for action Set Packet Src IPv4 Address";
+            when "../type = SET_DST_IP";
+            type base-cmn:ipv4-address;
+        }
+
+        leaf NEW_SRC_IPV6_VALUE {
+            description "Value for action Set Packet Src IPv6 Address";
+            when "../type = SET_SRC_IPV6";
+            type base-cmn:ipv6-address;
+        }
+
+        leaf NEW_DST_IPV6_VALUE {
+            description "Value for action Set Packet Src IPv6 Address";
+            when "../type = SET_DST_IPV6";
+            type base-cmn:ipv6-address;
+        }
+
+        leaf NEW_DSCP_VALUE {
+            description "Value for action Set Packet DSCP.
+                         Valid range: 0-63 inclusive";
+            when "../type = SET_DSCP";
+            type inet:dscp;
+        }
+
+        leaf NEW_L4_SRC_PORT_VALUE {
+            description "Value for action Set Packet L4 Src Port";
+            when "../type = SET_L4_SRC_PORT";
+            type inet:port-number;
+        }
+
+        leaf NEW_L4_DST_PORT_VALUE {
+            description "Value for action Set Packet L4 Src Port";
+            when "../type = SET_L4_DST_PORT";
+            type inet:port-number;
+        }
+
+        container CPU_QUEUE_VALUE {
+            when "../type = SET_CPU_QUEUE";
+            leaf index {
+                type base-cmn:base-obj-id-type;
+                mandatory "true";
+                description "Refers to the Queue Id of the CPU Queue
+                             defined in QoS data model.
+                             Yang Ref: dell-base-qos/queue/id.";
+            }
+
+            leaf data {
+                type base-cmn:qos-queue-opaque-data;
+                mandatory "true";
+                description
+                    "Opaque blob containing hardware specific Qos queue data.
+                    Yang Ref: dell-base-qos/queue/data.
+                    To get the opaque data, the Application needs to do a
+                    GET operation on the above QoS QoS attribute
+                    only AFTER a successful Observed state change is
+                    published for the Queue configuration.
+                    The Application has to perform this GET every time
+                    the Meter is configured on a new NPU.
+                    It then needs to pass this blob as an attribute
+                    to the ACL Entry object.
+                    Dependency - The Queue should have been successfully
+                    configured on all the NPUs specified in the ACL
+                    entry";
+            }
+        }
+
+        leaf-list EGRESS_MASK_VALUE {
+            when "../type = EGRESS_MASK";
+            type base-cmn:logical-ifindex;
+            description "List of ports to be blocked";
+            status obsolete;
+        }
+
+        leaf-list REDIRECT_PORT_LIST_VALUE {
+            when "../type = REDIRECT_PORT_LIST";
+            type base-cmn:logical-ifindex;
+            description "List of port to be redirected";
+            status obsolete;
+        }
+
+        leaf REDIRECT_INTF_VALUE {
+            type if:interface-ref;
+            description "Port or LAG trunk to Redirect Packet on";
+            when "../type = REDIRECT_INTF";
+        }
+
+        leaf-list EGRESS_INTF_MASK_VALUE {
+            when "../type = EGRESS_INTF_MASK";
+            type if:interface-ref;
+            description "List of ports to be blocked";
+        }
+
+        leaf-list REDIRECT_INTF_LIST_VALUE {
+            when "../type = REDIRECT_INTF_LIST";
+            type if:interface-ref;
+            description "List of port to be redirected";
+        }
+
+        leaf SET_USER_TRAP_ID_VALUE {
+            when "../type = SET_USER_TRAP_ID";
+            type uint32;
+            description "User defined trap id value";
+        }
+    }
+
+    list table {
+        description
+            "An Acl-Table is an ordered list of Acl-Entries.
+             A packet is evaluated against each Acl-Entry in the Acl-Table
+             sequentially in order of descending Entry priority to look
+             for a match.
+             The evaluation within a table stops as soon as the first matching
+             ACL entry is identified - the subsequent Acl-entries in the same
+             Acl-Table are ignored for the packet.
+
+             There can be multiple ACL Tables - the evaluation is then repeated
+             for each ACL table.  The ACL actions from all ACL tables are
+             aggregated and then applied to the packet.
+             Conflicting actions are resolved by using Table priority";
+
+        key "id";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            description "Logical Switch to which this ACL Table belongs.
+                         The concept of logical switch is obsolete and this
+                         attribute is ignored.";
+            status obsolete;
+        }
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique Id generated upon Create request.
+                         Subsequent Modify or Delete requests required
+                         the Table ID to be passed in.";
+        }
+
+        leaf priority {
+            type uint32;
+            mandatory "true";
+            description
+                "Table priority - determines the Relative priority given to
+                 actions from an acl-entry matched in this table compared to
+                 conflicting actions from acl entries matched in other tables
+                 for the same packet.
+                 Numerically larger number indicates higher table priority.
+                 Actions from tables with higher priority override conflicting
+                 actions from lower priority tables.";
+        }
+
+        leaf size {
+            type uint32;
+            description
+                "The maximum number entries allowed to be created in this
+                 table.";
+        }
+
+        leaf stage {
+            mandatory "true";
+            type base-acl:stage;
+        }
+
+        leaf-list allowed-match-fields {
+            min-elements "1";
+            type match-type;
+            description "restrict the allowed fields that can be used to
+                match packets by acl-entries belonging to this table";
+        }
+
+        leaf-list udf-group-list {
+            type base-cmn:base-obj-id-type;
+            description "List of UDF Group ID associated with this table";
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional subset of NPUs on which this ACL Table needs to be
+                 installed.
+                 If this attribute is not specified then the Table is installed
+                 on all NPUs to which the Table belongs.";
+        }
+    }
+
+    list entry {
+        description
+            "Each Acl-Entry contains a rule and a set of actions.
+             The rule is used to selectively apply the actions only
+             on packets matching the rule.
+
+             The rule defines the filters to match packets by specifying
+             a list of packet fields and the expected values for each of them.
+             The action defines the list of actions to be taken once a
+             packet matches all the filters specified in the rule.
+
+             Each Acl-Entry is uniquely identified by the Acl-Table to
+             which it belongs and its entry id within this table.
+
+             An existing ACL entry can be modified to add/remove/update
+             match filters or actions in two ways -
+              - Overwrite mode
+                    By forming CPS Object out of the top-level ACL Entry object
+                    using the Table ID and Entry ID as keys and providing the
+                    complete list of Match filters and/or Actions as embedded
+                    attributes of this object.
+                    The existing ACL entry will be overwritten with the new
+                    ACL entry defined by such an object.
+.
+              - Incremental mode
+                    By forming CPS Object out of the inner Match filter or Action
+                    sub-object using the Table ID, Entry ID and Match-Type or
+                    Action-Type as keys and providing the values for a
+                    single Match Filter or single Action as direct attributes
+                    in this object.
+                    Only a single Match Filter or Action can be added/modified/
+                    removed in this way. Only the inner level attributes defined
+                    within the Match or Action subobject below can be present in
+                    this incremental CPS Object.";
+
+        key "table-id id";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            description "Logical Switch to which this ACL Entry belongs.
+                         The concept of logical switch is obsolete and this
+                         attribute is ignored.";
+            status obsolete;
+        }
+
+        leaf table-id {
+            type base-cmn:base-obj-id-type;
+            description "ACL-Table to which this Entry belongs.";
+        }
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique Entry Id generated upon Create request.
+                         Scope of this ID is within the ACL Table.
+                         Subsequent Modify or Delete requests require
+                         the Entry ID to be passed in.";
+        }
+
+        leaf priority {
+            type uint32;
+            mandatory "true";
+            description
+                "Entry Priority - Determines the order of evaluation of Entries
+                 within an Acl-Table. Entries with numerically larger number
+                 have higher priority and are evaluated first within the table.";
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional subset of NPUs on which this ACL entry needs to be
+                 installed.
+                 If this attribute is not specified then the entry is installed
+                 on all NPUs on which the Table to which the Entry belongs is
+                 installed.";
+        }
+
+        list match {
+            description
+                "Match-filters are a list of packet field, value pairs.
+                 A packet is considered to match an Acl-Entry ONLY when
+                 the values specified for all the packet fields
+                 match those in the actual packet.
+
+                 Only those fields that are in the allowed-fields list of the
+                 Acl-Table to which this Acl-Entry belongs can be used here.
+
+                 An existing ACL entry can be incrementally modified to
+                 add, delete or modify a single Match filter by forming a
+                 CPS object out of this inner Match subobject using the
+                 Match Type as additional key element. Such a CPS Object
+                 should NOT contain any attributes defined outside this
+                 sub-object including the top level match attribute.";
+
+            key "type";
+            min-elements "1";
+
+            uses match-parameters;
+        }
+
+        list action {
+            description
+                "List of actions to be performed on packets matching this
+                 Acl-Entry.
+
+                 An existing ACL entry can be incrementally modified to
+                 add, delete or modify a single Action by forming a
+                 CPS object out of this inner Action subobject using the
+                 Action Type as additional key element. Such a CPS Object
+                 should NOT contain any attributes defined outside this
+                 sub-object including the top level action attribute.";
+
+            key "type";
+
+            uses action-parameters;
+        }
+    }
+
+    list counter {
+        description "Create and configure ACL counter parameters.";
+
+        key "table-id id";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            description "Logical Switch to which this ACL Counter belongs.
+                         The concept of logical switch is obsolete and this
+                         attribute is ignored.";
+            status obsolete;
+        }
+
+        leaf table-id {
+            type base-cmn:base-obj-id-type;
+            description "ACL-Table to which this Counter belongs.";
+        }
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique Counter Id generated upon Create request.
+                         Scope of this ID is within the ACL Table.
+                         Subsequent Modify or Delete requests require
+                         the Counter ID to be passed in.";
+        }
+
+        leaf-list types {
+            type counter-type;
+            min-elements "1";
+            description "Packet, Byte counter - more than 1 type
+                         can be specified for the same counter.";
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional NPU ID list attribute that allows application
+                 to configure the counter only on specific NPU(s).
+
+                 For a CREATE/SET/DELETE operation, if this optional attribute
+                 is not specified then the counter is
+                 installed/modified/deleted on all NPUs.";
+        }
+    }
+
+    list stats {
+        description "NPU ACL entry hit stats.
+                     Stats objects cannot be Created or Deleted.
+                     Stats objects are indexed using the ACL counter object ID.";
+
+        key "table-id counter-id";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            description "Logical Switch to which this ACL Counter belongs.
+                         The concept of logical switch is obsolete and this
+                         attribute is ignored.";
+            status obsolete;
+        }
+
+        leaf table-id {
+            type base-cmn:base-obj-id-type;
+            description "ACL-Table to which this Counter belongs.";
+        }
+
+        leaf counter-id {
+            type base-cmn:base-obj-id-type;
+            description "ACL-Counter whose stats needs to be set/retrieved.";
+        }
+
+        leaf-list npu-id-list {
+            type base-cmn:npu-id;
+            description
+                "Optional NPU ID list attribute that allows application
+                 to set/retrieve the counter value to/from specific NPU(s).
+
+                 For a GET operation, if more than 1 NPU is specified
+                 in the list, then the counter value returned is the
+                 sum of the counters from all the specified NPUs.
+                 If this optional attribute is not specified then the
+                 counter value returned is the sum of the counters on
+                 all NPUs where the ACL entry is installed.
+
+                 Similarly, for a SET operation, the counter value is
+                 reset on all NPUs specified in the list. If this
+                 optional attribute is not specified then the counter
+                 is reset on all NPUs in which the ACL entry is installed";
+        }
+
+        leaf matched-packets {
+            type yang:counter64;
+            description
+                "Number of packets that have matched the ACL entries
+                 associated with this counter on the given NPU.
+                 This is valid only if PACKET counter type is enabled
+                 for this counter.";
+        }
+
+        leaf matched-bytes {
+            type yang:counter64;
+            description
+                "Number of bytes that have matched the ACL entries
+                 associated with this counter on the given NPU.
+                 This is valid only if BYTE counter type is enabled
+                 for this counter.";
+        }
+    }
+}
+

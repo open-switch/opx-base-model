@@ -1,0 +1,48 @@
+module dell-extensions {
+    namespace "http://www.dell.com/esg/networking/os10/dell-extensions";
+    prefix os10-ext;
+
+    description
+        "This module contains definitions for Dell proprietary 
+         Yang extensions.";
+
+    revision 2015-12-07 {
+        description 
+            "Initial version";
+    } 
+
+    extension edit-version {
+        description
+             "Backend edit callback functions can be conformant to 
+              netconf engine edit2 or edit1 version. This extension 
+              will be used to  determine the backend edit callback version
+              supported by the backend for container, list or choice.
+                   
+              This yang extension is checked just before registering the 
+              callback functions with the netconf engine.";
+        argument ver; 
+    }
+
+    extension val-cb {
+        description
+              "Validation check on behalf of the backend can be 
+               done in CMS context. This extension defines the 
+               name of the function for the validation.";
+        argument cb_name; 
+    }
+
+    extension pre-hook {
+        description
+              "Pre hooks are used to define user callbacks to the
+               transaction. Pre-hook callbacks are invoked within
+               the trsnaction when an object is modified.";
+        argument cb_name; 
+    }
+
+    extension ifname-trans {
+        description
+              "ifname-trans are used to define the need to translate
+               the interface name from CMS to CMA and vice-versa 
+               in a CMS operations";
+    }
+}

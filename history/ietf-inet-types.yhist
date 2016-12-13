@@ -1,0 +1,11 @@
+# writing history/ietf-inet-types.yhist
+++obj cps_api_obj_CAT_INET
+--obj cps_api_obj_CAT_INET end
+++obj global
+cps_api_obj_CAT_INET=43
+--obj global end
+++obj inet:ip-version
+INET_IP_VERSION_IPV4=1
+INET_IP_VERSION_IPV6=2
+INET_IP_VERSION_UNKNOWN=0
+--obj inet:ip-version end

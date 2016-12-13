@@ -1,0 +1,255 @@
+module dell-base-interface-common {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-interface-common";
+    prefix "base-if";
+
+    import iana-if-type { prefix "ianaift"; }
+    import dell-base-common { prefix "base-cmn"; }
+
+    organization
+        "Dell Inc";
+
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains the collection of YANG definitions for
+        managing interfaces";
+
+    revision 2015-01-29 {
+        description
+            "Initial revision.";
+    }
+
+    identity null {
+      base ianaift:iana-interface-type;
+      description "Null interface type";
+    }
+
+    identity management {
+      base ianaift:iana-interface-type;
+      description "Management interface type";
+    }
+
+    identity cpu {
+      base ianaift:iana-interface-type;
+      description "CPU interface type";
+    }
+    typedef speed {
+        description "Enumeration of port speed.";
+        type enumeration {
+            enum 0MBPS {
+                value 0;
+                description "0Mbps data rate.";
+            }
+
+            enum 10MBPS {
+                value 1;
+                description "10Mbps data rate.";
+            }
+
+            enum 100MBPS {
+                value 2;
+                description "100Mbps data rate.";
+            }
+
+            enum 1GIGE {
+                value 3;
+                description "1G data rate.";
+            }
+
+            enum 10GIGE {
+                value 4;
+                description "10G data rate.";
+            }
+
+            enum 25GIGE {
+                value 5;
+                description "25G data rate.";
+            }
+
+            enum 40GIGE {
+                value 6;
+                description "40G data rate.";
+            }
+
+            enum 100GIGE {
+                value 7;
+                description "100G data rate.";
+            }
+
+            enum AUTO {
+                value 8;
+                description "The speed is dependent on the media type.";
+            }
+        }
+    }
+
+    typedef mode {
+        description "Enumeration of physical interface mode";
+        type enumeration {
+            enum MODE_NONE {
+                value 1;
+                description "";
+            }
+
+            enum MODE_L2 {
+                value 2;
+                description "The port only supports L2.";
+            }
+
+            enum MODE_L2HYBRID {
+                value 3;
+                description "The port supports L2 hybrid.";
+            }
+
+            enum MODE_L3 {
+                value 4;
+                description "The port only supports L3.";
+            }
+
+            enum MODE_L2DISABLED {
+                value 5;
+                description "This port is not in L2 Mode";
+            }
+        }
+    }
+    typedef lag-mode-type {
+        description "LAG Mode";
+      type enumeration {
+        enum STATIC {
+            value 1;
+            description "";
+        }
+
+        enum DYNAMIC {
+            value 2;
+            description "";
+        }
+        }
+    }
+
+    typedef lacp-mode-type {
+        description "LACP MODE";
+        type enumeration {
+
+        enum ACTIVE {
+            value 1;
+            description "";
+        }
+
+        enum PASSIVE {
+            value 2;
+            description "";
+        }
+      }
+    }
+
+
+    grouping physical-port-address {
+        leaf unit-id {
+           type uint32;
+           description "The unit containing the front panel port";
+        }
+
+		leaf slot-id {
+			type uint32;
+			description "the slot id of the physical port.";
+		}
+
+        uses npu-port;
+    }
+
+    grouping npu-port {
+        description "NAS npu port information.";
+        leaf npu-id {
+            type base-cmn:npu-id;
+            description "This denotes the npu Id containing the physical port";
+        }
+
+        leaf  port-id {
+            type base-cmn:npu-port-id;
+            description "This denotes the port Id in the npu";
+        }
+    }
+
+    grouping common {
+        description "This is the generic port definition.  Can be reused by any generic interface object.";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            description "Logical Switch ID";
+        }
+		uses npu-port;
+
+    }
+
+    grouping mac-learn-limit {
+
+        description
+            "List of Mac Learn Limit configuration";
+
+        leaf learn-limit {
+            type uint32;
+            description "Maximum number of MACs allowed to be learned on an interace";
+        }
+
+        leaf dynamic {
+            type boolean;
+            default false;
+            description "Whether the entry created is subject to aging.";
+        }
+
+        leaf station-move {
+            type boolean;
+            default false;
+            description "Whether the station move is allowed or not";
+        }
+
+        leaf mac-sticky {
+            type boolean;
+            default false;
+            description
+                "If True then all dynamically learnt addresses will be converted into static MAC address
+                and it will not be learnt/moved on other ports. Any new learnt MAC are also converted
+                into sticky MAC address. Sticky flag takes precedence over dynamic";
+        }
+
+
+        leaf mll-violation-actions {
+            description "Configurable mac learn limit (mll) actions when mac learn limit is violated";
+            type enumeration {
+                enum LOG {
+                    value 1;
+                    description "Send the Mac-learn-limit violation notification to syslog";
+                }
+                enum SHUTDOWN {
+                    value 2;
+                    description "Shutdown the Interface";
+                }
+            }
+        }
+
+        leaf msm-violation {
+        	description "MAC station move (msm) violation actions.";
+            type enumeration {
+                enum LOG {
+                    value 1;
+                    description "Send the Mac-station-move-violation notification to syslog";
+                }
+                enum OFFENDING_SHUTDOWN {
+                    value 2;
+                    description "Shutdown the offending interface";
+                }
+                enum ORIGINAL_SHUTDOWN {
+                    value 3;
+                    description "Shutdown the original interface";
+                }
+                enum BOTH_SHUTDOWN {
+                    value 4;
+                    description "Disable both the interfaces";
+                }
+            }
+        }
+    }
+}
+

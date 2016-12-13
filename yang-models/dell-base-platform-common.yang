@@ -1,0 +1,2671 @@
+module dell-base-platform-common {
+
+  namespace "http://www.dell.com/esg/networking/os10/dell-base-platform-common";
+
+  prefix "platform";
+
+  import ietf-yang-types {
+    prefix yang;
+  }
+
+  import dell-yang-types {
+    prefix common;
+  }
+
+  import dell-base-common {
+    prefix "base-cmn";
+  }
+
+  import dell-base-interface-common {
+    prefix "base-if";
+  }
+
+  organization "Dell Inc";
+
+  contact "http://www.dell.com/support/softwarecontacts";
+
+  description "Common definitions for platform hardware
+
+  Copyright (c) 2015-2016 by Dell, Inc.
+
+  All rights reserved.";
+
+  revision 2015-11-04 {
+    description
+      "Updated based on new guidelines for Yang Model update";
+  }
+
+  revision 2015-05-20 {
+    description
+      "Added temperature control fault-value type";
+  }
+  revision 2015-04-03 {
+    description "Initial revision.";
+  }
+
+  // An entity is any FRU within a chassis
+
+  typedef entity-type {
+    description "Entity type";
+    type enumeration {
+      enum PSU {
+        description "PSU (power supply unit)";
+        value "1";
+      }
+      enum FAN_TRAY {
+        value "2";
+        description "Fan tray";
+      }
+      enum CARD {
+        value "3";
+        description "Card (Linecard, RPM)";
+      }
+    }
+  }
+
+  typedef card-type-type {
+    description "Encoded value for type of card";
+    type uint32;
+  }
+
+  typedef fault-type {
+    description "Code describing cause of fault";
+    type enumeration {
+      enum OK {
+        description "No fault";
+        value "1";
+      }
+      enum UNKNOWN {
+        value "2";
+        description "Unknown error";
+      }
+      enum ECOMM {
+        value "3";
+        description "Communication error";
+      }
+      enum ECFG {
+        value "4";
+        description "Configuration error";
+      }
+      enum ECOMPAT {
+        value "5";
+        description "Compatibility error";
+      }
+      enum EHW {
+        value "6";
+        description "Hardware error";
+      }
+      enum EPOWER {
+        description "Power error";
+      }
+    }
+  }
+
+  typedef fault-value {
+    type uint32;
+  }
+
+  typedef input-power-type {
+    description "Input current";
+    type enumeration {
+      enum UNKNOWN {
+        description "Unknown";
+        value "1";
+      }
+      enum AC {
+        value "2";
+        description "Alternating current";
+      }
+      enum DC {
+        value "3";
+        description "Direct current";
+      }
+    }
+  }
+
+  typedef fan-airflow-type {
+    description "Fan airflow type";
+    type enumeration {
+      enum UNKNOWN {
+        description "Unknown";
+        value "1";
+      }
+      enum NORMAL {
+        value "2";
+        description "Normal airflow";
+      }
+      enum REVERSE {
+        value "3";
+        description "Reverse airflow";
+      }
+    }
+  }
+
+  typedef fan-speed-type {
+    description "Fan speed, in RPM";
+    type uint16;
+    units "RPM";
+  }
+
+  typedef temperature-type {
+    description "Temperature, in degrees C";
+    type int16;
+    units "C";
+  }
+
+  typedef power-usage-type {
+    description "Power consumption, in mW";
+    type uint32;
+    units "mW";
+  }
+
+  typedef fault-severity {
+    description
+      "ITU defined severity values.";
+    type enumeration {
+      enum "cleared" {
+        value 1;
+      }
+      enum "indeterminate" {
+        value 2;
+      }
+      enum "critical" {
+        value 3;
+      }
+      enum "major" {
+        value 4;
+      }
+      enum "minor" {
+        value 5;
+      }
+      enum "warning" {
+        value 6;
+      }
+    }
+  }
+
+  typedef power-measurement-type {
+    description "Power measurement type";
+
+    type enumeration {
+      enum OMA {
+        description "Optical Modulation Amplitude";
+        value "1";
+      }
+      enum average {
+        description "Average Power";
+        value "2";
+      }
+    }
+  }
+
+  typedef media-status {
+
+    description "Media monitor status";
+
+    type enumeration {
+      enum normal-status {
+        description "Normal state, not crossed any threshold values";
+        value "1";
+      }
+
+      enum high-alarm {
+        description "High alarm state";
+        value "2";
+      }
+
+      enum low-alarm {
+        description "Low alarm state";
+        value "3";
+      }
+
+      enum high-warning {
+        description "High warning state";
+        value "4";
+      }
+
+      enum low-warning {
+        description "Low warning state";
+        value "5";
+      }
+    }
+  }
+
+  typedef media-support-status {
+     description "Front panel port Media type support status.";
+
+     type enumeration {
+       enum not-supported {
+         description "Media type is not supported in front panel port.";
+         value "1";
+       }
+
+       enum not-supported-disabled {
+         description "Media type is not supported in front panel port and its not enabled.";
+         value "2";
+       }
+     }
+  }
+
+  typedef media-category {
+    description "Media category";
+    type enumeration {
+      enum SFP {
+        description "SFP media category";
+        value "1";
+      }
+      enum SFP-PLUS {
+        value "2";
+        description "SFP+ media category";
+      }
+      enum QSFP {
+        value "3";
+        description "QSFP media category";
+      }
+      enum QSFP-PLUS {
+        value "4";
+        description "QSFP+ media category";
+      }
+      enum QSFP28 {
+        value "5";
+        description "QSFP28 media category";
+      }
+      enum SFP28 {
+        value "6";
+        description "SFP28 media category";
+      }
+      enum CXP {
+        value "7";
+        description "CXP media category";
+      }
+      enum CXP28 {
+        value "8";
+        description "CXP28 media category";
+      }
+    }
+  }
+
+  typedef media-type {
+      description "Media type";
+      type enumeration {
+          enum AR_POPTICS_NOTPRESENT {
+              value 1;
+              description "Pluggable optics not present";
+          }
+          enum AR_POPTICS_UNKNOWN {
+              value 2;
+              description "Pluggable optics unknown";
+          }
+          enum AR_POPTICS_NOTSUPPORTED {
+              value 3;
+              description "Pluggable optics not supported";
+          }
+          enum AR_SFPPLUS_10GBASE_USR {
+              value 4;
+              description "Pluggable optics SFPPLUS_10GBASE_USR";
+          }
+          enum AR_SFPPLUS_10GBASE_SR {
+              value 5;
+              description "Pluggable optics SFPPLUS_10GBASE_SR";
+          }
+          enum AR_SFPPLUS_10GBASE_LR {
+              value 6;
+              description "Pluggable optics SFPPLUS_10GBASE_LR";
+          }
+          enum AR_SFPPLUS_10GBASE_ER {
+              value 7;
+              description "Pluggable optics SFPPLUS_10GBASE_ER";
+          }
+          enum AR_SFPPLUS_10GBASE_ZR {
+              value 8;
+              description "Pluggable optics SFPPLUS_10GBASE_ZR";
+          }
+          enum AR_SFPPLUS_10GBASE_CX4 {
+              value 9;
+              description "Pluggable optics SFPPLUS_10GBASE_CX4";
+          }
+          enum AR_SFPPLUS_10GBASE_LRM {
+              value 10;
+              description "Pluggable optics SFPPLUS_10GBASE_LRM";
+          }
+          enum AR_SFPPLUS_10GBASE_T {
+              value 11;
+              description "Pluggable optics AR_SFPPLUS_10GBASE_T";
+          }
+          enum AR_SFPPLUS_10GBASE_CUHALFM {
+              value 12;
+              description "Pluggable optics SFPPLUS_10GBASE_CUHALFM";
+          }
+          enum AR_SFPPLUS_10GBASE_CU1M {
+              value 13;
+              description "Pluggable optics SFPPLUS_10GBASE_CU1M";
+          }
+          enum AR_SFPPLUS_10GBASE_CU2M {
+              value 14;
+              description "Pluggable optics SFPPLUS_10GBASE_CU2M";
+          }
+          enum AR_SFPPLUS_10GBASE_CU3M {
+              value 15;
+              description "Pluggable optics SFPPLUS_10GBASE_CU3M";
+          }
+          enum AR_SFPPLUS_10GBASE_CU5M {
+              value 16;
+              description "Pluggable optics SFPPLUS_10GBASE_CU5M";
+          }
+          enum AR_SFPPLUS_10GBASE_CU7M {
+              value 17;
+              description "Pluggable optics SFPPLUS_10GBASE_CU7M";
+          }
+          enum AR_SFPPLUS_10GBASE_CU10M {
+              value 18;
+              description "Pluggable optics SFPPLUS_10GBASE_CU10M";
+          }
+          enum AR_SFPPLUS_10GBASE_ACU7M {
+              value 19;
+              description "Pluggable optics SFPPLUS_10GBASE_ACU7M";
+          }
+          enum AR_SFPPLUS_10GBASE_ACU10M {
+              value 20;
+              description "Pluggable optics SFPPLUS_10GBASE_ACU10M";
+          }
+          enum AR_SFPPLUS_10GBASE_ACU15M {
+              value 21;
+              description "Pluggable optics SFPPLUS_10GBASE_ACU15M";
+          }
+          enum AR_SFPPLUS_10GBASE_DWDM {
+              value 22;
+              description "Pluggable optics SFPPLUS_10GBASE_DWDM";
+          }
+          enum AR_SFPPLUS_10GBASE_DWDM_40KM {
+              value 23;
+              description "Pluggable optics SFPPLUS_10GBASE_DWDM_40KM";
+          }
+          enum AR_SFPPLUS_10GBASE_DWDM_80KM {
+              value 24;
+              description "Pluggable optics SFPPLUS_10GBASE_DWDM_80KM";
+          }
+          enum AR_QSFP_40GBASE_SR4 {
+              value 25;
+              description "Pluggable optics QSFP_40GBASE_SR4";
+          }
+          enum AR_QSFP_40GBASE_SR4_EXT {
+              value 26;
+              description "Pluggable optics QSFP_40GBASE_SR4_EXT";
+          }
+          enum AR_QSFP_40GBASE_LR4 {
+              value 27;
+              description "Pluggable optics QSFP_40GBASE_LR4";
+          }
+          enum AR_QSFP_40GBASE_LM4 {
+              value 28;
+              description "Pluggable optics QSFP_40GBASE_LM4";
+          }
+          enum AR_QSFP_40GBASE_PSM4_LR {
+              value 29;
+              description "Pluggable optics QSFP_40GBASE_PSM4_LR";
+          }
+          enum AR_QSFP_40GBASE_PSM4_1490NM {
+              value 30;
+              description "Pluggable optics QSFP_40GBASE_PSM4_1490NM";
+          }
+          enum AR_QSFP_40GBASE_PSM4_1490NM_1M {
+              value 31;
+              description "Pluggable optics QSFP_40GBASE_PSM4_1490NM_1M";
+          }
+          enum AR_QSFP_40GBASE_PSM4_1490NM_3M {
+              value 32;
+              description "Pluggable optics QSFP_40GBASE_PSM4_1490NM_3M";
+          }
+          enum AR_QSFP_40GBASE_PSM4_1490NM_5M {
+              value 33;
+              description "Pluggable optics QSFP_40GBASE_PSM4_1490NM_5M";
+          }
+          enum AR_4x1_1000BASE_T {
+              value 34;
+              description "Pluggable optics 4x1_1000BASE_T";
+          }
+          enum AR_QSFP_40GBASE_CR4_HAL_M {
+              value 35;
+              description "Pluggable optics QSFP_40GBASE_CR4_HAL_M";
+          }
+          enum AR_QSFP_40GBASE_CR4_1M {
+              value 36;
+              description "Pluggable optics QSFP_40GBASE_CR4_1M";
+          }
+          enum AR_QSFP_40GBASE_CR4_2M {
+              value 37;
+              description "Pluggable optics QSFP_40GBASE_CR4_2M";
+          }
+          enum AR_QSFP_40GBASE_CR4_3M {
+              value 38;
+              description "Pluggable optics QSFP_40GBASE_CR4_3M";
+          }
+          enum AR_QSFP_40GBASE_CR4_5M {
+              value 39;
+              description "Pluggable optics QSFP_40GBASE_CR4_5M";
+          }
+          enum AR_QSFP_40GBASE_CR4_7M {
+              value 40;
+              description "Pluggable optics QSFP_40GBASE_CR4_7M";
+          }
+          enum AR_QSFP_40GBASE_CR4_10M {
+              value 41;
+              description "Pluggable optics QSFP_40GBASE_CR4_10M";
+          }
+          enum AR_QSFP_40GBASE_CR4_50M {
+              value 42;
+              description "Pluggable optics QSFP_40GBASE_CR4_50M";
+          }
+          enum AR_QSFP_40GBASE_CR4 {
+              value 43;
+              description "Pluggable optics QSFP_40GBASE_CR4";
+          }
+          enum AR_4x10_10GBASE_CR1_HAL_M {
+              value 44;
+              description "Pluggable optics 4x10_10GBASE_CR1_HAL_M";
+          }
+          enum AR_4x10_10GBASE_CR1_1M {
+              value 45;
+              description "Pluggable optics 4x10_10GBASE_CR1_1M";
+          }
+          enum AR_4x10_10GBASE_CR1_3M {
+              value 46;
+              description "Pluggable optics 4x10_10GBASE_CR1_3M";
+          }
+          enum AR_4x10_10GBASE_CR1_5M {
+              value 47;
+              description "Pluggable optics 4x10_10GBASE_CR1_5M";
+          }
+          enum AR_4x10_10GBASE_CR1_7M {
+              value 48;
+              description "Pluggable optics 4x10_10GBASE_CR1_7M";
+          }
+          enum AR_SFPPLUS_FC_8GBASE_SR {
+              value 49;
+              description "Pluggable optics SFPPLUS_FC_8GBASE_SR";
+          }
+          enum AR_SFPPLUS_FC_8GBASE_IR {
+              value 50;
+              description "Pluggable optics SFPPLUS_FC_8GBASE_IR";
+          }
+          enum AR_SFPPLUS_FC_8GBASE_MR {
+              value 51;
+              description "Pluggable optics SFPPLUS_FC_8GBASE_MR";
+          }
+          enum AR_SFPPLUS_FC_8GBASE_LR {
+              value 52;
+              description "Pluggable optics SFPPLUS_FC_8GBASE_LR";
+          }
+          enum SFP_SX {
+              value 53;
+              description "Pluggable optics SFP_SX";
+          }
+          enum SFP_LX {
+              value 54;
+              description "Pluggable optics SFP_LX";
+          }
+          enum SFP_ZX {
+              value 55;
+              description "Pluggable optics SFP_ZX";
+          }
+          enum SFP_CX {
+              value 56;
+              description "Pluggable optics SFP_CX";
+          }
+          enum SFP_DX {
+              value 57;
+              description "Pluggable optics SFP_DX";
+          }
+          enum SFP_T {
+              value 58;
+              description "Pluggable optics SFP_T";
+          }
+          enum SFP_FX {
+              value 59;
+              description "Pluggable optics SFP_FX";
+          }
+          enum SFP_CWDM {
+              value 60;
+              description "Pluggable optics SFP_CWDM";
+          }
+          enum SFP_IR1 {
+              value 61;
+              description "Pluggable optics SFP_IR1";
+          }
+          enum SFP_LR1 {
+              value 62;
+              description "Pluggable optics SFP_LR1";
+          }
+          enum SFP_LR2 {
+              value 63;
+              description "Pluggable optics SFP_LR2";
+          }
+          enum SFP_BX10 {
+              value 64;
+              description "Pluggable optics SFP_BX10";
+          }
+          enum SFP_PX {
+              value 65;
+              description "Pluggable optics SFP_PX";
+          }
+          enum 4x_10GBASE_SR_AOCXXM {
+              value 66;
+              description "Pluggable optics 4x10GBASE-SR-AOCXXM";
+          }
+          enum QSFP_40GBASE_SM4 {
+              value 67;
+              description "Pluggable optics QSFP_40GBASE_SM4";
+          }
+          enum QSFP_40GBASE_ER4 {
+              value 68;
+              description "Pluggable optics QSFP_40GBASE_ER4";
+          }
+          enum QSFP_4x10_10GBASE_CR1_2M {
+              value 69;
+              description "Pluggable optics QSFP_4x10_10GBASE_CR1_2M";
+          }
+          enum SFPPLUS_10GBASE_ZR_TUNABLE {
+              value 70;
+              description "Pluggable optics SFPPLUS_10GBASE_ZR_TUNABLE";
+          }
+          enum AR_QSFP28_100GBASE_SR4 {
+              value 71;
+              description "Pluggable optics AR_QSFP28_100GBASE_SR4";
+          }
+          enum AR_QSFP28_100GBASE_LR4 {
+              value 72;
+              description "Pluggable optics AR_QSFP28_100GBASE_LR4";
+          }
+          enum AR_QSFP28_100GBASE_CWDM4 {
+              value 73;
+              description "Pluggable optics AR_QSFP28_100GBASE_CWDM4";
+          }
+          enum AR_QSFP28_100GBASE_PSM4_IR {
+              value 74;
+              description "Pluggable optics AR_QSFP28_100GBASE_PSM4_IR";
+          }
+          enum AR_QSFP28_100GBASE_CR4 {
+              value 75;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4";
+          }
+          enum AR_QSFP28_100GBASE_AOC {
+              value 76;
+              description "Pluggable optics AR_QSFP28_100GBASE_AOC";
+          }
+          enum AR_QSFP28_100GBASE_CR4_HAL_M {
+              value 77;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_HALFM";
+          }
+          enum AR_QSFP28_100GBASE_CR4_1M {
+              value 78;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_1M";
+          }
+          enum AR_QSFP28_100GBASE_CR4_2M {
+              value 79;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_2M";
+          }
+          enum AR_QSFP28_100GBASE_CR4_3M {
+              value 80;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_3M";
+          }
+          enum AR_QSFP28_100GBASE_CR4_4M {
+              value 81;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_4M";
+          }
+          enum AR_QSFP28_100GBASE_CR4_5M {
+              value 82;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_5M";
+          }
+          enum QSFP28_100GBASE_CR4_7M {
+              value 83;
+              description "Pluggable optics QSFP28_100GBASE_CR4_7M";
+          }
+          enum QSFP28_100GBASE_CR4_10M {
+              value 84;
+              description "Pluggable optics QSFP28_100GBASE_CR4_10M";
+          }
+          enum QSFP28_100GBASE_CR4_50M {
+              value 85;
+              description "Pluggable optics QSFP28_100GBASE_CR4_50M";
+          }
+          enum 4X25_25GBASE_CR1_HALF_M {
+              value 86;
+              description "Pluggable optics 4X25_25GBASE_CR1_HALF_M";
+          }
+          enum 4X25_25GBASE_CR1_1M {
+              value 87;
+              description "Pluggable optics 4X25_25GBASE_CR1_1M";
+          }
+          enum 4X25_25GBASE_CR1_2M {
+              value 88;
+              description "Pluggable optics 4X25_25GBASE_CR1_2M";
+          }
+          enum 4X25_25GBASE_CR1_3M {
+              value 89;
+              description "Pluggable optics 4X25_25GBASE_CR1_3M";
+          }
+          enum 4X25_25GBASE_CR1_4M {
+              value 90;
+              description "Pluggable optics 4X25_25GBASE_CR1_4M";
+          }
+          enum 4X25_25GBASE_CR1 {
+              value 91;
+              description "Pluggable optics 4X25_25GBASE_CR1";
+          }
+          enum 2X50_50GBASE_CR2_HALF_M {
+              value 92;
+              description "Pluggable optics 2X50_50GBASE_CR2_HALF_M";
+          }
+          enum 2X50_50GBASE_CR2_1M {
+              value 93;
+              description "Pluggable optics 2X50_50GBASE_CR2_1M";
+          }
+          enum 2X50_50GBASE_CR2_2M {
+              value 94;
+              description "Pluggable optics 2X50_50GBASE_CR2_2M";
+          }
+          enum 2X50_50GBASE_CR2_3M {
+              value 95;
+              description "Pluggable optics 2X50_50GBASE_CR2_3M";
+          }
+          enum 2X50_50GBASE_CR2_4M {
+              value 96;
+              description "Pluggable optics 2X50_50GBASE_CR2_4M";
+          }
+          enum 2X50_50GBASE_CR2 {
+              value 97;
+              description "Pluggable optics 2X50_50GBASE_CR2";
+          }
+          enum SFP28_25GBASE_CR1 {
+              value 98;
+              description "Pluggable optics SFP28_25GBASE_CR1";
+          }
+          enum SFP28_25GBASE_CR1_HALF_M {
+              value 99;
+              description "Pluggable optics SFP28_25GBASE_CR1_HALF_M";
+          }
+          enum SFP28_25GBASE_CR1_1M {
+              value 100;
+              description "Pluggable optics SFP28_25GBASE_CR1_1M";
+          }
+          enum SFP28_25GBASE_CR1_2M {
+              value 101;
+              description "Pluggable optics SFP28_25GBASE_CR1_2M";
+          }
+          enum SFP28_25GBASE_CR1_3M {
+              value 102;
+              description "Pluggable optics SFP28_25GBASE_CR1_3M";
+          }
+          enum QSFPPLUS_50GBASE_CR2 {
+              value 103;
+              description "Pluggable optics QSFPPLUS_50GBASE_CR2";
+          }
+          enum QSFPPLUS_50GBASE_CR2_1M {
+              value 104;
+              description "Pluggable optics QSFPPLUS_50GBASE_CR2_1M";
+          }
+          enum QSFPPLUS_50GBASE_CR2_2M {
+              value 105;
+              description "Pluggable optics QSFPPLUS_50GBASE_CR2_2M";
+          }
+          enum QSFPPLUS_50GBASE_CR2_3M {
+              value 106;
+              description "Pluggable optics QSFPPLUS_50GBASE_CR2_3M";
+          }
+          enum QSFP_40GBASE_BIDI {
+              value 107;
+              description "Pluggable optics QSFP_40GBASE_BIDI";
+          }
+          enum QSFP_40GBASE_AOC {
+              value 108;
+              description "Pluggable optics QSFP_40GBASE_AOC";
+          }
+          enum QSFP28_100GBASE_LR4_LITE {
+              value 109;
+              description "Pluggable optics QSFP28_100GBASE_LR4_LITE";
+          }
+          enum QSFP28_100GBASE_ER4 {
+              value 110;
+              description "Pluggable optics QSFP28_100GBASE_ER4";
+          }
+          enum QSFP28_100GBASE_ACC {
+              value 111;
+              description "Pluggable optics QSFP28_100GBASE_ACC ";
+          }
+          enum SFP28_25GBASE_SR {
+              value 112;
+              description "Pluggable optics SFP28_25GBASE_SR";
+          }
+          enum SFPPLUS_10GBASE_SR_AOCXXM {
+              value 113;
+              description "Pluggable optics SFPPLUS_10GBASE_SR_AOCXXM";
+          }
+          enum SFP_BX10_UP {
+              value 114;
+              description "Pluggable optics SFP_BX10_UP";
+          }
+          enum SFP_BX10_DOWN {
+              value 115;
+              description "Pluggable optics SFP_BX10_DOWN";
+          }
+          enum SFP_BX40_UP {
+              value 116;
+              description "Pluggable optics SFP_BX40_UP";
+          }
+          enum SFP_BX40_DOWN {
+              value 117;
+              description "Pluggable optics SFP_BX40_DOWN";
+          }
+          enum SFP_BX80_UP {
+              value 118;
+              description "Pluggable optics SFP_BX80_UP";
+          }
+          enum SFP_BX80_DOWN {
+              value 119;
+              description "Pluggable optics SFP_BX80_DOWN";
+          }
+          enum QSFP28_100GBASE_PSM4_PIGTAIL {
+              value 120;
+              description "Pluggable optics QSFP28_100GBASE_PSM4_PIGTAIL";
+          }
+          enum QSFP28_100GBASE_SWDM4 {
+              value 121;
+              description "Pluggable optics QSFP28_100GBASE_SWDM4";
+          }
+          enum QSFP_40GBASE_PSM4_PIGTAIL {
+              value 122;
+              description "Pluggable optics QSFP_40GBASE_PSM4_PIGTAIL";
+          }
+      }
+  }
+
+  typedef reboot-type {
+    description "define reboot type";
+    type enumeration {
+      enum WARM {
+        description "Warm reboot";
+        value "1";
+      }
+      enum COLD {
+        description "Cold reboot";
+        value "2";
+      }
+    }
+  }
+
+  typedef unit-down-reason {
+    description
+      "Indicates reason for unit down.";
+    type enumeration {
+      enum "version-mismatch" {
+        value 1;
+      }
+      enum "type-mismatch" {
+        value 2;
+      }
+      enum "admin-down" {
+        value 3;
+      }
+      enum "unlicensed" {
+        value 4;
+      }
+      enum "user-triggered" {
+        value 5;
+      }
+      enum "software-triggered" {
+        value 6;
+      }
+      enum "unit-crashed" {
+        value 7;
+      }
+      enum "unknown" {
+        value 8;
+      }
+    }
+  }
+
+  // PAS notify grouping
+
+  grouping pas_notify {
+
+    description "Attributes of pas notify";
+
+    leaf status {
+      description "PAS status";
+      type boolean;
+      config false;
+    }
+  }
+
+  // EEPROM grouping - Everything there is to know about a
+  //                   chassis' or entity's EEPROM
+
+  grouping eeprom {
+    description "Attributes of a chassis' or entity's EEPROM";
+
+    leaf vendor-name {
+      description "Entity vendor name";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf product-name {
+      description "Entity product name";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf hw-version {
+      description "Entity hardware version";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf platform-name {
+      description "Entity platform name";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf ppid {
+      description "Entity PPID";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf part-number {
+      description "Entity Part Number";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf service-tag {
+      description "Entity service tag";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf service-code {
+      description "Entity service code";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+  }
+
+
+  // Chassis grouping - Everything there is to know about a chassis
+  //
+  // Contains all attributes of a chassis, regardless of chassis type
+  // (pizza box, controlling bridge or port extender) and stacking
+  // (or not) configuration.
+
+  grouping chassis {
+    description "Attributes of a chassis";
+
+    uses eeprom;  // Include EEPROM attributes
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+      // Notes: This attribute is normally "up".  Essentially, it reflects
+      //        the result (status) of the last CPS get or set request for
+      //        the object.  It will be set to "fail"
+      //        if there was any failure in getting or setting any
+      //        attribute for the last object get or set request.  Errors
+      //        experienced when getting attributes are reflected in values
+      //        returned for those attributes, e.g. an error in obtaining
+      //        the power usage is reflected as returning -1 for the
+      //        power-usage attribute.  If there were no errors for the
+      //        last CPS request, this attribute will be set to "up".
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    leaf num_mac_addresses {
+      description "Number of MAC addresses assigned to chassis";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf base_mac_addresses {
+      description "Base MAC addresses assigned to chassis";
+      type base-cmn:mac-address;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf power-usage {
+      description "Total power consumed by chassis";
+      type power-usage-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: May not be supported for all platforms.
+      //               Value shall be 0 for unsupported platforms.
+      // Persistent: N/A
+      // Notification: No
+      // Notes: A negative value indicates an error.
+    }
+
+    leaf power-off {
+      description "Kill power to chassis";
+      type boolean;
+      config true;
+      // Qualifiers: target
+      // Dependencies: May not be supported for all platforms.
+      //               On unsupported platforms, setting this attribute has
+      //               no effect.
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf active-rpm-slot {
+      description "Slot of active RPM";
+      type uint8;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: May not be supported for all platforms.
+      //               For those that do not support RPM redundancy, value is
+      //               fixed to slot of single RPM, or single card for
+      //               pizza-box or port extender chassis, and setting this
+      //               attribute has no effect.
+      // Default: N/A
+      // Persistent: N/A
+      // Notification: Yes; parameters (slot)
+      // Notes: Writing a value different from the current observed/
+      //        realtime value to the target qualifiers initiates an
+      //        RPM switchover.
+    }
+
+    leaf reboot {
+      description "reboot type";
+      type reboot-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if card is present
+      // Persistent: N/A
+      // Notification: no
+    }
+  }
+
+
+  // Entity grouping - Everything there is to know about an entity (FRU)
+  //
+  // Contains all attributes of an entity within a chassis, which is a field-
+  // replacable unit (FRU) part of a chassis (actual or virtual).  For
+  // consistency, things that can be an FRU on any platform at treated as
+  // FRUs, even if it is not an FRU for a given platform.  Thus, a card is
+  // treated as an entity (FRU), even for a platform that does not have
+  // cards -- a pizza-box chassis or port extender will have a single
+  // (virtual) card entity, one that is always present.
+
+  grouping entity {
+    description "Attributes of an entity (FRU)";
+
+    uses eeprom;        // Include EEPROM attributes
+
+    leaf name {
+      description "Printable name of entity";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf present {
+      description "Entity present flag";
+      type boolean;  // true <=> Entity present in slot
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: Yes; parameters (present)
+    }
+
+    leaf insertion-cnt {
+      description "Number of times entity inserted";
+      type yang:gauge64;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Persistent: Across process restart: yes
+      //             Across kernel restart:  yes
+      //             Across power cycle:     yes
+      // Notification: No
+      // Notes: Writing any value for this attribute to the target space
+      //        has the effect of resetting this counter to 0.
+    }
+
+    leaf insertion-timestamp {
+      description "Timestamp of last entity insertion";
+      type yang:timestamp;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: Across process restart: yes
+      //             Across kernel restart:  yes
+      //             Across power cycle:     yes
+      // Notification: No
+    }
+
+    leaf admin-status {
+      description "Administrative status";
+      type base-cmn:admin-status-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Default: up
+      // Persistent: Across process restart: Yes
+      //             Across kernel restart:  No
+      //             Across power cycle:     No
+      // Notification: Yes; parameters (admin_status)
+      // Notes: Up <=> Polling of entity enabled, CPS/FUSE requests
+      //               satisfied
+      //        Down <=> Polling of entity disabled, CPS/FUSE requests
+      //                 rejected
+      //        Testing <=> As with down, but also includes others in
+      //                    same diag class
+    }
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: !present => oper-status == unknown
+      //               admin-status == testing => oper-status == down
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    // The following attributes apply only to entities of type card
+
+    choice entity-type-choice {
+      case card {
+        leaf power-on {
+          description "Power control for entity";
+          type boolean;  // true <=> Power to entity enabled
+          config true;
+          // Qualifiers: observed, realtime, target
+          // Dependencies: Only applicable to card entities
+          // Default: false
+          // Persistent: Across process restart: yes
+          //             Across kernel restart:  yes
+          //             Across power cycle:     no
+          // Notification: No
+        }
+
+        leaf reboot {
+          description "reboot type";
+          type reboot-type;
+          config true;
+          // Qualifiers: observed, realtime, target
+          // Dependencies: Valid only if card is present
+          // Persistent: N/A
+          // Notification: no
+        }
+      }
+    }
+  }
+
+
+  // PSU grouping - Everything there is to know about a PSU
+  //
+  // This grouping serves as an extension of the entity grouping
+  // for PSUs.
+
+  grouping psu {
+    description "Attributes of a power supply";
+
+    leaf input-type {
+      description "Input current type";
+      type input-power-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+
+    leaf fan-airflow-type {
+      description "Direction of airflow for PSU fan(s)";
+      type fan-airflow-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+  }
+
+
+  // Fan tray grouping - Everything there is to know about a fan tray
+  //
+  // This grouping serves as an extension to the entity grouping for
+  // fan trays.
+
+  grouping fan-tray {
+    description "Attributes of a fan tray";
+
+    leaf fan-airflow-type {
+      description "Direction of airflow for fans";
+      type fan-airflow-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+  }
+
+
+  // Card grouping - Everything there is to know about a card
+  //
+  // This grouping serves as an extenstion of the entity grouping for
+  // cards.  Note that for platforms that do not have actual field-replacable
+  // cards, such as a pizza-box or port-extender chassis, there still be card
+  // entities -- exactly 1 (virtual) card, in 1 (virtual) slot, which can
+  // never be removed (i.e. will always show as present).
+
+  grouping card {
+    description "Attributes of a card";
+
+    leaf card-type {
+      description "Type of card";
+      type card-type-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity is present
+      // Persistent: N/A
+      // Notification: no
+    }
+  }
+
+
+  // Fan grouping - Everything there is to know about a fan
+
+  grouping fan {
+    description "Attributes of a (PSU or fan tray) fan";
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      //               admin-status(entity) == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present and
+      //               if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    leaf speed {
+      description "Fan speed, in RPM";
+      type fan-speed-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present
+      // Default: Maximum speed for fan (see below)
+      // Persistent: N/A
+      // Notification: No
+      // Notes: A fault is indicated (see above) if a fan's current speed
+      //        is not what the target speed specified
+    }
+
+    leaf speed_pct {
+      description "Fan speed, as % of maximum";
+      type uint8;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present
+      // Default: Maximum speed for fan (see below)
+      // Persistent: N/A
+      // Notification: No
+      // Notes: A fault is indicated (see above) if a fan's current speed
+      //        is not what the target speed specified
+    }
+
+    leaf max_speed {
+      description "Maximum speed of fan, in RPM";
+      type fan-speed-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present
+      // Persistent: N/A
+      // Notification: No
+    }
+  }
+
+
+  // LED grouping - Everything there is to know about an LED
+
+  grouping led {
+    description "Attributes of an LED";
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present and
+      //               if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    leaf req_on {
+      description "Illumination state of LED requested by application";
+      type boolean;  // true <=> LED on
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present.
+      //               Either 'on' or 'message' attribute supported,
+      //               depending on platform.
+      // Default: false
+      // Persistent: Across process restarts: Yes
+      //             Across kernel restarts:  No
+      //             Across power cycles:     No
+      // Notification: No
+    }
+
+    leaf on {
+      description "Illumination state of physical LED";
+      type boolean;  // true <=> LED on
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present.
+      //               Either 'on' or 'message' attribute supported,
+      //               depending on platform.
+      // Default: false
+      // Persistent: Across process restarts: Yes
+      //             Across kernel restarts:  No
+      //             Across power cycles:     No
+      // Notification: No
+    }
+  }
+
+
+  // Display grouping - Everything there is to know about a text message
+  //                    display
+
+  grouping display {
+    description "Attributes of a text message display";
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present and
+      //               if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    leaf message {
+      description "Message to display in text display";
+      type string;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present.
+      //               Either 'on' or 'message' attribute supported,
+      //               depending on platform.
+      // Default: ""
+      // Persistent: Across process restarts: Yes
+      //             Across kernel restarts:  No
+      //             Across power cycles:     No
+      // Notification: No
+    }
+  }
+
+
+  // Temperature sensor grouping - Everything there is to know about a
+  //                               temperature sensor
+
+  grouping temperature {
+    description "Attributes of a temperature sensor";
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present and
+      //               if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    leaf temperature {
+      description "Current temperature";
+      type temperature-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf shutdown_threshold {
+      description "Threshold for hardware-based shutdown";
+      type temperature-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present
+      // Default: Not set
+      // Persistent: No
+      // Notification: No
+    }
+
+    leaf thresh-enable {
+      description "Enable threshold detection";
+      type boolean;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present
+      // Default: False
+      // Persistent: No
+      // Notification: No
+    }
+
+    leaf last-thresh {
+      description "Last threshold temperature crossed";
+      type temperature-type;
+      config false;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present and threshold crossed
+      // Default: Not set
+      // Persistent: No
+      // Notification: Yes
+    }
+  }
+
+
+  // Temperature sensor range threshold grouping - Everything there is
+  //                                               to know about
+  //                                               temperature ranges
+
+  grouping temp_threshold {
+    description "Attributes of a temperature sensor threshold";
+
+    leaf hi {
+      description "Threshold for increasing temperature";
+      type temperature-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present
+      // Default: Not set
+      // Persistent: No
+      // Notification: No
+    }
+
+    leaf lo {
+      description "Threshold for decreasing temperature";
+      type temperature-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present
+      // Default: Not set
+      // Persistent: No
+      // Notification: No
+    }
+  }
+
+
+  // PLD grouping - Everything there is to know about programmable logic
+  //                devices (PLDs)
+
+  grouping pld {
+    description "Attributes of a programmable logic device (PLD)";
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present
+      //               admin-status == testing => oper-status == down
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present and
+      //               if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    leaf version {
+      description "PLD firmware version";
+      type string;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf fw_filename {
+      description "File containing new PLD firmware";
+      type string;
+      config true;
+      // Qualifiers: target
+      // Dependencies: Valid only if entity present
+      // Default: N/A
+      // Persistent: N/A
+      // Notification: No
+      // Notes: Writing this attribute triggers an upgrade of the
+      //               PLD's firmware Flash memory.
+    }
+  }
+
+
+  // Port module grouping - Everything there is no know about linecard
+  //                        port modules
+
+  grouping port-module {
+    description "Attributes of a linecard port module";
+
+    leaf present {
+      description "Module present flag";
+      type boolean;  // true <=> Module present in module slot
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: Yes; parameters (present)
+    }
+
+    leaf insertion-cnt {
+      description "Number of times module inserted";
+      type yang:gauge64;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Persistent: Across process restart: yes
+      //             Across kernel restart:  yes
+      //             Across power cycle:     yes
+      // Notification: No
+      // Notes: Writing any value for this attribute to the target space
+      //        has the effect of resetting this counter to 0.
+    }
+
+    leaf insertion-timestamp {
+      description "Timestamp of last module insertion";
+      type yang:timestamp;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: Across process restart: yes
+      //             Across kernel restart:  yes
+      //             Across power cycle:     yes
+      // Notification: No
+    }
+
+    leaf admin-status {
+      description "Administrative status";
+      type base-cmn:admin-status-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Default: up
+      // Persistent: Across process restart: Yes
+      //             Across kernel restart:  No
+      //             Across power cycle:     No
+      // Notification: Yes; parameters (admin_status)
+      // Notes: Up <=> Polling of module enabled, CPS/FUSE requests
+      //               satisfied
+      //        Down <=> Polling of module disabled, CPS/FUSE requests
+      //                 rejected
+      //        Testing <=> As with down, but also includes others in
+      //                    same diag class
+    }
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: !present => oper-status == unknown.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    // TBD
+  }
+
+  /* PAS Media releated configuration grouping */
+
+  grouping pas-media-config {
+    description "Attributes of PAS media configuration.";
+
+    leaf lock-down-status {
+      description "Lock down feature status.";
+
+      type boolean;
+      config true;
+    }
+
+    leaf led-control {
+      description "LED control flag";
+
+      type boolean;
+      config false;
+    }
+  }
+
+
+  // Optical media adapter grouping - Everything there is to know about
+  //                                  optical media adapters
+
+  grouping media {
+    description "Attributes of an optical media adapter";
+
+    leaf present {
+      description "Adapter present flag";
+      type boolean;  // true <=> Module present in port slot
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: Yes; parameters (present)
+    }
+
+    leaf insertion-cnt {
+      description "Number of times adapter inserted";
+      type yang:gauge64;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Persistent: Across process restart: yes
+      //             Across kernel restart:  yes
+      //             Across power cycle:     yes
+      // Notification: No
+      // Notes: Writing any value for this attribute to the target space
+      //        has the effect of resetting this counter to 0.
+    }
+
+    leaf insertion-timestamp {
+      description "Timestamp of last adapter insertion";
+      type yang:timestamp;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: Across process restart: yes
+      //             Across kernel restart:  yes
+      //             Across power cycle:     yes
+      // Notification: No
+    }
+
+    leaf admin-status {
+      description "Administrative status";
+      type base-cmn:admin-status-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Default: up
+      // Persistent: Across process restart: Yes
+      //             Across kernel restart:  No
+      //             Across power cycle:     No
+      // Notification: Yes; parameters (admin_status)
+      // Notes: Up <=> Polling of module enabled, CPS/FUSE requests
+      //               satisfied
+      //        Down <=> Polling of module disabled, CPS/FUSE requests
+      //                 rejected
+      //        Testing <=> As with down, but also includes others in
+      //                    same diag class
+    }
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: !present => oper-status == unknown.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+    leaf support-status {
+      description "Media support status.";
+      type media-support-status;
+      config false;
+    }
+
+    leaf category {
+      description "Media category";
+      type media-category;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf type {
+      description "Media type";
+      type media-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf capability {
+      description "Media speed capability";
+      type base-if:speed;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf vendor-id {
+      description "Vendor id of the physical media";
+      type binary {
+        length "3";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf serial-number {
+      description "Serial number of the physical media";
+      type string {
+        length "17";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf dell-qualified {
+      description "Is dell qualified or not";
+      type boolean; // true <=> If its Dell qualified media
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf high-power-mode {
+      description "Enable high power mode";
+      type boolean; // true <=> If its enable
+      config true;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf identifier {
+      description "Type of serial transceiver";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf ext-identifier {
+      description "Extended identifier of type of serial transceiver";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf connector {
+      description "Code for connector type";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf transceiver {
+      description "Code for electronic or optical compatibility";
+      type binary {
+        length "8";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+    leaf encoding {
+      description "Code for serial encoding algorithm";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+    leaf br-nominal  {
+      description "Nominal signaling rate, units of 100Mbits/sec ";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: 100 MBps
+      // Persistent: N/A
+      // Notification: No
+    }
+    leaf rate-identifier  {
+      description "Type of rate select functionality";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf length-sfm-km {
+      description "Link length supported for SMF fiber in km";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: km
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf length-sfm {
+      description "Link length supported for single mode fiber, units of 100m";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: 100m
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf length-om2 {
+      description "Link length supported for 50um OM2 fiber, units of 10m";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: 10m
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf length-om1 {
+      description "Link length supported for 62.5um OM1 fiber, units of 10m";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: 10m
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf length-cable {
+      description "Link length supported for copper or direct attach cable, units of m";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: m
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf length-om3 {
+      description "Link length supported for 50um OM3 fiber, units of 10m";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Units: 10m
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf vendor-name  {
+      description "Vendor name (ASCII)";
+      type string {
+        length "17";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf ext-transceiver  {
+      description "Extended Transceiver Codes";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf vendor-pn {
+      description "Part number provided by SFP+ transceiver vendor (ASCII)";
+      type string {
+        length "17";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf vendor-rev {
+      description "Revision level for part number provided by vendor (ASCII)";
+      type binary {
+        length "2";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf wavelength {
+      description "Laser wavelength (Passive/Active Cable Specification Compliance)";
+      type uint32;
+      units "nm";
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    choice media-category {
+      case qsfp-plus {
+        leaf wavelength-tolerance {
+          description "Guaranteed range of laser wavelength";
+          type uint32;
+          config false;
+          // Qualifiers: observed, realtime
+          // Dependencies: Valid only if present = true
+          // Persistent: N/A
+          // Notification: No
+        }
+        leaf max-case-temp {
+          description "Maximum Case Temperature in Degrees C";
+          type uint32;
+          config false;
+          // Qualifiers: observed, realtime
+          // Dependencies: Valid only if present = true
+          // Persistent: N/A
+          // Notification: No
+        }
+      }
+      case sfp-plus {
+        leaf br-max{
+          description "Upper bit rate margin, units of % ";
+          type uint32;
+          config false;
+          // Qualifiers: observed, realtime
+          // Dependencies: Valid only if present = true
+          // Units: Percent
+          // Persistent: N/A
+          // Notification: No
+        }
+
+        leaf br-min {
+          description "Lower bit rate margin, units of %";
+          type uint32;
+          config false;
+          // Qualifiers: observed, realtime
+          // Dependencies: Valid only if present = true
+          // Units: Percent
+          // Persistent: N/A
+          // Notification: No
+        }
+
+        leaf sff-8472-compliance {
+          description "Indicates which revision of SFF-8472 the transceiver complies with";
+          type uint32;
+          config false;
+          // Qualifiers: observed, realtime
+          // Dependencies: Valid only if present = true
+          // Persistent: N/A
+          // Notification: No
+        }
+      }
+    }
+
+    leaf cc_base {
+      description "Check code for Base ID Fields (addresses 0 to 62)";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf options {
+      description "Indicates which optional SFP+ signals are implemented";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf date-code {
+      description "Vendor's manufacturing date code";
+      type binary {
+        length "8";
+      }
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf diag-mon-type{
+      description "Indicates which type of diagnostic monitoring is implemented (if any)";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf enhanced-options {
+      description "Indicates which optional enhanced features are implemented (if any)";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf cc_ext {
+      description "Check code for the Extended ID Fields (addr. 64 to 94)";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf vendor-Specific {
+      description "Vendor Specific EEPROM";
+      type binary;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf rate-select-state {
+      description "Rate select state";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: Yes; parameters (present)
+    }
+
+    leaf rx-power-measurement-type {
+      description "Received power measurement type";
+      type power-measurement-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+
+    // Media Alarm and Warning thresholds
+
+    leaf temp-high-alarm-threshold {
+      description "Temperature High alarm";
+      type common:xfloat;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf temp-low-alarm-threshold {
+      description "Temperature Low alarm";
+      type common:xfloat;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf temp-high-warning-threshold {
+      description "Temperature High warning";
+      type common:xfloat;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf temp-low-warning-threshold {
+      description "Temperature Low warning";
+      type common:xfloat;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf voltage-high-alarm-threshold {
+      description "Voltage High alarm";
+      type common:xfloat;
+      config false;
+      units "mV";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf voltage-low-alarm-threshold {
+      description "Voltage Low alarm";
+      type common:xfloat;
+      config false;
+      units "mV";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf voltage-high-warning-threshold {
+      description "Voltage High warning";
+      type common:xfloat;
+      config false;
+      units "mV";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf voltage-low-warning-threshold {
+      description "Voltage Low warning";
+      type common:xfloat;
+      config false;
+      units "mV";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf rx-power-high-alarm-threshold {
+      description "RX Power High alarm";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf rx-power-low-alarm-threshold {
+      description "RX Power Low alarm";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf rx-power-high-warning-threshold {
+      description "RX Power High warning";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf rx-power-low-warning-threshold {
+      description "RX Power Low warning";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf bias-high-alarm-threshold {
+      description "Bias High alarm";
+      type common:xfloat;
+      config false;
+      units "mA";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf bias-low-alarm-threshold {
+      description "Bias Low alarm";
+      type common:xfloat;
+      config false;
+      units "mA";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf bias-high-warning-threshold {
+      description "Bias High warning";
+      type common:xfloat;
+      config false;
+      units "mA";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf bias-low-warning-threshold {
+      description "Bias Low warning";
+      type common:xfloat;
+      config false;
+      units "mA";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf tx-power-high-alarm-threshold {
+      description "Tx power High alarm";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf tx-power-low-alarm-threshold {
+      description "Tx power Low alarm";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf tx-power-high-warning-threshold {
+      description "Tx power High warning";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf tx-power-low-warning-threshold {
+      description "Tx power Low warning";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+
+    // Media real time monitor data
+
+
+    leaf current-temperature {
+      description "Current temperature";
+      type common:xfloat;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf current-voltage {
+      description "Current voltage";
+      type common:xfloat;
+      config false;
+      units "mV";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf temp-state {
+      description "Temperature High/Low alarm/warning state";
+      type media-status;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf voltage-state {
+      description "Voltage High/Low alarm/warning state";
+      type media-status;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    // Config parameters
+
+    leaf autoneg {
+      description "Auto Negotiation";
+      type boolean;
+      default true;
+      config true;
+    }
+
+    leaf-list supported-speed {
+      description "Interface supported speed list";
+      type base-if:speed;
+      config true;
+    }
+    leaf target_wavelength {
+      description "Configured wavelength for tunable media";
+      type common:xfloat;
+      config true;
+    }
+  }
+
+
+  // Optical media adapter channel grouping - Everything there is to know
+  //                                          about an optical media
+  //                                          adapter channel
+
+  grouping media-channel {
+    description "Attributes of a channel of an optical media adapter";
+
+    leaf state {
+      description "Channel state (Enable/Disable)";
+      type boolean; //true <=> if channel is enabled
+      config true;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if  media present = true
+      // Persistent: N/A
+      // Units : N/A
+      // Notification: No
+    }
+
+    leaf rx-power {
+      description "RX power";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if media present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf tx-power {
+      description "TX power";
+      type common:xfloat;
+      config false;
+      units "mW";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if media present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf tx-bias-current {
+      description "TX Bias Current";
+      type common:xfloat;
+      config false;
+      units "mA";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if media present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: !present => oper-status == unknown.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf rx-loss {
+      description "Channel TX loss status";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf tx-loss {
+      description "Channel TX loss status";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf tx-fault {
+      description "Channel TX fault status";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf tx-disable {
+      description "Channel TX disable status";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf rx-power-state {
+      description "RX power High/Low alarm/warning state";
+      type media-status;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf tx-power-state {
+      description "TX power High/Low alarm/warning state";
+      type media-status;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf tx-bias-state {
+      description "TX-BIAS High/Low alarm/warning state";
+      type media-status;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: Yes
+    }
+
+    leaf cdr-enable {
+      description "CDR enable/disable";
+      type boolean;
+      config true; 
+    }
+
+    // Config parameters
+
+    leaf speed {
+      description "Speed to derive and set LED state";
+      type base-if:speed;
+      config true;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if present = true
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf autoneg {
+      description "Auto Negotiation";
+      type boolean;
+      default true;
+      config true;
+    }
+
+    leaf-list supported-speed {
+      description "Interface supported speed list";
+      type base-if:speed;
+      config true;
+    }
+  }
+
+
+  // PHY grouping - Everything there is no know about PHYs
+
+  grouping phy {
+    description "Attributes of a port PHY";
+
+    leaf admin-status {
+      description "Administrative status";
+      type base-cmn:admin-status-type;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Default: up
+      // Persistent: Across process restart: Yes
+      //             Across kernel restart:  No
+      //             Across power cycle:     No
+      // Notification: Yes; parameters (admin_status)
+      // Notes: Up <=> Polling of PHY enabled, CPS/FUSE requests
+      //               satisfied
+      //        Down <=> Polling of PHY disabled, CPS/FUSE requests
+      //                 rejected
+      //        Testing <=> As with down, but also includes others in
+      //                    same diag class
+    }
+
+    leaf oper-status {
+      description "Operational status";
+      type base-cmn:oper-status-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: !present => oper-status == unknown.
+      //               admin-status == testing => oper-status == down.
+      // Persistent: N/A
+      // Notification: Yes; parameters (oper_status)
+    }
+
+    leaf fault-type {
+      description "Cause of fault";
+      type fault-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if oper-status == fail
+      // Persistent: N/A
+      // Notification: Yes; parameters (fault_type)
+    }
+
+    // TBD
+  }
+
+}

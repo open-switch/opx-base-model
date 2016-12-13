@@ -1,0 +1,187 @@
+module dell-base-mirror {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-mirror";
+    prefix "base-mirror";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions provided
+         by platform for managing Mirroring objects";
+
+    revision 2015-01-31 {
+        description
+        "Initial revision.";
+    }
+
+    typedef mode {
+        type enumeration {
+            enum SPAN {
+                value 1;
+                description
+                    "Local Port Mirroring - Packets can be mirrored only in the local switch";
+            }
+            enum RSPAN {
+                value 2;
+                description
+                    "Remote Port Mirroring - Packets can be mirrored over L2 tunnel
+                     across remote switches";
+            }
+            enum ERSPAN {
+                value 3;
+                description
+                    "Encapsulated Remote Port Mirroring -
+                     Packets can be mirrored over L3 tunnel to remote IP destination";
+            }
+        }
+    }
+
+    grouping rspan-attr {
+
+        description
+            "RSPAN mirror session attributes";
+
+        leaf vlan {
+            mandatory true;
+            type base-cmn:vlan-id;
+            description
+                "Remote SPAN VLAN to be used for mirrored packets";
+        }
+    }
+
+    grouping erspan-attr {
+
+        description
+            "ERSPAN mirror session attributes";		
+	
+       	leaf source-ip {
+    	    mandatory true;
+            type base-cmn:ipv4-address;
+            description
+                "IPv4 source address to be used for ERSPAN tunnel encapsulation";
+        }
+
+        leaf destination-ip {
+            mandatory true;
+            type base-cmn:ipv4-address;
+            description
+                "IPv4 destination address to be used for ERSPAN tunnel encapsulation";
+        }	
+
+        leaf source-mac {
+            mandatory true;
+            type base-cmn:mac-address;
+            description
+                "ERSPAN Tunnel L2 Source MAC Address";
+        }
+
+        leaf dest-mac {
+            mandatory true;
+            type base-cmn:mac-address;
+            description
+                "ERSPAN Tunnel L2 Destination MAC Address";
+        }
+
+        leaf erspan-vlan-id {
+            mandatory true;
+            type base-cmn:vlan-id;
+            description
+                "ERSPAN Tunnel L2 Header VLAN id";
+        } 			
+    }
+
+    list entry {
+
+        key "id";
+
+        description
+            "Mirror session attributes which contains all the
+             information related to the mirroring session";
+
+        leaf id {
+            type base-cmn:mirror-id;
+            description
+                "Identifier of the mirror-session";
+        }
+
+        leaf opaque-data {
+            config false;
+            type base-cmn:mirror-opaque-data;
+            description
+                "NPU Mirror opaque data associated with the Mirror session";
+        }
+
+        leaf dst-intf{
+            type base-cmn:logical-ifindex;
+            mandatory true;
+            description
+                "Interface Index which is unique across switch of the
+                 mirror destination interface which is physical";
+	    }
+		
+        list intf{
+            key "src";
+            description
+                "List which contains mapping of the Mirror source interface,
+                 and the direction in which mirroring is enabled";
+
+            leaf src {
+                type base-cmn:logical-ifindex;	
+                mandatory true;
+                description
+                    "Interface Index which is unique across switch of the Physical
+                     Interface that needs to be mirrored";
+            }
+
+            leaf direction {
+                mandatory true;
+                type base-cmn:traffic-path;
+                description
+                	"Direction of packets in source interface which needs
+                	 to be mirrored";
+            }
+        }
+
+        leaf flow-enabled {
+            type boolean;
+            default false;
+            description
+                "If true then existing/new mirroring session will be enabled
+                 as flow-enabled session";
+        }
+	
+        leaf type {
+            mandatory true;
+            type mode;
+            description "Type of the mirroring session";
+   	    }
+   	
+   	    leaf lag-opaque-data {
+            config false;
+            type base-cmn:lag-opaque-data;
+            description
+                "NPU LAG opaque data which will be used as mirror destination
+                 when lag interface is mirror destination";
+        }
+
+        uses rspan-attr {
+            when "../type = RSPAN ";
+            description
+                "When mirror session type is RSPAN include RSPAN mirror session attributes";
+        }
+
+        uses erspan-attr {
+            when "../type = ERSPAN ";
+            description
+                "When mirror session type is ERSPAN include ERSPAN mirror session attributes";
+        }
+    }
+}

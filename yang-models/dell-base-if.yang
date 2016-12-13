@@ -1,0 +1,87 @@
+module dell-base-if-common {
+    namespace "http://www.dell.com/esg/networking/os10/base/dell-base-if-common";
+
+    prefix "dell-base-if-cmn";
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+    import ietf-yang-types {
+        prefix "yang";
+    }
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization "Dell Inc";
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model augments the standard interface and adds Dell specific
+                    extensions.  This model contains the entry point for the
+                    interface object extensions.";
+
+    revision "2016-01-01" {
+        description "Initial version.";
+    }
+
+
+    augment "/if:interfaces/if:interface" {
+        description "The following attributes are common to all interface types.";
+
+        leaf if-index {
+            type base-cmn:logical-ifindex;
+            description "Can be used as an alternate to the name key field.  The if-index is the linux representation for the interface.";
+        }
+
+    }
+
+    augment "/if:interfaces-state/if:interface" {
+
+    }
+
+    augment "/if:interfaces-state/if:interface/if:statistics" {
+
+        leaf time-stamp{
+            type yang:timestamp;
+            description "Timestamp at which stats are returned";
+        }
+    }
+
+    typedef operation-type {
+        description "Operation type of interface configuration";
+
+        type enumeration {
+            enum CREATE {
+                value 1;
+                description "Operation to create interface";
+            }
+            enum DELETE {
+                value 2;
+                description "Operation to delete interface";
+            }
+            enum UPDATE {
+                value 3;
+                description "Operation to update interface attributes";
+            }
+        }
+    }
+
+    rpc set-interface {
+        description "This method is used to create, delete or set multiple types of interface. For
+                create operation, mac address will be allocated if it is not given within input argument.
+                Currently there is only one input argument which specified operation type, user should
+                use attributes of the model of corresponding interface type as extra input";
+        input {
+            leaf operation {
+                description "Specify opertion type to configure interface";
+                type operation-type;
+            }
+        }
+    }
+
+    rpc get-mac-address {
+        description "This method is used to get assgined mac address for different type of interfaces.
+                User should give required attributes such as interface-name, type as input. The actual
+                attributes needed depends on requested interface type";
+    }
+}

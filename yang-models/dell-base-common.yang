@@ -1,0 +1,437 @@
+module dell-base-common {
+  namespace "http://www.dell.com/esg/networking/os10/dell-base-common";
+  prefix base-cmn;
+
+  organization "Dell Inc";
+  contact
+    "http://www.dell.com/support/softwarecontacts";
+  description
+    "This module contains a collection of common YANG derived types used
+     in other Base Yang modules.";
+
+  revision 2015-09-24 {
+    description
+      "Added Enum values to breakout-mode";
+  }
+  revision 2015-05-27 {
+    description
+      "Phase 2 of clean-up work";
+  }
+  revision 2015-05-21 {
+    description
+      "Phase 1 of clean-up work";
+  }
+  revision 2015-04-03 {
+    description
+      "Added the opaque data types";
+  }
+  revision 2015-03-12 {
+    description
+      "Initial revision";
+  }
+
+  typedef logical-ifindex {
+    type uint32;
+    description
+      "Uniquely identifies any interface system-wide including
+       physical ports, LAG interfaces and Vlan interfaces";
+  }
+
+  typedef npu-id {
+    type uint32;
+    description
+      "Uniquely identifies a Network Processing Unit hardware
+       in the system";
+  }
+
+  typedef npu-port-id {
+    type uint32;
+    description
+      "Identifies a port within a Network Processing Unit";
+  }
+
+  typedef logical-switch-id {
+    type uint32;
+    description
+      "Logical Switch Identifier. Logical switch is a grouping
+       of one or more NPU(s) in the system. Each NPU can belong
+       to only one logical switch";
+  }
+
+  typedef vlan-id {
+    type uint16 {
+      range "1 .. 4094";
+    }
+    description
+      "This type denotes a IEEE 802.1Q VLAN Identifier.";
+    reference "IEEE 802.1Q";
+  }
+
+  typedef mac-address {
+    type binary {
+      length "6";
+    }
+    description
+      "This type denotes a MAC address as a 6 octet binary number
+       in network-byte order.";
+  }
+
+  typedef ipv4-address {
+    type binary {
+      length "4";
+    }
+    description
+      "This type denotes a IPv4 address as a 4 octet binary number
+       in network-byte order.";
+  }
+
+  typedef ipv6-address {
+    type binary {
+      length "16";
+    }
+    description
+      "This type denotes a IPv6 address as a 16 octet binary number
+       in network-byte order.";
+  }
+
+  typedef ip-address {
+    type union {
+      type base-cmn:ipv4-address;
+      type base-cmn:ipv6-address;
+    }
+    description
+      "This type denotes a IP address (V4 or V6) 4/16 binary number
+       in network-byte order.";
+  }
+
+  typedef af-type {
+    type enumeration {
+      enum "inet" {
+        /* Address family - IPv4 */
+        value 2;
+      }
+      enum "inet6" {
+        /* Address family - IPv6 */
+        value 10;
+      }
+    }
+    description
+      "Address Family";
+  }
+
+  typedef traffic-path {
+    type enumeration {
+      enum "ingress" {
+        value 1;
+        description
+          "Enable sampling on Ingress packets";
+      }
+      enum "egress" {
+        value 2;
+        description
+          "Enable sampling of Egress packets";
+      }
+      enum "ingress-egress" {
+        value 3;
+        description
+          "Enable sampling of Ingress and Egress packets";
+      }
+    }
+    default "ingress-egress";
+  }
+
+  typedef admin-status-type {
+    type enumeration {
+      enum "up" {
+        value 1;
+      }
+      enum "down" {
+        value 2;
+      }
+      enum "testing" {
+        value 3;
+      }
+    }
+  }
+
+  typedef oper-status-type {
+    type enumeration {
+      enum "up" {
+        value 1;
+        description
+          "Ready to pass packets.";
+      }
+      enum "down" {
+        value 2;
+        description
+          "Entity is down.";
+      }
+      enum "testing" {
+        value 3;
+        description
+          "In some test mode.  No operational packets can
+           be passed.";
+      }
+      enum "unknown" {
+        value 4;
+        description
+          "Status cannot be determined for some reason.";
+      }
+      enum "dormant" {
+        value 5;
+        description
+          "Waiting for some external event.";
+      }
+      enum "not-present" {
+        value 6;
+        description
+          "Some component (typically hardware) is missing.";
+      }
+      enum "lower-layer-down" {
+        value 7;
+        description
+          "Down due to state of lower-layer interface(s).";
+      }
+      enum "fail" {
+        value 8;
+        description
+          "The interface has an internal failure.";
+      }
+    }
+  }
+
+  typedef stat-type {
+    type enumeration {
+      enum "port-stat" {
+        value 1;
+      }
+      enum "flow-stat" {
+        value 2;
+      }
+      enum "prefix-stat" {
+        value 3;
+      }
+      enum "queue-stat" {
+        value 4;
+      }
+      enum "buffer-stat" {
+        value 5;
+      }
+      enum "interface-stat" {
+        value 6;
+      }
+    }
+    description
+      "various statistics type that can be supported with Flex Stat";
+  }
+
+  // @TODO : To be deprecated. Use IETF iana type
+  typedef interface-type {
+    type enumeration {
+      enum "l3-port" {
+        value 1;
+      }
+      enum "l2-port" {
+        value 2;
+      }
+      enum "loopback" {
+        value 3;
+      }
+      enum "null" {
+        value 4;
+      }
+      enum "tunnel" {
+        value 5;
+      }
+      enum "svi" {
+        value 6;
+      }
+      enum "cpu" {
+        value 7;
+      }
+      enum "management" {
+        value 8;
+      }
+      enum "ethernet" {
+        value 9;
+      }
+      enum "vlan" {
+        value 10;
+      }
+      enum "lag" {
+        value 11;
+      }
+    }
+    description
+      "Enumeration of the various support interface types";
+  }
+
+  typedef encap-type {
+    type enumeration {
+      enum "tagged" {
+        value 1;
+      }
+      enum "untagged" {
+        value 2;
+      }
+      enum "prio-tagged" {
+        value 3;
+      }
+    }
+    description
+      "Encapsulation types: need to add more types";
+  }
+
+  // @TODO : Check if needed.
+  typedef lag-hash-type {
+    type enumeration {
+      enum "src-ip" {
+        value 1;
+      }
+      enum "dest-ip" {
+        value 2;
+      }
+      enum "src-dest-ip" {
+        value 3;
+      }
+      enum "src-port" {
+        value 4;
+      }
+    }
+    description
+      "lag hashing info types: Need to add more hash types";
+  }
+
+  // @TODO : To be deprecated. Use IETF iana type
+  typedef tun-type {
+    type enumeration {
+      enum "ipv4-tunnel" {
+        value 1;
+      }
+      enum "ipv6-tunnel" {
+        value 2;
+      }
+      enum "gre-tunnel" {
+        value 3;
+      }
+      enum "vxlan-tunnel" {
+        value 4;
+      }
+      enum "nvgre-tunnel" {
+        value 5;
+      }
+      enum "erspan-tunnel" {
+        value 6;
+      }
+      enum "mpls-tunnel" {
+        value 7;
+      }
+    }
+    description
+      "Encapsulation types: need to add more types";
+  }
+
+  typedef base-obj-id-type {
+    type uint64;
+    description
+      "Common type for object IDs returned to Applications";
+  }
+
+  typedef qos-meter-opaque-data {
+    type binary;
+    description
+      "Meter info opaque data blob that Application obtains from
+       QoS module and passes to other Base modules.";
+  }
+
+  typedef qos-queue-opaque-data {
+    type binary;
+    description
+      "Queue info opaque data blob that Application obtains from
+       QoS module and passes to other Base modules.";
+  }
+
+  typedef mirror-opaque-data {
+    type binary;
+    description
+      "Mirroring session opaque data blob that Application obtains from
+       Mirroring module and passes to other Base modules.";
+  }
+
+  typedef lag-opaque-data {
+    type binary;
+    description
+      "LAG opaque data blob that Application obtains from
+       LAG module and passes to other Base modules.";
+  }
+
+  typedef ip-nexthop-group-opaque-data {
+    type binary;
+    description
+      "IP Nexthop group info opaque data blob that Application obtains
+       from Routing module and passes to other Base modules.";
+  }
+
+  typedef mirror-id {
+    type uint32;
+    description
+      "Identifier of the NAS mirror-session";
+  }
+
+  typedef dot1p {
+    type uint8 {range "0..7";}
+    description
+      "3-bit of priority field in 802.1Q header";
+  }
+
+  typedef traffic-class {
+    type uint8;
+    description
+      "Traffic class, i.e. internal QoS level";
+  }
+
+  typedef loopback-type {
+    type enumeration {
+      enum "none" {
+        value 1;
+      }
+      enum "phy" {
+        value 2;
+      }
+      enum "mac" {
+        value 3;
+      }
+    }
+    description "Physical port's loopback modes";
+  }
+  typedef duplex-type {
+    type enumeration {
+      enum "full" {
+        value 1;
+      }
+      enum "half" {
+        value 2;
+      }
+      enum "auto" {
+        value 3;
+      }
+    }
+  }
+  typedef breakout-type {
+    type enumeration {
+      enum DISABLED {
+        value 1;
+      }
+      enum BREAKOUT_4x1 {
+        value 2;
+      }
+      enum BREAKOUT_2x1 {
+        value 3;
+      }
+      enum BREAKOUT_1x1 {
+        value 4;
+      }
+    }
+  }
+
+}

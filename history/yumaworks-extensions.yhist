@@ -1,0 +1,6 @@
+# writing history/yumaworks-extensions.yhist
+++obj cps_api_obj_CAT_YWX
+--obj cps_api_obj_CAT_YWX end
+++obj global
+cps_api_obj_CAT_YWX=42
+--obj global end

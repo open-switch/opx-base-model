@@ -1,0 +1,51 @@
+
+module dell-base-if-linux {
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-linux";
+
+    prefix "base-if-linux";
+
+	import ietf-interfaces {
+		prefix "if";
+	}
+	
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization "Dell Inc";
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model augments the standard interface and adds Dell specific
+    				extensions.  This model contains the entry point for the
+    				interface object extensions.";
+
+    revision "2016-01-22" {
+        description "Initial version.";
+    }
+	
+	augment "/if:interfaces/if:interface" {
+		description "The following attributes are common to all interface types.";
+		
+        leaf if-index {
+            type base-cmn:logical-ifindex;
+            description "Can be used as an alternate to the name key field.  The if-index is the linux representation for the interface.";
+        }
+		leaf if-flags {
+			type uint32;
+			description "Private interface flags.  The contents are reserved.";
+		}
+		leaf if-master {
+			type uint32;
+			description "The if-index of the master for this specific interface";
+		}
+		leaf dell-type {
+			type base-cmn:interface-type;
+			description "The dell interface type.";
+		}
+	}	
+}
+
+
+
+
+

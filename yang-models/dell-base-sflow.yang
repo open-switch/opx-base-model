@@ -1,0 +1,76 @@
+module dell-base-sflow {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-sflow";
+    prefix "base-sflow";
+
+	import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization
+        "Dell Inc";
+
+    contact
+    "http://www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions provided
+         by platfrom to manage sflow objects";
+
+    revision 2014-02-11 {
+        description
+            "Initial revision";
+    }
+
+    list entry {
+
+        key "id";
+
+        description
+            "sflow session attributes";
+
+		leaf id{
+			type uint32;
+			description
+				"Session id to uniquely identify a sflow session";
+		}
+
+        leaf ifindex {
+            type base-cmn:logical-ifindex;
+        	mandatory true;	
+            description
+            	"Interface index which uniquely identifies physical
+            	 interface in the switch where packet sampling needs to
+            	 to be enabled";
+        }
+
+        leaf direction {
+            type base-cmn:traffic-path;
+            mandatory true;
+            description
+            	"Direction of packets in which sampling needs to be enabled";
+        }
+
+        leaf sampling-rate{
+        	type uint32;
+            mandatory true;
+            description "Rate at which packets sampling needs to be enabled";
+        }
+    }
+
+    container socket-address {
+        description
+            "Address that Sflow Applications need to open UDP socket on
+             to receive sampled packets. Sampled packets from all Sflow
+             sessions are sent to a single UDP socket.";
+
+        leaf ip {
+            type base-cmn:ipv4-address;
+            default 127.0.0.1;
+        }
+        leaf udp-port {
+            type uint16;
+            default 20001;
+        }
+    }
+}
