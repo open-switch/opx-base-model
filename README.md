@@ -64,7 +64,7 @@ Looking at the details in the YANG model (description) itself (`dell-base-if.yan
 
 From a CPS perspective, you can use the key `dell-base-if-cmn/if/interfaces/interface`.
 
-It also states that to do a query of lags, you need to specify the `ietf` interface type.
+It also states that to do a query of LAG interfaces, you need to specify the `ietf` interface type.
 
 Using the `cps_get_oid.py` script you would use:    
 
