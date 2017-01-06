@@ -18,6 +18,7 @@ The YANG class parser go through each file and generate the following:
 
 ## Where are the outputs?
 Good question...
+
 There are two main packages created from this source repository:
 
 - `libopx-model-dev` (model header files)  
