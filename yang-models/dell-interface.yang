@@ -44,7 +44,21 @@ module dell-interface {
         description
           "The interface's address at its protocol sub-layer.";
     }
-
+    leaf eee {
+        type uint32;
+        description
+            "EEE (802.3az) state for this interface";
+    }
+    leaf tx-idle-time {
+        type uint16;
+        description
+            "Tx idle time";
+    }
+    leaf tx-wake-time {
+        type uint16;
+        description
+            "Tx wake time";
+    }
   }
 
   // Phy and LAG
@@ -68,7 +82,8 @@ module dell-interface {
 
   // Phy specific
   augment "/if:interfaces/if:interface" {
-        when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'";
+        when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'
+             or  if:type = 'ianaift:fibreChannel'";
 
         leaf duplex {
           type base-cmn:duplex-type;
@@ -106,7 +121,11 @@ module dell-interface {
         }
       }
 
+
     augment "/if:interfaces-state/if:interface" {
+        when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'
+             or  if:type = 'ianaift:fibreChannel'";
+
 
         leaf duplex {
           type base-cmn:duplex-type;
@@ -486,6 +505,26 @@ module dell-interface {
             description "PFC 7 TX packet counter";
             type yang:counter64;
         }
+        leaf tx-lpi-count {
+            type yang:counter64;
+            description
+                "Tx LPI event count";
+        }
+        leaf tx-lpi-duration {
+            type yang:counter64;
+            description
+                "Tx LPI duration";
+        }
+        leaf rx-lpi-count {
+            type yang:counter64;
+            description
+                "Rx LPI event count";
+        }
+        leaf rx-lpi-duration {
+            type yang:counter64;
+            description
+                "Rx LPI duration";
+        }
 
     }
 
@@ -551,6 +590,27 @@ module dell-interface {
           }
         }
       }
+    }
+
+    rpc clear-eee-counters {
+        description "RPC for clearing 802.3az (EEE)interface counters. Input will be :
+                     a single interface name (or ifindex for base)";
+        input {
+            choice intf-choice {
+                case ifname-case {
+                    leaf ifname {
+                        type if:interface-ref;
+                        description "Interface name";
+                    }
+                }
+                case ifindex-case {
+                    leaf ifindex {
+                        type int32;
+                        description "Interface index";
+                    }
+                }
+            }
+        }
     }
 
 }

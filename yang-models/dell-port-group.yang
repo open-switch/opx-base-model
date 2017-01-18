@@ -1,0 +1,75 @@
+module dell-port-group {
+    namespace "http://www.dell.com/esg/networking/os10/dell-port-group";
+
+    prefix "dell-pg";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+	import dell-base-interface-common {
+		prefix "base-if";
+	}
+
+    organization "Dell Inc";
+    contact "http://www.dell.com/support/softwarecontacts";
+
+    description "This model contains Dell specific port-group defintion and its attributes.";
+
+    revision "2016-11-22" {
+        description "Initial version.";
+    }
+
+    container port-groups {
+
+        list port-group {
+            key "id";
+
+            description "This map contains the port group and its configurable attributes.";
+
+            leaf id {
+                type string;
+                description "ID of the port group ";
+            }
+
+            leaf phy-mode {
+                type base-if:phy-mode-type;
+                description "Port PHY mode, Ethernet or FC";
+            }
+
+            leaf breakout-mode {
+                description "this is the new breakout mode to configure.";
+                type base-cmn:breakout-type;
+            }
+
+            leaf port-speed {
+                type base-if:speed;
+                description "Max line speed of the breakout port. This indicates the max line rate at which
+                individual ports will operate post breakout";
+            }
+        }
+    }
+
+    container port-groups-state {
+        config false;
+        list port-group-state {
+            key "id";
+
+            description "This map contains the port group , theassociated front panel ports
+            and its configuration properties and capabilities.";
+
+            leaf id {
+                type string;
+                description "ID of the port group ";
+            }
+
+            leaf-list front-panel-port {
+                type uint32;
+                description "list of the front panel port Ids associated with this port-group.";
+            }
+
+            uses base-if:breakout-capabilities;
+        }
+    }
+}
+

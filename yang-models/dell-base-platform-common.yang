@@ -43,6 +43,94 @@ module dell-base-platform-common {
     description "Initial revision.";
   }
 
+  //fred cmd supported
+
+  typedef cmd-type {
+        description "mailbox commands supported";
+      type enumeration {
+          enum CMD-GET {
+              description "mailbox Get command";
+              value "1";
+          }
+          enum CMD-PUT {
+              description "mailbox put command";
+              value "2";
+          }
+      }
+  }
+
+  typedef snmp-version-type {
+      description "SNMP version type";
+      type enumeration {
+          enum V1 {
+              description "SNMP version V1";
+              value "1";
+          }
+          enum V2C {
+              description "SNMP version V2C";
+              value "2";
+          }
+          enum V3 {
+              description "SNMP version V3";
+              value "3";
+          }
+      }
+  }
+
+  typedef security-level-type {
+      description "Security level for snmp trap";
+      type enumeration {
+          enum noAUthNoPriv {
+              description "Security level noAUthNoPriv";
+              value "1";
+          }
+          enum authNoPriv {
+              description "Security level authNoPriv";
+              value "2";
+          }
+          enum authPriv {
+              description "Security level authPriv";
+              value "3";
+          }
+      }
+  }
+
+  typedef security-auth-type {
+      description "Security Authentication type";
+          type enumeration {
+              enum md5 {
+                  description "Authentication md5";
+                      value "1";
+              }
+              enum sha {
+                  description "Authentication sha";
+                      value "2";
+              }
+              enum sha1 {
+                  description "Authentication sha1";
+                      value "3";
+              }
+              enum sha256 {
+                  description "Authentication sha256";
+                      value "4";
+              }
+          }
+  }
+
+  typedef reset-session-key-type {
+      description "reset session key type";
+      type enumeration {
+          enum reset {
+              description "session key type as reset";
+              value "1";
+          }
+          enum force {
+              description "session key type as force";
+              value "2";
+          }
+      }
+  }
+
   // An entity is any FRU within a chassis
 
   typedef entity-type {
@@ -426,6 +514,7 @@ module dell-base-platform-common {
           }
           enum AR_QSFP_40GBASE_CR4_HAL_M {
               value 35;
+              status deprecated;
               description "Pluggable optics QSFP_40GBASE_CR4_HAL_M";
           }
           enum AR_QSFP_40GBASE_CR4_1M {
@@ -462,6 +551,7 @@ module dell-base-platform-common {
           }
           enum AR_4x10_10GBASE_CR1_HAL_M {
               value 44;
+              status deprecated;
               description "Pluggable optics 4x10_10GBASE_CR1_HAL_M";
           }
           enum AR_4x10_10GBASE_CR1_1M {
@@ -594,6 +684,7 @@ module dell-base-platform-common {
           }
           enum AR_QSFP28_100GBASE_CR4_HAL_M {
               value 77;
+              status deprecated;
               description "Pluggable optics AR_QSFP28_100GBASE_CR4_HALFM";
           }
           enum AR_QSFP28_100GBASE_CR4_1M {
@@ -630,6 +721,7 @@ module dell-base-platform-common {
           }
           enum 4X25_25GBASE_CR1_HALF_M {
               value 86;
+              status deprecated;
               description "Pluggable optics 4X25_25GBASE_CR1_HALF_M";
           }
           enum 4X25_25GBASE_CR1_1M {
@@ -654,6 +746,7 @@ module dell-base-platform-common {
           }
           enum 2X50_50GBASE_CR2_HALF_M {
               value 92;
+              status deprecated;
               description "Pluggable optics 2X50_50GBASE_CR2_HALF_M";
           }
           enum 2X50_50GBASE_CR2_1M {
@@ -682,6 +775,7 @@ module dell-base-platform-common {
           }
           enum SFP28_25GBASE_CR1_HALF_M {
               value 99;
+              status deprecated;
               description "Pluggable optics SFP28_25GBASE_CR1_HALF_M";
           }
           enum SFP28_25GBASE_CR1_1M {
@@ -775,6 +869,30 @@ module dell-base-platform-common {
           enum QSFP_40GBASE_PSM4_PIGTAIL {
               value 122;
               description "Pluggable optics QSFP_40GBASE_PSM4_PIGTAIL";
+          }
+          enum AR_QSFP_40GBASE_CR4_HALFM {
+              value 123;
+              description "Pluggable optics QSFP_40GBASE_CR4_HALFM";
+          }
+          enum AR_4x10_10GBASE_CR1_HALFM {
+              value 124;
+              description "Pluggable optics 4x10_10GBASE_CR1_HALFM";
+          }
+          enum AR_QSFP28_100GBASE_CR4_HALFM {
+              value 125;
+              description "Pluggable optics AR_QSFP28_100GBASE_CR4_HALFM";
+          }
+          enum 4X25_25GBASE_CR1_HALFM {
+              value 126;
+              description "Pluggable optics 4X25_25GBASE_CR1_HALFM";
+          }
+          enum 2X50_50GBASE_CR2_HALFM {
+              value 127;
+              description "Pluggable optics 2X50_50GBASE_CR2_HALFM";
+          }
+          enum SFP28_25GBASE_CR1_HALFM {
+              value 128;
+              description "Pluggable optics SFP28_25GBASE_CR1_HALFM";
           }
       }
   }
@@ -1524,28 +1642,6 @@ module dell-base-platform-common {
   grouping pld {
     description "Attributes of a programmable logic device (PLD)";
 
-    leaf oper-status {
-      description "Operational status";
-      type base-cmn:oper-status-type;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: Valid only if entity present
-      //               admin-status == testing => oper-status == down
-      // Persistent: N/A
-      // Notification: Yes; parameters (oper_status)
-    }
-
-    leaf fault-type {
-      description "Cause of fault";
-      type fault-type;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: Valid only if entity present and
-      //               if oper-status == fail
-      // Persistent: N/A
-      // Notification: Yes; parameters (fault_type)
-    }
-
     leaf version {
       description "PLD firmware version";
       type string;
@@ -1554,19 +1650,6 @@ module dell-base-platform-common {
       // Dependencies: Valid only if entity present
       // Persistent: N/A
       // Notification: No
-    }
-
-    leaf fw_filename {
-      description "File containing new PLD firmware";
-      type string;
-      config true;
-      // Qualifiers: target
-      // Dependencies: Valid only if entity present
-      // Default: N/A
-      // Persistent: N/A
-      // Notification: No
-      // Notes: Writing this attribute triggers an upgrade of the
-      //               PLD's firmware Flash memory.
     }
   }
 
@@ -2590,7 +2673,7 @@ module dell-base-platform-common {
     leaf cdr-enable {
       description "CDR enable/disable";
       type boolean;
-      config true; 
+      config true;
     }
 
     // Config parameters
@@ -2666,6 +2749,392 @@ module dell-base-platform-common {
     }
 
     // TBD
+  }
+  // Contains all the attributes of a fred
+  grouping fred {
+      description "Attributes of a chassis";
+
+      leaf iom-status-reg {
+          description "fault conditions on FReD";
+          type uint16;
+      }
+
+      leaf iom-chassis-service-tag {
+          description "Chassis service tag";
+          type string {
+              length "34";
+          }
+      }
+
+      leaf iom-firmware-rev {
+          description "IOM firmware revision";
+          type string {
+              length "32";
+          }
+      }
+
+      leaf fred-firmware-rev {
+          description "FReD firmware revision";
+          type string {
+              length "64";
+
+          }
+      }
+
+      leaf iom-slot-occupation {
+          description "FReD firmware revision";
+          type uint16;
+      }
+
+      leaf iom-port-enable {
+          description "Enable/Disable IOM front pannel port";
+          type binary {
+              length "16";
+          }
+      }
+
+
+      container capability {
+          description "IOM capability/list of supported mailbox objects";
+
+          leaf vendor-mgmt-uri {
+              type boolean;
+          }
+
+          leaf internal-mgmt-supported {
+              type boolean;
+          }
+
+          list  mailbox-supported {
+
+              key "obj-name";
+
+              leaf obj-name {
+                  type string;
+              }
+
+              leaf-list  cmd-supported {
+                  type cmd-type;
+              }
+          }
+      }
+
+      container mgmt-vlan {
+          description "get and set IOM public mgmt port vlan id";
+          leaf mgmt-vlan-id{
+              type uint32;
+          }
+      }
+
+
+      container mgmt-ipv4 {
+          description "IOM public mgmt ipv4 info";
+
+          leaf ipv4-enabled {
+              type boolean;
+          }
+
+          leaf dhcp-enabled {
+              type boolean;
+          }
+
+          leaf ip-address {
+              type base-cmn:ipv4-address;
+          }
+
+          leaf subnet-mask {
+              type base-cmn:ipv4-address;
+          }
+          leaf gateway {
+              type base-cmn:ipv4-address;
+          }
+
+          leaf dhcp-dns-enabled {
+              type boolean;
+          }
+          leaf primary-dns {
+              type base-cmn:ipv4-address;
+          }
+
+          leaf secondary-dns {
+              type base-cmn:ipv4-address;
+          }
+      }
+
+      container mgmt-ipv6 {
+          description "IOM public mgmt ipv6 info";
+
+          leaf ipv6-enabled {
+              type boolean;
+          }
+
+          leaf dhcp-enabled {
+              type boolean;
+          }
+
+          leaf ip-address {
+              type base-cmn:ipv6-address;
+          }
+
+          leaf subnet-mask {
+              type base-cmn:ipv6-address;
+          }
+          leaf gateway {
+              type base-cmn:ipv6-address;
+          }
+
+          leaf dhcp-dns-enabled {
+              type boolean;
+          }
+          leaf primary-dns {
+              type base-cmn:ipv6-address;
+          }
+
+          leaf secondary-dns {
+              type base-cmn:ipv6-address;
+          }
+
+      }
+
+      container internal-ipv6 {
+          description "IOM internal ip address at the Fabric D network";
+
+          leaf ip-address{
+              type base-cmn:ipv6-address;
+          }
+      }
+
+      container hostname {
+          description "IOM hostname";
+
+          leaf name {
+              type string;
+          }
+      }
+
+      container snmp-config {
+          description "get and set snmp IOM trap destination";
+
+          leaf snmp-enabled {
+              type boolean;
+          }
+
+          leaf snmp-version {
+              type string;
+          }
+
+          leaf read-community {
+              type string;
+          }
+
+          leaf write-community {
+              type string;
+          }
+
+      }
+
+      list snmp-trap-dest {
+          description "get and set IOM snmp trap destination ";
+
+          key "dest-id";
+
+          leaf dest-id {
+              type uint32;
+          }
+
+          leaf destination {
+              type string;
+          }
+
+          leaf port-number {
+              type uint32;
+          }
+
+          leaf trap-snmp-version {
+              type snmp-version-type;
+          }
+
+          leaf snmp-community {
+              type string;
+          }
+
+          leaf security-user {
+              type string;
+          }
+
+          leaf security-level {
+              type security-level-type;
+          }
+
+          leaf auth-type {
+              type security-auth-type;
+          }
+
+          leaf auth-passphase {
+              type string;
+          }
+
+          leaf priv-type {
+              type string;
+          }
+
+          leaf priv-passphase {
+              type string;
+          }
+      }
+
+      container internal-snmp-trap-dest {
+          description "get and set snmp trap destination in FAB D";
+
+          leaf destination {
+              type string;
+          }
+
+          leaf port-number {
+              type uint32;
+          }
+
+          leaf trap-snmp-version {
+              type snmp-version-type;
+          }
+
+          leaf snmp-community {
+              type string;
+          }
+
+          leaf security-user {
+              type string;
+          }
+
+          leaf security-level {
+              type security-level-type;
+          }
+
+          leaf auth-type {
+              type security-auth-type;
+          }
+
+          leaf auth-passphase {
+              type string;
+          }
+
+          leaf priv-type {
+              type string;
+          }
+
+          leaf priv-passphase {
+              type string;
+          }
+      }
+
+      list syslog-dest {
+          description "get and set syslog destination";
+          key "syslog-id";
+
+          leaf syslog-id {
+              type uint32;
+          }
+
+          leaf destination {
+              type string;
+          }
+
+          leaf port_number {
+              type string;
+          }
+      }
+
+      container timezone {
+          description "get and set IOM time zone UTC+2:00";
+
+          leaf timezone {
+              type string;
+          }
+      }
+
+      container ntp-config {
+          description "get and set IOM NTP config";
+
+          leaf ntp-enabled {
+              type boolean;
+          }
+
+          leaf ntp-server1 {
+              type string;
+          }
+
+          leaf ntp-server2 {
+              type string;
+          }
+
+          leaf ntp-server3 {
+              type string;
+          }
+      }
+
+      container current-time {
+          description "get and set current IOM UTC time";
+
+          leaf time {
+              type string;
+          }
+      }
+
+      container internal-admin {
+          description "user-name/password to login with admin privilege";
+
+          leaf user-name {
+              description "internal username";
+              type string;
+          }
+
+          leaf password {
+              description "password for the user";
+              type string;
+          }
+      }
+
+      container root-password {
+          description "set the current root password";
+
+          leaf password {
+              description "root password";
+              type string;
+          }
+      }
+
+      container default-root-password {
+          description "configure the default factory root password";
+
+          leaf hash-type {
+              description "hash type for password";
+              type security-auth-type;
+          }
+
+          leaf factory-default-root-password {
+              description "default password";
+              type string;
+          }
+      }
+
+      container sso-info {
+          description " Object to reset sso key and retrive new session key for restful interface";
+
+          leaf reset_session_key {
+              type reset-session-key-type;
+          }
+
+          leaf session-key {
+              description "New Session key";
+              type string;
+          }
+
+          leaf management_uri {
+              description "Valid management URI";
+              type string;
+          }
+      }
+
   }
 
 }

@@ -1,0 +1,121 @@
+module dell-base-if-fc {
+
+    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-fc";
+    prefix "base-if-fc";
+
+    import ietf-interfaces { prefix "if"; }
+    import dell-base-common { prefix "base-cmn"; }
+    import ietf-yang-types { prefix "yang"; }
+    import iana-if-type { prefix "ianaift"; }
+
+    organization
+        "Dell Inc";
+
+    contact
+        "www.dell.com/support/softwarecontacts";
+
+    description
+        "This module contains a collection of YANG definitions for creating fcoe
+        map";
+
+    revision 2016-11-21 {
+        description "Initial version";
+    }
+
+    typedef fcmac-mode {
+        type enumeration {
+            enum "FPMA_MODE" {
+                description
+                  "24 bit FC DID will be prefixed with 24 bit address
+                         configured on fcoe-map for generating mac address";
+                value 1;
+            }
+            enum "NULL_MODE" {
+                description "The mac address will be zero";
+                value 2;
+            }
+            enum "USER_MODE" {
+                description "The mac address will be configured by the user";
+                value 3;
+            }
+         }
+    }
+
+	augment "/if:interfaces/if:interface" {
+        when "if:type = 'ianaift:fibreChannel'";
+
+        leaf bb-credit {
+          type uint32;
+          description "The Buffer-to-Buffer Credit allocation";
+        }
+        leaf bb-credit-recovery {
+          type uint32;
+          description "The Buffer-to-Buffer Credit Recovery";
+        }
+
+        leaf src-mac-mode {
+             type fcmac-mode;
+             description "Specifies how source MAC address is to be formed";
+        }
+
+        leaf src-map-prefix {
+            type uint32;
+            description "Fiber channel mapper prefix for source address";
+        }
+
+        leaf ingress-src-mac {
+            type yang:phys-address;
+            description
+             "Source MAC provided by user and depends on the mac_mode configured";
+        }
+
+        leaf dest-mac-mode {
+             type fcmac-mode;
+             description "Specifies how destination MAC address is to be formed";
+
+        }
+
+        leaf dest-map-prefix {
+            type uint32;
+            description "Fiber channel mapper prefix for destination address";
+        }
+
+        leaf ingress-dest-mac {
+            type yang:phys-address;
+            description
+             "Ingress destination MAC for mapper";
+        }
+
+        leaf fcoe-pkt-vlanid {
+            type base-cmn:vlan-id;
+            description
+             "FCoE packet vlan-id";
+        }
+
+        leaf tag-protocol-id {
+            type uint16;
+            description
+             "Tag Protocol id for FCoE packet";
+        }
+
+        leaf priority {
+            type base-cmn:dot1p;
+            description
+             " Default priority for vlan tag";
+        }
+
+        leaf vft-header {
+            type uint32;
+            description
+             "Virtual Fabric Tagging ID or header";
+        }
+
+    }
+    augment "/if:interfaces-state/if:interface" {
+        leaf bb-credit-receive {
+            type uint32;
+            description " Buffer-to-Buffer Credit Receive";
+        }
+    }
+}
+

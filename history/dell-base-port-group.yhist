@@ -1,0 +1,9 @@
+# writing history/dell-base-port-group.yhist
+++obj cps_api_obj_CAT_BASE_PG
+BASE_PG_DELL_PG_PORT_GROUPS_PORT_GROUP_OBJ=3
+BASE_PG_DELL_PG_PORT_GROUPS_STATE_PORT_GROUP_STATE_HWPORT_LIST=1
+BASE_PG_DELL_PG_PORT_GROUPS_STATE_PORT_GROUP_STATE_OBJ=2
+--obj cps_api_obj_CAT_BASE_PG end
+++obj global
+cps_api_obj_CAT_BASE_PG=271
+--obj global end

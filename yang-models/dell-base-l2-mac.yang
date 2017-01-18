@@ -97,6 +97,28 @@ module dell-base-l2-mac {
             }
         }
     }
+
+     typedef mac-event-type {
+
+        type enumeration {
+            enum learnt {
+                value 1;
+                description
+                    "mac entry was learnt in npu";
+            }
+            enum aged {
+                value 2;
+                description
+                    "mac entry was aged out in npu";
+            }
+            enum flushed {
+                value 3;
+                description
+                    "mac entry was deleted in npu";
+            }
+        }
+    }
+
     grouping entry {
         description "This list defines MAC entry";
 
@@ -166,6 +188,14 @@ module dell-base-l2-mac {
                 "If this entry needs to be configured in the npu. Default behaviour is to
                  configure it in the NPU";
         }
+
+
+        leaf event-type{
+        	type mac-event-type;
+        	config false;
+        	description
+        	"When entry is published it will be published with the event type like learnt, aged, flushed";
+    	}
     }
 
     list table {
@@ -209,6 +239,14 @@ module dell-base-l2-mac {
             interface state changes";
         }
     }
+
+    list list{
+    	description "List of mac entries to be pusblished when event occurs in npu. This will be published as
+    				embedded list";
+    	list entries{
+    		uses entry;
+		}
+	}
 
     rpc flush {
     description "Flush the mac-addresses learned on a VLAN

@@ -121,6 +121,23 @@ module dell-base-if-phy {
             type uint32;
             description "Offset from system base MAC Address. MAC address of the port is calculated by adding mac_offset in base MAC address";
         }	
+
+        leaf phy-mode {
+            type base-if:phy-mode-type;
+            description "Port PHY mode, Ethernet or FC";
+        }
+
+		leaf breakout-mode {
+			config false;
+			type base-cmn:breakout-type;
+            description "Breakout mode of the front panel port";
+		}
+        leaf port-speed {
+            type base-if:speed;
+            description "port speed of the front panel port";
+        }
+		
+        uses base-if:breakout-capabilities;
 	}
 		
 	list hardware-port {
@@ -166,7 +183,23 @@ module dell-base-if-phy {
 
         leaf hardware-port-id {
             type base-cmn:npu-port-id;
+            status deprecated;
             description "This is the physical hardware port";
+        }
+
+        leaf-list hardware-port-list {
+            type base-cmn:npu-port-id;
+            description "This is the physical hardware port list";
+        }
+
+        leaf phy-mode {
+            type base-if:phy-mode-type;
+            description "Port PHY mode, Ethernet or FC";
+        }
+
+        leaf speed {
+            type base-if:speed;
+            description "Current max configured speed of physical port";
         }
 
 		leaf front-panel-number {
@@ -176,11 +209,13 @@ module dell-base-if-phy {
 		
         leaf-list breakout-capabilities {
 			type breakout-mode ;
+            status deprecated;
 		}
 		
 		leaf fanout-mode {
 			config false;
 			type breakout-mode;
+            status deprecated;
 		}
 		
         leaf phy-media {
@@ -209,6 +244,11 @@ module dell-base-if-phy {
 
         leaf loopback {
            type base-cmn:loopback-type;
+        }
+
+        leaf identification-led {
+            description "Led state to set OFF(0) / ON (1)";
+            type boolean;
         }
         	
         uses base-if:mac-learn-limit;
@@ -247,6 +287,9 @@ module dell-base-if-phy {
 	        leaf breakout-mode {
 				type breakout-mode ;
 			}	
+            leaf port-speed {
+                type base-if:speed;
+            }
 	    }
 	}
 
@@ -272,4 +315,3 @@ module dell-base-if-phy {
 	}
 
 }
-

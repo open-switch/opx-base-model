@@ -33,6 +33,14 @@ module dell-base-pas {
     uses platform:pas_notify;
   }
 
+  // FReD subcategory
+
+  container fred {
+      description "Attributes of FReD component in Starlynx";
+
+      uses platform:fred;
+  }
+
   // Chassis subcategory
 
   container chassis {
@@ -317,7 +325,7 @@ module dell-base-pas {
         description "Slot of port module on card";
         type uint8;
     }
-    
+
     leaf port {
         description "Port on port module";
         type uint8;
@@ -342,7 +350,7 @@ module dell-base-pas {
         description "Slot of port module on card";
         type uint8;
     }
-    
+
     leaf port {
         description "Port on port module";
         type uint8;
@@ -372,7 +380,7 @@ module dell-base-pas {
         description "Slot of port module on card";
         type uint8;
     }
-    
+
     leaf port {
         description "Port on port module";
         type uint8;

@@ -81,6 +81,38 @@ module dell-base-interface-common {
                 value 8;
                 description "The speed is dependent on the media type.";
             }
+            enum 20GIGE {
+                value 9;
+                description "20G data rate.";
+            }
+            enum 50GIGE {
+                value 10;
+                description "50G data rate.";
+            }
+            enum 200GIGE {
+                value 11;
+                description "200G data rate.";
+            }
+            enum 400GIGE {
+                value 12;
+                description "400G data rate.";
+            }
+            enum 4GFC {
+                value 13;
+                description "4G FC data rate.";
+            }
+            enum 8GFC {
+                value 14;
+                description "8G FC data rate.";
+            }
+            enum 16GFC {
+                value 15;
+                description "16G FC data rate.";
+            }
+            enum 32GFC {
+                value 16;
+                description "32G FC data rate.";
+            }
         }
     }
 
@@ -251,5 +283,39 @@ module dell-base-interface-common {
             }
         }
     }
+  typedef phy-mode-type {
+    type enumeration {
+      enum ETHERNET {
+        value 1;
+      }
+      enum FC {
+        value 2;
+      }
+    }
+  }
+  grouping breakout-capabilities {
+        list br-cap {
+        key "phy-mode breakout-mode";
+        description "List of breakout capabilities with max port speeds.";
+            leaf phy-mode {
+                type phy-mode-type;
+                description " Physical layer mode , FC or Ethernet";
+            }
+            leaf breakout-mode {
+                type base-cmn:breakout-type ;
+                description "Breakout mode capability.";
+            }
+            leaf-list port-speed {
+                type base-if:speed;
+                description "List of supported line speeds by the port";
+            }
+            leaf skip-ports {
+                type uint32;
+                description "Skip ports between two active port for the breakout mode";
+            }
+        }
+    }
+
+
 }
 
