@@ -271,7 +271,8 @@ libcpsclass_dell_base_hash_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 libcpsclass_dell_base_udf_la_SOURCES = @YANG_OUTPUT@/dell-base-udf.cpp
 libcpsclass_dell_base_udf_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
-@YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: %.yang
+@YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
+@YANG_OUTPUT@/%-stamp: %.yang
 	@ rm -f @YANG_OUTPUT@/$*.cpp
 	@ rm -f @YANG_OUTPUT@/$*.h
 	YANG_PATH=${YANG_DIRS} /usr/lib/opx/ar_parse_yang.sh $< @YANG_OUTPUT@ @YANG_OUTPUT@
