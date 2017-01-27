@@ -20,10 +20,10 @@ The YANG class parser go through each file and generate the following:
 Good question...
 There are two main packages created from this source repository:
 
-- `libopx-model-dev` (model header files)  
-- `libopx-model1` (model meta data in compiled format)
+- `libopx-base-model-dev` (model header files)
+- `libopx-base-model1` (model meta data in compiled format)
 
-After installing the `libopx-model-dev`, the header files are stored in the _/usr/include/opx_ folder (unless you change the prefix).
+After installing the `libopx-base-model-dev`, the header files are stored in the _/usr/include/opx_ folder (unless you change the prefix).
 
 The library metadata files are stored in the _usr/lib/x86_64-linux-gnu/_ directory (assuming default Debian 64-bit build).
 
