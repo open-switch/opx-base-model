@@ -1,7 +1,7 @@
 Source: opx-base-model
 Section: net
 Priority: optional
-Maintainer: Dell <support@dell.com>
+Maintainer: OpenSwitch Developers <ops-dev@lists.openswitch.net>
 Build-Depends:
  debhelper (>=9), dh-autoreconf, libopx-cps-dev, opx-yang-utils-dev
 Standards-Version: 3.9.3
