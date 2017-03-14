@@ -6,15 +6,15 @@ Applications/scripts can use existing models, and build new models for behavior 
 
 Read the _Application Programming Guide_ for more information on CPS interfaces.
 
-The YANG class parser go through each file and generate the following:
+The YANG class parser goes through each file and generates the following:
 
-**1**. C/C++ header files with all of the class names and attributes, enums, typedefs, and so on. 
+**1**. C/C++ header files with all class names and attributes, enums, typedefs, and so on. 
 
 **2**. C++ metadata files compiled to loadable models which are available to CPS-enabled applications.
 
 **3**. XML files with metadata can be used by other languages for which loadable models are not suitable.
 
-> **NOTE**: Generally, the name of the YANG model is reflected in the symbol prefix - class names, types, enums, and so on. We describe how we map YANG classes and attributes to C/C++ headers in the documentation.
+> **NOTE**: The name of the YANG model is generally reflected in the symbol prefix — class names, types, enums, and so on. We describe how we map YANG classes and attributes to C/C++ headers in the documentation.
 
 ## Where are the outputs?
 Good question...
@@ -32,18 +32,18 @@ You can see the metadata from Python using the `cps.type` API, or the `cps.info`
 ## Adding a new model
 To add a new model to the system, add a model file into the _yang-model_ directory:
 
-**1**. Create a new YANG model (extension should be .yang).
+**1**. Create a new YANG model (extension should be `.yang`).
 
 **2.** Copy the YANG model into the _yang-model_ directory.
 
-**3**. Update the makefile.ini with the appropriate model.
+**3**. Update the `makefile.ini` with the appropriate model.
 
-**4**. Run a build.
+**4**. Run the build.
 
 ## Changing/enhancing a model
-Adding attributes and deleting attributes are as easy as modifying the model, and recompiling.
+Adding attributes and deleting attributes are as easy as modifying the model and recompiling.
 
-The history files need to be kept in sync with the YANG model - that history file provides upgradability between model changes.
+The history files need to be kept in sync with the YANG model — that history file provides upgradability between model changes.
 
 ## Using models
 ### Platform example
@@ -58,11 +58,11 @@ Let's say that an application needs to get the LAG interfaces via script (ignori
 - In this file, the class is actually an augment of the `/if:interfaces/if:interface`
 - Prefix in the file is `dell-base-if-cmn`
 
-Since the mode is an augment, normally you would communicate using the key from the augmented object which is in this case `if/interfaces/interface`.
+Since the mode is an augment, normally you would communicate using the key from the augmented object which in this case is `if/interfaces/interface`.
 
 Looking at the details in the YANG model (description) itself (`dell-base-if.yang`), the documentation states that access to the class can be through the `dell-base-if-cmn/if/interfaces/interface` model.
 
-From a CPS perspective, you can use the key `dell-base-if-cmn/if/interfaces/interface`.
+From a CPS perspective, you can use the `dell-base-if-cmn/if/interfaces/interface` key.
 
 It also states that to do a query of LAG interfaces, you need to specify the `ietf` interface type.
 
