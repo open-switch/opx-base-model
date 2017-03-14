@@ -2,9 +2,7 @@
 This repository contains the YANG models which define the object model for all software components.
 
 ## Model overview
-Applications/scripts can use existing models, and build new models for behavior on the system.
-
-Read the _Application Programming Guide_ for more information on CPS interfaces.
+Applications/scripts can use existing models, and build new models for behavior on the system. Read the _Application Programming Guide_ for more information on CPS interfaces.
 
 The YANG class parser go through each file and generate the following:
 
@@ -14,14 +12,13 @@ The YANG class parser go through each file and generate the following:
 
 **3**. XML files with metadata can be used by other languages for which loadable models are not suitable.
 
-> **NOTE**: Generally, the name of the YANG model is reflected in the symbol prefix - class names, types, enums, and so on. We describe how we map YANG classes and attributes to C/C++ headers in the documentation.
+> **NOTE**: The name of the YANG model is generally reflected in the symbol prefix — class names, types, enums, and so on. We describe how we map YANG classes and attributes to C/C++ headers in the documentation.
 
 ## Where are the outputs?
-Good question...
-There are two main packages created from this source repository:
+Good question...there are two main packages created from this source repository:
 
-- `libopx-base-model-dev` (model header files)
-- `libopx-base-model1` (model meta data in compiled format)
+- `libopx-base-model-dev` — model header files
+- `libopx-base-model1` — model meta data in compiled format
 
 After installing the `libopx-base-model-dev`, the header files are stored in the _/usr/include/opx_ folder (unless you change the prefix).
 
@@ -32,13 +29,13 @@ You can see the metadata from Python using the `cps.type` API, or the `cps.info`
 ## Adding a new model
 To add a new model to the system, add a model file into the _yang-model_ directory:
 
-**1**. Create a new YANG model (extension should be .yang).
+**1**. Create a new YANG model (extension should be `.yang`).
 
 **2.** Copy the YANG model into the _yang-model_ directory.
 
-**3**. Update the makefile.ini with the appropriate model.
+**3**. Update the `makefile.ini` with the appropriate model.
 
-**4**. Run a build.
+**4**. Run the build.
 
 ## Changing/enhancing a model
 Adding attributes and deleting attributes are as easy as modifying the model, and recompiling.
