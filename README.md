@@ -4,15 +4,15 @@ This repository contains the YANG models which define the object model for all s
 ## Model overview
 Applications/scripts can use existing models, and build new models for behavior on the system. Read the _Application Programming Guide_ for more information on CPS interfaces.
 
-The YANG class parser go through each file and generate the following:
+The YANG class parser goes through each file and generates:
 
-**1**. C/C++ header files with all of the class names and attributes, enums, typedefs, and so on. 
+**1**. C/C++ header files with all class names and attributes, enums, typedefs, and so on. 
 
 **2**. C++ metadata files compiled to loadable models which are available to CPS-enabled applications.
 
 **3**. XML files with metadata can be used by other languages for which loadable models are not suitable.
 
-> **NOTE**: The name of the YANG model is generally reflected in the symbol prefix — class names, types, enums, and so on. We describe how we map YANG classes and attributes to C/C++ headers in the documentation.
+> **NOTE**: The name of the YANG model is generally reflected in the symbol prefix — class names, types, enums, and so on. We describe how to map YANG classes and attributes to C/C++ headers in the documentation.
 
 ## Where are the outputs?
 Good question...there are two main packages created from this source repository:
@@ -40,11 +40,11 @@ To add a new model to the system, add a model file into the _yang-model_ directo
 ## Changing/enhancing a model
 Adding attributes and deleting attributes are as easy as modifying the model, and recompiling.
 
-The history files need to be kept in sync with the YANG model - that history file provides upgradability between model changes.
+The history files need to be kept in sync with the YANG model — that history file provides upgradability between model changes.
 
 ## Using models
 ### Platform example
-Use a class from the `dell-base-pas.yang` model.
+Use a class from the `dell-base-pas.yang` model:
 
 - The model prefix is `base-pas`, and the class we want to use in this example is _entity_
 - The key for the entity class (within the `dell-base-pas.yang`) is _base-pas/entity_
@@ -61,7 +61,7 @@ Looking at the details in the YANG model (description) itself (`dell-base-if.yan
 
 From a CPS perspective, you can use the key `dell-base-if-cmn/if/interfaces/interface`.
 
-It also states that to do a query of LAG interfaces, you need to specify the `ietf` interface type.
+It also states that to do a query of LAG interfaces — you need to specify the `ietf` interface type.
 
 Using the `cps_get_oid.py` script you would use:    
 
