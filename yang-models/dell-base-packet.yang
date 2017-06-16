@@ -1,17 +1,21 @@
 module dell-base-packet {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-packet";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-packet";
     prefix "base-packet";
 
     import dell-base-common {
         prefix "base-cmn";
     }
 
+    import ietf-yang-types {
+        prefix yang;
+    }
+
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-    "http://www.dell.com/support/softwarecontacts";
+    "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions provided
@@ -217,16 +221,17 @@ module dell-base-packet {
 
         container socket-address {
             description
-                "Address that applications need to open UDP socket to receive matched packets";
+                "Address that applications need to open UDP socket to receive matched packets
+                 Applications must provide this while creating the rule with socket action";
 
             leaf ip {
+                mandatory true;
                 type base-cmn:ipv4-address;
-                default 127.0.0.2;
             }
 
             leaf udp-port {
+                mandatory true;
                 type uint16;
-                default 20002;
             }
         }
     }
@@ -251,7 +256,9 @@ module dell-base-packet {
         key "id";
 
         leaf id {
-            description  "Id to uniquely identify a packet match criteria";
+            description  "Id to uniquely identify a packet match criteria.
+                          A unique integer value shall be returned to the application and can
+                          be used as the key for all further get and delete actions";
             type uint32;
         }
 
@@ -284,4 +291,24 @@ module dell-base-packet {
             default true;
         }
     }
+
+    container statistics {
+        description "Collection of control packet statistics objects.";
+
+        leaf sflow-pkts {
+            description "Number of SFLOW sampled packets lifted to CPU";
+            type yang:counter64;
+        }
+
+        leaf in-pkts {
+            description "Number of ingressed packets received by packet-IO";
+            type yang:counter64;
+        }
+
+        leaf out-pkts {
+            description "Number of egressed packets trasmitted by packet-IO";
+            type yang:counter64;
+        }
+    }
+
 }

@@ -1,5 +1,5 @@
 module dell-port-group {
-    namespace "http://www.dell.com/esg/networking/os10/dell-port-group";
+    namespace "http://www.dellemc.com/networking/os10/dell-port-group";
 
     prefix "dell-pg";
 
@@ -11,10 +11,10 @@ module dell-port-group {
 		prefix "base-if";
 	}
 
-    organization "Dell Inc";
-    contact "http://www.dell.com/support/softwarecontacts";
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
 
-    description "This model contains Dell specific port-group defintion and its attributes.";
+    description "This model contains Dell EMC specific port-group defintion and its attributes.";
 
     revision "2016-11-22" {
         description "Initial version.";
@@ -63,12 +63,23 @@ module dell-port-group {
                 description "ID of the port group ";
             }
 
-            leaf-list front-panel-port {
-                type uint32;
-                description "list of the front panel port Ids associated with this port-group.";
+            uses base-if:breakout-capabilities;
+
+            leaf default-phy-mode {
+                type base-if:phy-mode-type;
+                description "Default Port PHY mode, Ethernet or FC";
             }
 
-            uses base-if:breakout-capabilities;
+            leaf default-breakout-mode {
+                description "Default breakout mode for the port-group";
+                type base-cmn:breakout-type;
+            }
+
+            leaf default-port-speed {
+                type base-if:speed;
+                description "Default breakout speed of the port-gorup";
+            }
+            
         }
     }
 }

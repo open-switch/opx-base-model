@@ -1,6 +1,6 @@
 module dell-base-routing {
 
-namespace "http://www.dell.com/esg/networking/os10/dell-base-routing";
+namespace "http://www.dellemc.com/networking/os10/dell-base-routing";
 prefix "base-route";
 
 import ietf-yang-types {
@@ -13,10 +13,10 @@ import dell-base-common {
 
 
 organization
-"Dell Inc";
+"Dell EMC";
 
 contact
-"http://www.dell.com/support/softwarecontacts";
+"http://www.dell.com/support";
 
 description
 "This module contains a collection of YANG definitions for
@@ -179,6 +179,20 @@ typedef nh-type {
     }
   }
 
+ typedef rt-operation-type {
+   type enumeration {
+      enum append {
+         value 1;
+         description "Operation to append nexthop(s) to an existing route";
+      }
+      enum delete {
+         value 2;
+         description "Operation to delete nexthop(s) from an existing route";
+      }
+   }
+ }
+
+
 /*
 * Configuration of the core elements of the Switch
 */
@@ -222,7 +236,7 @@ typedef nh-type {
 
    grouping next-hop-entry {
       description
-	"Grouping of the next hop entry";
+       "Grouping of the next hop entry";
 
       leaf nh-count {
         type uint32;
@@ -234,10 +248,10 @@ typedef nh-type {
           description "ECMP group ID or Non-ECMP nexthop ID";
         }
 
-	leaf nh-type {
-	type nh-type;
-	  description "Type of next hop";
-	}
+      leaf nh-type {
+        type nh-type;
+        description "Type of next hop";
+      }
 
      leaf hash-info {
         type hash-info;
@@ -652,4 +666,52 @@ grouping nexthop-tracking-object {
      }
   }
 
+  rpc route-nh-operation {
+    description "RPC to append or delete nexthop(s) to/from an existing route.";
+    input {
+
+      leaf operation {
+        mandatory true;
+        type rt-operation-type;
+        description "Operation to perform for the given nexthop(s) of an existing route.
+                     This is valid only during update to an existing route.";
+      }
+
+      leaf vrf-id {
+        type uint32;
+        default 0;
+        description "VRF ID";
+      }
+
+      leaf af {
+        mandatory true;
+        type base-cmn:af-type;
+        description "Address Family";
+      }
+
+      leaf route-prefix {
+        mandatory true;
+        type base-cmn:ip-address;
+        description "Route address";
+      }
+
+      leaf prefix-len {
+        mandatory true;
+        type uint32;
+        description "Route prefix Length";
+      }
+
+      leaf nh-count {
+        mandatory true;
+        type uint32;
+        description "Number of next hops added/deleted";
+      }
+
+      list nh-list {
+        key "nh-addr";
+        description "Next-Hop info depending on the number of next-hops added/deleted";
+        uses next-hop;
+      }
+    }
+  }
 }

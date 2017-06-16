@@ -1,5 +1,5 @@
 module dell-interface {
-  namespace "http://www.dell.com/esg/networking/os10/dell-interface";
+  namespace "http://www.dellemc.com/networking/os10/dell-interface";
   prefix "dell-if";
 
   import ietf-interfaces { prefix "if"; }
@@ -8,10 +8,10 @@ module dell-interface {
   import ietf-yang-types { prefix yang; }
   import iana-if-type { prefix "ianaift"; }
 
-  organization "Dell Inc";
-  contact "http://www.dell.com/support/softwarecontacts";
+  organization "Dell EMC";
+  contact "http://www.dell.com/support";
 
-  description "This model augments the standard interface and adds Dell specific
+  description "This model augments the standard interface and adds Dell EMC specific
     extensions. This model contains the entry point for the interface
     object extensions.";
 
@@ -23,6 +23,11 @@ module dell-interface {
     container vlan-globals {
       leaf default-vlan-id {
         type if:interface-ref;
+        must "/if:interfaces/if:interface[if:name = current()]"
+         +   "/dell-if:vlan-type = 'DATA'" {
+          error-message
+            "The default VLAN must be a data VLAN!";
+        }
         default "vlan1";
         description
               "Default vlan id for the switch";
@@ -59,6 +64,10 @@ module dell-interface {
         description
             "Tx wake time";
     }
+    leaf vrf-name {
+        type string;
+        description "VRF/Namespace name";
+    }
   }
 
   // Phy and LAG
@@ -72,7 +81,7 @@ module dell-interface {
     }
     leaf load-interval {
         type uint32 {
-          range "5..299";
+          range "30..299";
         }
         default "299";
         description
@@ -93,7 +102,6 @@ module dell-interface {
         }
         leaf auto-negotiation {
           type boolean;
-          default "true";
           description
                 "Link auto-negotiation setting on the interface";
         }
@@ -111,7 +119,6 @@ module dell-interface {
             }
             description
                 "Negotiation setting on the interface";
-            default "auto";
         }
         leaf speed {
           type base-if:speed;
@@ -120,6 +127,7 @@ module dell-interface {
                 "Should be removed and used from ietf yang model";
         }
       }
+
 
 
     augment "/if:interfaces-state/if:interface" {
@@ -197,7 +205,49 @@ module dell-interface {
           }
         }
       }
+  /* Ethernet specific */
+  augment "/if:interfaces/if:interface" {
+    when "if:type = 'ianaift:ethernetCsmacd'";
 
+    leaf fec {
+      type base-cmn:fec-type;
+      description
+              "Forward Error Correction type auto, disable or FEC type.
+               It is only applicable for 100G, 50G and 25G interfaces and it will throw Error
+               on any other type of interfaces. BASE module sets the default configuration
+               based on the support by plugged-in media and the Hardware";
+    }
+    leaf oui {
+       type uint32 {
+         range "0..16777215";
+       }
+       description
+          " Organisationally Unique Identifier for vendor Identification.
+            It is only applicable for 25G and 50G interfaces. Allowed range is
+            0 to 0xffffff and default value is 25G Consortium OUI 0x6A737D.
+            OUI configuration should be same for all 25G interface in a front panel port";
+    }
+  }
+
+  augment "/if:interfaces-state/if:interface" {
+    when "if:type = 'ianaift:ethernetCsmacd'";
+
+    leaf fec {
+      type base-cmn:fec-type;
+      description
+              "Forward Error Correction type auto, disable or FEC type.
+               It is only applicable for 100G, 50G and 25G interfaces";
+    }
+    leaf oui {
+       type uint32 {
+         range "0..16777215";
+       }
+       description
+          " Organisationally Unique Identifier for vendor Identification.
+            It is only applicable for 25G and 50G interfaces. Allowed range is
+            0 to 0xffffff and default value is 25G Consortium OUI 0x6A737D";
+    }
+  }
   // VLAN specfic
   augment "/if:interfaces/if:interface" {
     when "if:type = 'ianaift:l2vlan' or if:type = 'ianaift:l3vlan'";
@@ -212,12 +262,21 @@ module dell-interface {
             description "Enable/Disable learning per VLAN";
     }
 
+    leaf vlan-type {
+      description "VLAN type (data/management)";
+      type base-if:vlan-type;
+      default "DATA";
+    }
+
     leaf-list tagged-ports {
       type if:interface-ref;
       must "/if:interfaces/if:interface[if:name = current()]"
-         + "/dell-if:mode = 'MODE_L2HYBRID'" {
+         + "/dell-if:mode = 'MODE_L2HYBRID'"
+         + " or (../dell-if:vlan-type = 'MANAGEMENT'"
+         + " and /if:interfaces/if:interface[if:name = current()]"
+         + "/if:type = 'base-if:management')" {
         error-message
-          "Interface is not in switchport mode trunk!";
+          "Interface being added (to vlan) is not in switchport mode trunk!";
       }
     }
 
@@ -226,10 +285,28 @@ module dell-interface {
       must "/if:interfaces/if:interface[if:name = current()]"
          + "/dell-if:mode = 'MODE_L2' or
             /if:interfaces/if:interface[if:name = current()]"
-         + "/dell-if:mode = 'MODE_L2HYBRID'" {
+         + "/dell-if:mode = 'MODE_L2HYBRID'"
+         + " or (../dell-if:vlan-type = 'MANAGEMENT'"
+         + " and /if:interfaces/if:interface[if:name = current()]"
+         + "/if:type = 'base-if:management')" {
         error-message
-          "Interface is not in switchport mode access or trunk!";
+          "Interface being added (to vlan) is not in switchport mode access or trunk!";
       }
+    }
+  }
+
+  augment "/if:interfaces-state/if:interface" {
+   when "if:type = 'ianaift:fibreChannel'";
+
+       leaf bb-credit {
+           type uint32;
+           description "The Buffer-to-Buffer Credit allocation";
+       }
+
+       leaf fc-mtu {
+           type uint32;
+           description
+              "FC port MTU";
     }
   }
 
@@ -544,6 +621,134 @@ module dell-interface {
         }
     }
 
+    augment "/if:interfaces-state/if:interface/if:statistics" {
+        when "if:type = 'ianaift:fibreChannel'";
+
+        leaf rx-bytes {
+          type yang:counter64;
+          description
+            "Total received bytes";
+        }
+        leaf rx-frames {
+          type yang:counter64;
+          description
+            "Total number of good frames received";
+        }
+        leaf rx-ucast-pkts {
+          type yang:counter64;
+          description
+            "Total number of unicast packets received";
+        }
+        leaf rx-bcast-pkts {
+          type yang:counter64;
+          description
+            "Total number of broadcast packets received";
+        }
+        leaf rx-invalid-crc {
+          type yang:counter64;
+          description
+            "Total number of packets(includes Class 2,3 and F) received
+                with invalid CRC";
+        }
+        leaf rx-frame-too-long {
+          type yang:counter64;
+          description
+            "Total number (includes Class 2, 3, F) of too long frames received";
+        }
+        leaf rx-frame-truncated {
+          type yang:counter64;
+          description
+            "Total number (includes Class 2, 3 and F)of truncated frames received";
+        }
+        leaf rx-link-fail {
+          type yang:counter64;
+          description
+            "Total number of link fail received";
+        }
+        leaf rx-loss-sync {
+          type yang:counter64;
+          description
+            "Total number of loss synchronizations received";
+        }
+        leaf class2-rx-good-frames {
+          type yang:counter64;
+          description
+            "Total number of class 2 good frames received";
+        }
+        leaf class3-rx-good-frames {
+          type yang:counter64;
+          description
+            "Total number of class 3 good frames received";
+        }
+        leaf rx-bb-credit0 {
+          type yang:counter64;
+          description
+            "The number of transitions into the rx BB credit zero state";
+        }
+        leaf rx-bb-credit0_drop {
+          type yang:counter64;
+          description
+            "The number packets dropped due to BB credit 0";
+        }
+        leaf rx-prim-seq-err {
+          type yang:counter64;
+          description
+            "Total number of frames with primitive sequence Protocol errors received";
+        }
+        leaf rx-lip-count {
+          type yang:counter64;
+          description
+            "Total number of LIP(Loop Initialization Primitive Sequence) Count";
+        }
+        leaf tx-bytes {
+          type yang:counter64;
+          description
+            "Total transmit bytes";
+        }
+        leaf tx-frames {
+          type yang:counter64;
+          description
+            "Total number of frames transmitted";
+        }
+        leaf tx-ucast-pkts {
+          type yang:counter64;
+          description
+            "Total number of unicast packets transmitted";
+        }
+        leaf tx-bcast-pkts {
+          type yang:counter64;
+          description
+            "Total number of non-unicast packets transmitted";
+        }
+        leaf class2-tx-frames {
+          type yang:counter64;
+          description
+            "Total number of class 2 frames transmitted";
+        }
+        leaf class3-tx-frames {
+          type yang:counter64;
+          description
+            "Total number of class 3 frames transmitted";
+        }
+        leaf tx-bb-credit0 {
+          type yang:counter64;
+          description
+            "FC port full buffer counter(0 transmit BB credit)";
+        }
+        leaf tx-oversize_frames {
+          type yang:counter64;
+          description
+            "Total number (including Class 2, 3 and F) of oversize packets
+                transmitted";
+        }
+        leaf total-errors {
+          type yang:counter64;
+          description
+            "Total number of errors, including rx and tx";
+        }
+
+    }
+
     rpc clear-counters {
       description "RPC for clearing interface counters. Input can be :
                    1. Single interface name (or ifindex for base)
@@ -572,6 +777,9 @@ module dell-interface {
                 enum "ALL-MGMT" {
                   value 6;
                 }
+                enum "ALL-FC" {
+                  value 7;
+                }
               }
               description "All interfaces of all types or single type";
             }
@@ -594,9 +802,20 @@ module dell-interface {
 
     rpc clear-eee-counters {
         description "RPC for clearing 802.3az (EEE)interface counters. Input will be :
+                     all interfaces (all-intf = ALL), or
                      a single interface name (or ifindex for base)";
         input {
             choice intf-choice {
+                case all-intf-case {
+                    leaf all-intf {
+                        type enumeration {
+                            enum "ALL" {
+                                value 1;
+                            }
+                        }
+                        description "All EEE interfaces";
+                    }
+                }
                 case ifname-case {
                     leaf ifname {
                         type if:interface-ref;
@@ -610,6 +829,22 @@ module dell-interface {
                     }
                 }
             }
+        }
+    }
+
+    rpc if-location-led {
+        description
+          "Set the interface location led";
+        input {
+          leaf ifname {
+            type if:interface-ref;
+            description
+              "Interface name";
+          }
+          leaf led-on {
+               type boolean;
+               description "Indicates led state requested";
+          }
         }
     }
 

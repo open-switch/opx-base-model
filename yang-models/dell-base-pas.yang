@@ -1,6 +1,6 @@
 module dell-base-pas {
 
-  namespace "http://www.dell.com/esg/networking/os10/dell-base-pas";
+  namespace "http://www.dellemc.com/networking/os10/dell-base-pas";
 
   prefix "base-pas";
 
@@ -8,9 +8,9 @@ module dell-base-pas {
     prefix "platform";
   }
 
-  organization "Dell Inc";
+  organization "Dell EMC";
 
-  contact "http://www.dell.com/support/softwarecontacts";
+  contact "http://www.dell.com/support";
 
   description "Configuration and operational data for OS10 Platform Abtraction Service";
 
@@ -33,13 +33,23 @@ module dell-base-pas {
     uses platform:pas_notify;
   }
 
-  // FReD subcategory
+  // comm-dev subcategory
 
-  container fred {
-      description "Attributes of FReD component in Starlynx";
+  container comm-dev {
+      description "Attributes of comm-dev component";
 
-      uses platform:fred;
+      uses platform:comm-dev;
   }
+
+  // host-system subcategory
+
+  container host-system {
+      description "Attributes of host-system component";
+
+      uses platform:host-system;
+  }
+
+
 
   // Chassis subcategory
 

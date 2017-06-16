@@ -1,16 +1,16 @@
 module dell-base-env-tempctl {
-  namespace "http://www.dell.com/esg/networking/os10/dell-base-env-tempctl";
+  namespace "http://www.dellemc.com/networking/os10/dell-base-env-tempctl";
   prefix base-env-tempctl;
 
   import dell-base-platform-common {
     prefix platform;
   }
 
-  organization "Dell Inc";
+  organization "Dell EMC";
   contact
-    "http://www.dell.com/support/softwarecontacts";
+    "http://www.dell.com/support";
   description
-    "Configuration and Operational Data for Dell OS10 Environmental Temperature Control Service";
+    "Configuration and Operational Data for Dell EMC OS10 Environmental Temperature Control Service";
 
   revision 2015-08-17 {
     description

@@ -1,13 +1,13 @@
 module dell-base-port-group {
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-port-group";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-port-group";
     prefix "base-pg";
 
     import dell-port-group { prefix "dell-pg"; }
 
-    organization "Dell Inc";
-    contact "http://www.dell.com/support/softwarecontacts";
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
 
-    description "This model contains Dell specific port-group defintion and its attributes.";
+    description "This model contains Dell EMC specific port-group defintion and its attributes.";
 
     revision "2016-11-22" {
         description "Initial version.";
@@ -22,5 +22,13 @@ module dell-base-port-group {
             type uint32;
             description "List of hardware ports belonging to this port-group";
         }
+
+        leaf-list front-panel-port {
+            type uint32;
+            description "list of the front panel port Ids associated with this port-group.";
+        }
+    }
+
+    augment "/dell-pg:port-groups-state/dell-pg:port-group-state/dell-pg:br-cap" {
     }
 }

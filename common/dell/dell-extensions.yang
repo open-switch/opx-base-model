@@ -1,9 +1,9 @@
 module dell-extensions {
-    namespace "http://www.dell.com/esg/networking/os10/dell-extensions";
+    namespace "http://www.dellemc.com/networking/os10/dell-extensions";
     prefix os10-ext;
 
     description
-        "This module contains definitions for Dell proprietary 
+        "This module contains definitions for Dell EMC proprietary
          Yang extensions.";
 
     revision 2015-12-07 {
@@ -25,9 +25,8 @@ module dell-extensions {
 
     extension val-cb {
         description
-              "Validation check on behalf of the backend can be 
-               done in CMS context. This extension defines the 
-               name of the function for the validation.";
+              "This extension defines the name of callback function to
+               validate configuration.";
         argument cb_name; 
     }
 
@@ -42,7 +41,12 @@ module dell-extensions {
     extension ifname-trans {
         description
               "ifname-trans are used to define the need to translate
-               the interface name from CMS to CMA and vice-versa 
-               in a CMS operations";
+               an interface name";
     }
+
+    extension delete-empty-container {
+        description
+              "Delete a non-presence container if a container is empty";
+    }
+
 }

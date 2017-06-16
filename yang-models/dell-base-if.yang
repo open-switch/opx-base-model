@@ -1,5 +1,5 @@
 module dell-base-if-common {
-    namespace "http://www.dell.com/esg/networking/os10/base/dell-base-if-common";
+    namespace "http://www.dellemc.com/networking/os10/base/dell-base-if-common";
 
     prefix "dell-base-if-cmn";
 
@@ -13,10 +13,13 @@ module dell-base-if-common {
         prefix "base-cmn";
     }
 
-    organization "Dell Inc";
-    contact "http://www.dell.com/support/softwarecontacts";
+    import dell-interface {
+        prefix "dell-if";
+    }
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell specific
+    description "This model augments the standard interface and adds Dell EMC specific
                     extensions.  This model contains the entry point for the
                     interface object extensions.";
 
@@ -83,5 +86,13 @@ module dell-base-if-common {
         description "This method is used to get assgined mac address for different type of interfaces.
                 User should give required attributes such as interface-name, type as input. The actual
                 attributes needed depends on requested interface type";
+    }
+
+    augment "dell-if:clear-counters/dell-if:input" {
+
+    }
+
+    augment "dell-if:clear-eee-counters/dell-if:input" {
+
     }
 }

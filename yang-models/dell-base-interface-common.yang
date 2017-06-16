@@ -1,15 +1,15 @@
 module dell-base-interface-common {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-interface-common";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-interface-common";
     prefix "base-if";
 
     import iana-if-type { prefix "ianaift"; }
     import dell-base-common { prefix "base-cmn"; }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
-    contact "http://www.dell.com/support/softwarecontacts";
+    contact "http://www.dell.com/support";
 
     description
         "This module contains the collection of YANG definitions for
@@ -176,6 +176,19 @@ module dell-base-interface-common {
       }
     }
 
+    typedef vlan-type {
+        description "VLAN-type type definition";
+
+        type enumeration {
+            enum DATA {
+                value 1;
+            }
+            enum MANAGEMENT {
+                value 2;
+            }
+        }
+    }
+
 
     grouping physical-port-address {
         leaf unit-id {
@@ -295,7 +308,7 @@ module dell-base-interface-common {
   }
   grouping breakout-capabilities {
         list br-cap {
-        key "phy-mode breakout-mode";
+        key "phy-mode breakout-mode port-speed";
         description "List of breakout capabilities with max port speeds.";
             leaf phy-mode {
                 type phy-mode-type;
@@ -305,9 +318,9 @@ module dell-base-interface-common {
                 type base-cmn:breakout-type ;
                 description "Breakout mode capability.";
             }
-            leaf-list port-speed {
+            leaf port-speed {
                 type base-if:speed;
-                description "List of supported line speeds by the port";
+                description "Supported speed.";
             }
             leaf skip-ports {
                 type uint32;

@@ -1,6 +1,6 @@
 module dell-base-etl {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-etl";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-etl";
 
     prefix base-etl;
 
@@ -9,10 +9,10 @@ module dell-base-etl {
     }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "http://www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions for ETL objects";
@@ -90,7 +90,7 @@ module dell-base-etl {
         }
         leaf event-log-descr {
             type string;
-            description "Dell defined event log descriptions";
+            description "Dell EMC defined event log descriptions";
         }
         leaf event-log-timestamp {
             type string;

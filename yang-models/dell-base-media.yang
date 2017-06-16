@@ -1,5 +1,5 @@
 module dell-base-media {
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-media";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-media";
     prefix "base-media";
 
     import dell-base-interface-common {
@@ -10,9 +10,9 @@ module dell-base-media {
        prefix "base-cmn";
     }
 
-    organization "Dell Inc";
+    organization "Dell EMC";
 
-    contact "http://www.dell.com/support/softwarecontacts";
+    contact "http://www.dell.com/support";
 
     description "This model will support the configruation of params on interfaces";
 
@@ -58,6 +58,11 @@ module dell-base-media {
             config false;
             type base-if:speed;
             description " List of supported speed on this physical media";
+        }
+        leaf-list supported-phy-mode {
+            config false;
+            type base-if:phy-mode-type;
+            description " List of supported physical modes FC, ETHER on this physical media";
         }
     }
 }

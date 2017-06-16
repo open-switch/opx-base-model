@@ -1,5 +1,5 @@
 module dell-base-if-phy {
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-phy";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-if-phy";
 
     prefix "base-if-phy";
 
@@ -19,10 +19,10 @@ module dell-base-if-phy {
        prefix "platform";
     }
     	
-    organization "Dell Inc";
-    contact "http://www.dell.com/support/softwarecontacts";
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell specific
+    description "This model augments the standard interface and adds Dell EMC specific
     				physical port extensions.";
 
     revision "2016-01-01" {

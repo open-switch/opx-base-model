@@ -1,6 +1,6 @@
 module dell-base-platform-common {
 
-  namespace "http://www.dell.com/esg/networking/os10/dell-base-platform-common";
+  namespace "http://www.dellemc.com/networking/os10/dell-base-platform-common";
 
   prefix "platform";
 
@@ -20,13 +20,13 @@ module dell-base-platform-common {
     prefix "base-if";
   }
 
-  organization "Dell Inc";
+  organization "Dell EMC";
 
-  contact "http://www.dell.com/support/softwarecontacts";
+  contact "http://www.dell.com/support";
 
   description "Common definitions for platform hardware
 
-  Copyright (c) 2015-2016 by Dell, Inc.
+  Copyright (c) 2015-2016 by Dell EMC,
 
   All rights reserved.";
 
@@ -43,93 +43,6 @@ module dell-base-platform-common {
     description "Initial revision.";
   }
 
-  //fred cmd supported
-
-  typedef cmd-type {
-        description "mailbox commands supported";
-      type enumeration {
-          enum CMD-GET {
-              description "mailbox Get command";
-              value "1";
-          }
-          enum CMD-PUT {
-              description "mailbox put command";
-              value "2";
-          }
-      }
-  }
-
-  typedef snmp-version-type {
-      description "SNMP version type";
-      type enumeration {
-          enum V1 {
-              description "SNMP version V1";
-              value "1";
-          }
-          enum V2C {
-              description "SNMP version V2C";
-              value "2";
-          }
-          enum V3 {
-              description "SNMP version V3";
-              value "3";
-          }
-      }
-  }
-
-  typedef security-level-type {
-      description "Security level for snmp trap";
-      type enumeration {
-          enum noAUthNoPriv {
-              description "Security level noAUthNoPriv";
-              value "1";
-          }
-          enum authNoPriv {
-              description "Security level authNoPriv";
-              value "2";
-          }
-          enum authPriv {
-              description "Security level authPriv";
-              value "3";
-          }
-      }
-  }
-
-  typedef security-auth-type {
-      description "Security Authentication type";
-          type enumeration {
-              enum md5 {
-                  description "Authentication md5";
-                      value "1";
-              }
-              enum sha {
-                  description "Authentication sha";
-                      value "2";
-              }
-              enum sha1 {
-                  description "Authentication sha1";
-                      value "3";
-              }
-              enum sha256 {
-                  description "Authentication sha256";
-                      value "4";
-              }
-          }
-  }
-
-  typedef reset-session-key-type {
-      description "reset session key type";
-      type enumeration {
-          enum reset {
-              description "session key type as reset";
-              value "1";
-          }
-          enum force {
-              description "session key type as force";
-              value "2";
-          }
-      }
-  }
 
   // An entity is any FRU within a chassis
 
@@ -335,6 +248,23 @@ module dell-base-platform-common {
      }
   }
 
+  typedef port-type {
+    description "Port Type";
+    type enumeration {
+      enum PLUGGABLE {
+        description "Pluggable port type";
+        value "1";
+      }
+      enum FIXED {
+        description "Fixed port type";
+        value "2";
+      }
+      enum BACKPLANE {
+        description "Backplane port type";
+        value "3";
+      }
+    }
+  }
   typedef media-category {
     description "Media category";
     type enumeration {
@@ -369,6 +299,18 @@ module dell-base-platform-common {
       enum CXP28 {
         value "8";
         description "CXP28 media category";
+      }
+      enum QSFP-DD {
+        value "9";
+        description "QSFP-DD media category";
+      }
+      enum DEPOP-QSFP28 {
+        value "10";
+        description "Depopulated QSFP28 media category";
+      }
+      enum FIXED {
+        value "11";
+        description "Fixed media category";
       }
     }
   }
@@ -894,6 +836,219 @@ module dell-base-platform-common {
               value 128;
               description "Pluggable optics SFP28_25GBASE_CR1_HALFM";
           }
+          enum SFPPLUS_8GBASE_FC_SW {
+              value 129;
+              description "Pluggable optics SFPPLUS_8GBASE_FC_SW";
+          }
+          enum SFPPLUS_8GBASE_FC_LW {
+              value 130;
+              description "Pluggable optics SFPPLUS_8GBASE_FC_LW";
+          }
+          enum SFPPLUS_16GBASE_FC_SW {
+              value 131;
+              description "Pluggable optics SFPPLUS_16GBASE_FC_SW";
+          }
+          enum SFPPLUS_16GBASE_FC_LW {
+              value 132;
+              description "Pluggable optics SFPPLUS_16GBASE_FC_LW";
+          }
+          enum QSFPPLUS_64GBASE_FC_SW4 {
+              value 133;
+              description "Pluggable optics QSFPPLUS_64GBASE_FC_SW4";
+          }
+          enum QSFPPLUS_4X16_16GBASE_FC_SW {
+              value 134;
+              description "Pluggable optics QSFPPLUS_4X16_16GBASE_FC_SW";
+          }
+          enum QSFPPLUS_64GBASE_FC_LW4 {
+              value 135;
+              description "Pluggable optics QSFPPLUS_64GBASE_FC_LW4";
+          }
+          enum QSFPPLUS_4X16_16GBASE_FC_LW {
+              value 136;
+              description "Pluggable optics QSFPPLUS_4X16_16GBASE_FC_LW";
+          }
+          enum QSFP28_128GBASE_FC_SW4 {
+              value 137;
+              description "Pluggable optics QSFP28_128GBASE_FC_SW4";
+          }
+          enum QSFP28_4X32_32GBASE_FC_SW {
+              value 138;
+              description "Pluggable optics QSFP28_4X32_32GBASE_FC_SW";
+          }
+          enum QSFP28_128GBASE_FC_LW4 {
+              value 139;
+              description "Pluggable optics QSFP28_128GBASE_FC_LW4";
+          }
+          enum QSFP28_4X32_32GBASE_FC_LW {
+              value 140;
+              description "Pluggable optics QSFP28_4X32_32GBASE_FC_LW";
+          }
+          enum SFP28_32GBASE_FC_SW {
+              value 141;
+              description "Pluggable optics SFP28_32GBASE_FC_SW";
+          }
+          enum SFP28_32GBASE_FC_LW {
+              value 142;
+              description "Pluggable optics SFP28_32GBASE_FC_LW";
+          }
+          enum SFP28_25GBASE_SR_NOF {
+              value 143;
+              description "Pluggable optics SFP28_25GBASE_SR_NOF";
+          }
+          enum SFP28_25GBASE_eSR {
+              value 144;
+              description "Pluggable optics SFP28_25GBASE_eSR";
+          }
+          enum SFP28_25GBASE_LR {
+              value 145;
+              description "Pluggable optics SFP28_25GBASE_LR";
+          }
+          enum SFP28_25GBASE_LR_LITE {
+              value 146;
+              description "Pluggable optics SFP28_25GBASE_LR_LITE";
+          }
+          enum SFP28_25GBASE_SR_AOCXXM {
+              value 147;
+              description "Pluggable optics SFP28_25GBASE_SR_AOCXXM";
+          }
+          enum SFP28_25GBASE_CR1_LPBK {
+              value 148;
+              description "Pluggable optics SFP28_25GBASE_CR1_LPBK";
+          }
+          enum QSFP28-DD_200GBASE_CR4_HALFM {
+              value 149;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_HALFM";
+          }
+          enum QSFP28-DD_200GBASE_CR4_1M {
+              value 150;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_1M";
+          }
+          enum QSFP28-DD_200GBASE_CR4_2M {
+              value 151;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_2M";
+          }
+          enum QSFP28-DD_200GBASE_CR4_3M {
+              value 152;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_3M";
+          }
+          enum QSFP28-DD_200GBASE_CR4_5M {
+              value 153;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_5M";
+          }
+          enum QSFP28-DD_200GBASE_CR4 {
+              value 154;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4";
+          }
+          enum "QSFP28-DD_200GBASE_CR4_1_HALFM" {
+              value 155;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_1_HALFM";
+          }
+          enum QSFP28-DD_200GBASE_CR4_2_HALFM {
+              value 156;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_2_HALFM";
+          }
+          enum QSFP28-DD_2x100GBASE_CR4_1M {
+              value 157;
+              description "Pluggable optics QSFP28-DD_2x100GBASE_CR4_1M";
+          }
+          enum QSFP28-DD_2x100GBASE_CR4_2M {
+              value 158;
+              description "Pluggable optics QSFP28-DD_2x100GBASE_CR4_2M";
+          }
+          enum QSFP28-DD_2x100GBASE_CR4_3M {
+              value 159;
+              description "Pluggable optics QSFP28-DD_2x100GBASE_CR4_3M";
+          }
+          enum QSFP28-DD_8x25GBASE_CR4_1M {
+              value 160;
+              description "Pluggable optics QSFP28-DD_8x25GBASE_CR4_1M";
+          }
+          enum QSFP28-DD_8x25GBASE_CR4_2M {
+              value 161;
+              description "Pluggable optics QSFP28-DD_8x25GBASE_CR4_2M";
+          }
+          enum QSFP28-DD_8x25GBASE_CR4_3M {
+              value 162;
+              description "Pluggable optics QSFP28-DD_8x25GBASE_CR4_3M";
+          }
+          enum QSFP28-DD_200GBASE_CR4_LPBK {
+              value 163;
+              description "Pluggable optics QSFP28-DD_200GBASE_CR4_LPBK";
+          }
+          enum SFPPLUS_10GBASE_CR_1_HALFM {
+              value 164;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_1.5M";
+          }
+          enum SFPPLUS_10GBASE_CR_2_HALFM {
+              value 165;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_2.5M";
+          }
+          enum SFPPLUS_10GBASE_CR_1M {
+              value 166;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_1M";
+          }
+          enum SFPPLUS_10GBASE_CR_2M {
+              value 167;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_2M";
+          }
+          enum SFPPLUS_10GBASE_CR_3M {
+              value 168;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_3M";
+          }
+          enum SFPPLUS_10GBASE_CR_4M {
+              value 169;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_4M";
+          }
+          enum SFPPLUS_10GBASE_CR_5M {
+              value 170;
+              description "Pluggable optics SFPPLUS_10GBASE_CR_5M";
+          }
+          enum QSFP28-DD_200GBASE_SR4_HALFM {
+              value 171;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_HALFM";
+          }
+          enum QSFP28-DD_200GBASE_SR4_1M {
+              value 172;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_1M";
+          }
+          enum QSFP28-DD_200GBASE_SR4_2M {
+              value 173;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_2M";
+          }
+          enum QSFP28-DD_200GBASE_SR4_3M {
+              value 174;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_3M";
+          }
+          enum QSFP28-DD_200GBASE_SR4_5M {
+              value 175;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_5M";
+          }
+          enum QSFP28-DD_200GBASE_SR4 {
+              value 176;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4";
+          }
+          enum QSFP28-DD_200GBASE_SR4_1_HALFM {
+              value 177;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_1_HALFM";
+          }
+          enum QSFP28-DD_200GBASE_SR4_2_HALFM {
+              value 178;
+              description "Pluggable optics QSFP28-DD_200GBASE_SR4_2_HALFM";
+          }
+          enum 1GBASE_COPPER {
+              value 179;
+              description "Fixed copper port 1GBASE_COPPER";
+          }
+          enum 10GBASE_COPPER {
+              value 180;
+              description "Fixed copper port 10GBASE_COPPER";
+          }
+          enum 25GBASE_BACKPLANE {
+              value 181;
+              description "Fixed backplane port 25GBASE_BACKPLANE";
+          }
+
       }
   }
 
@@ -1052,7 +1207,7 @@ module dell-base-platform-common {
   grouping chassis {
     description "Attributes of a chassis";
 
-    uses eeprom;  // Include EEPROM attributes
+    uses eeprom;  //ude EEPROM attributes
 
     leaf oper-status {
       description "Operational status";
@@ -1171,7 +1326,7 @@ module dell-base-platform-common {
   grouping entity {
     description "Attributes of an entity (FRU)";
 
-    uses eeprom;        // Include EEPROM attributes
+    uses eeprom;        //ude EEPROM attributes
 
     leaf name {
       description "Printable name of entity";
@@ -1504,6 +1659,21 @@ module dell-base-platform-common {
       // Notification: Yes; parameters (oper_status)
     }
 
+    leaf on {
+      description "Power state of physical Digit Display LED";
+      type boolean;  // true <=> Digit Display LED on
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: Valid only if entity present.
+      //               Either 'on' or 'message' attribute supported,
+      //               depending on platform.
+      // Default: false
+      // Persistent: Across process restarts: Yes
+      //             Across kernel restarts:  No
+      //             Across power cycles:     No
+      // Notification: No
+    }
+
     leaf fault-type {
       description "Cause of fault";
       type fault-type;
@@ -1776,6 +1946,15 @@ module dell-base-platform-common {
       // Notification: Yes; parameters (present)
     }
 
+    leaf port-type {
+      description "Media type is pluggable or fixed or backplane or ...";
+      type port-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: Yes; parameters (present)
+    }
     leaf insertion-cnt {
       description "Number of times adapter inserted";
       type yang:gauge64;
@@ -1891,9 +2070,9 @@ module dell-base-platform-common {
       // Notification: No
     }
 
-    leaf dell-qualified {
-      description "Is dell qualified or not";
-      type boolean; // true <=> If its Dell qualified media
+    leaf qualified {
+      description "Is vendor qualified or not";
+      type boolean; // true <=> If it is vendor qualified media
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
@@ -2750,388 +2929,57 @@ module dell-base-platform-common {
 
     // TBD
   }
-  // Contains all the attributes of a fred
-  grouping fred {
-      description "Attributes of a chassis";
 
-      leaf iom-status-reg {
-          description "fault conditions on FReD";
+  // Contains all the attributes of host system
+  // Attributes contains info about host system
+
+  grouping host-system {
+
+      description "Attributes of host system";
+
+      leaf booted {
+          description "flag for host system booted successfully";
+          type boolean;
+      }
+
+      leaf software-rev {
+          description "Host system software revision";
+          type string {
+              length "32";
+          }
+      }
+
+      leaf slot-number {
+          description "host system slot number";
           type uint16;
       }
 
-      leaf iom-chassis-service-tag {
+  }
+
+  // Contains all the attributes of a comm-dev
+  // comm-dev works as communication channel
+  // between host(card) and master
+
+  grouping comm-dev {
+
+      leaf comm-msg {
+          description "msg between host system and master";
+          type string {
+              length "4096";
+          }
+      }
+
+      leaf chassis-service-tag {
           description "Chassis service tag";
           type string {
               length "34";
           }
       }
 
-      leaf iom-firmware-rev {
-          description "IOM firmware revision";
-          type string {
-              length "32";
-          }
-      }
-
-      leaf fred-firmware-rev {
-          description "FReD firmware revision";
+      leaf comm-dev-firmware-rev {
+          description "comm-dev firmware revision";
           type string {
               length "64";
-
-          }
-      }
-
-      leaf iom-slot-occupation {
-          description "FReD firmware revision";
-          type uint16;
-      }
-
-      leaf iom-port-enable {
-          description "Enable/Disable IOM front pannel port";
-          type binary {
-              length "16";
-          }
-      }
-
-
-      container capability {
-          description "IOM capability/list of supported mailbox objects";
-
-          leaf vendor-mgmt-uri {
-              type boolean;
-          }
-
-          leaf internal-mgmt-supported {
-              type boolean;
-          }
-
-          list  mailbox-supported {
-
-              key "obj-name";
-
-              leaf obj-name {
-                  type string;
-              }
-
-              leaf-list  cmd-supported {
-                  type cmd-type;
-              }
-          }
-      }
-
-      container mgmt-vlan {
-          description "get and set IOM public mgmt port vlan id";
-          leaf mgmt-vlan-id{
-              type uint32;
-          }
-      }
-
-
-      container mgmt-ipv4 {
-          description "IOM public mgmt ipv4 info";
-
-          leaf ipv4-enabled {
-              type boolean;
-          }
-
-          leaf dhcp-enabled {
-              type boolean;
-          }
-
-          leaf ip-address {
-              type base-cmn:ipv4-address;
-          }
-
-          leaf subnet-mask {
-              type base-cmn:ipv4-address;
-          }
-          leaf gateway {
-              type base-cmn:ipv4-address;
-          }
-
-          leaf dhcp-dns-enabled {
-              type boolean;
-          }
-          leaf primary-dns {
-              type base-cmn:ipv4-address;
-          }
-
-          leaf secondary-dns {
-              type base-cmn:ipv4-address;
-          }
-      }
-
-      container mgmt-ipv6 {
-          description "IOM public mgmt ipv6 info";
-
-          leaf ipv6-enabled {
-              type boolean;
-          }
-
-          leaf dhcp-enabled {
-              type boolean;
-          }
-
-          leaf ip-address {
-              type base-cmn:ipv6-address;
-          }
-
-          leaf subnet-mask {
-              type base-cmn:ipv6-address;
-          }
-          leaf gateway {
-              type base-cmn:ipv6-address;
-          }
-
-          leaf dhcp-dns-enabled {
-              type boolean;
-          }
-          leaf primary-dns {
-              type base-cmn:ipv6-address;
-          }
-
-          leaf secondary-dns {
-              type base-cmn:ipv6-address;
-          }
-
-      }
-
-      container internal-ipv6 {
-          description "IOM internal ip address at the Fabric D network";
-
-          leaf ip-address{
-              type base-cmn:ipv6-address;
-          }
-      }
-
-      container hostname {
-          description "IOM hostname";
-
-          leaf name {
-              type string;
-          }
-      }
-
-      container snmp-config {
-          description "get and set snmp IOM trap destination";
-
-          leaf snmp-enabled {
-              type boolean;
-          }
-
-          leaf snmp-version {
-              type string;
-          }
-
-          leaf read-community {
-              type string;
-          }
-
-          leaf write-community {
-              type string;
-          }
-
-      }
-
-      list snmp-trap-dest {
-          description "get and set IOM snmp trap destination ";
-
-          key "dest-id";
-
-          leaf dest-id {
-              type uint32;
-          }
-
-          leaf destination {
-              type string;
-          }
-
-          leaf port-number {
-              type uint32;
-          }
-
-          leaf trap-snmp-version {
-              type snmp-version-type;
-          }
-
-          leaf snmp-community {
-              type string;
-          }
-
-          leaf security-user {
-              type string;
-          }
-
-          leaf security-level {
-              type security-level-type;
-          }
-
-          leaf auth-type {
-              type security-auth-type;
-          }
-
-          leaf auth-passphase {
-              type string;
-          }
-
-          leaf priv-type {
-              type string;
-          }
-
-          leaf priv-passphase {
-              type string;
-          }
-      }
-
-      container internal-snmp-trap-dest {
-          description "get and set snmp trap destination in FAB D";
-
-          leaf destination {
-              type string;
-          }
-
-          leaf port-number {
-              type uint32;
-          }
-
-          leaf trap-snmp-version {
-              type snmp-version-type;
-          }
-
-          leaf snmp-community {
-              type string;
-          }
-
-          leaf security-user {
-              type string;
-          }
-
-          leaf security-level {
-              type security-level-type;
-          }
-
-          leaf auth-type {
-              type security-auth-type;
-          }
-
-          leaf auth-passphase {
-              type string;
-          }
-
-          leaf priv-type {
-              type string;
-          }
-
-          leaf priv-passphase {
-              type string;
-          }
-      }
-
-      list syslog-dest {
-          description "get and set syslog destination";
-          key "syslog-id";
-
-          leaf syslog-id {
-              type uint32;
-          }
-
-          leaf destination {
-              type string;
-          }
-
-          leaf port_number {
-              type string;
-          }
-      }
-
-      container timezone {
-          description "get and set IOM time zone UTC+2:00";
-
-          leaf timezone {
-              type string;
-          }
-      }
-
-      container ntp-config {
-          description "get and set IOM NTP config";
-
-          leaf ntp-enabled {
-              type boolean;
-          }
-
-          leaf ntp-server1 {
-              type string;
-          }
-
-          leaf ntp-server2 {
-              type string;
-          }
-
-          leaf ntp-server3 {
-              type string;
-          }
-      }
-
-      container current-time {
-          description "get and set current IOM UTC time";
-
-          leaf time {
-              type string;
-          }
-      }
-
-      container internal-admin {
-          description "user-name/password to login with admin privilege";
-
-          leaf user-name {
-              description "internal username";
-              type string;
-          }
-
-          leaf password {
-              description "password for the user";
-              type string;
-          }
-      }
-
-      container root-password {
-          description "set the current root password";
-
-          leaf password {
-              description "root password";
-              type string;
-          }
-      }
-
-      container default-root-password {
-          description "configure the default factory root password";
-
-          leaf hash-type {
-              description "hash type for password";
-              type security-auth-type;
-          }
-
-          leaf factory-default-root-password {
-              description "default password";
-              type string;
-          }
-      }
-
-      container sso-info {
-          description " Object to reset sso key and retrive new session key for restful interface";
-
-          leaf reset_session_key {
-              type reset-session-key-type;
-          }
-
-          leaf session-key {
-              description "New Session key";
-              type string;
-          }
-
-          leaf management_uri {
-              description "Valid management URI";
-              type string;
           }
       }
 

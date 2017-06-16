@@ -1,3 +1,17 @@
+opx-base-model (3.55.0) unstable; urgency=medium
+
+  * Feature: Added dell-base-if-fc, dell-base-port-group and dell-port-group object models
+  * Update: Manipulating next-hops for routes
+  * Update: QoS - deprecated .1p and DSCP to color mapping, changes to ECN
+  * Update: ACL - enhanced IPv6 capabilities
+  * Update: Added interface breakout capabilities (8x2, 2x2, 4x4, 2x4, 4x2)
+  * Update: Added optical media types (QSFP28-DD, QSFP28, depopulated QSFP, FC)
+  * Update: Added PHY mode support
+  * Update: Sync with SAI changes
+  * Bugfix: Miscellaneous fixes
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Mon, 01 May 2017 15:25:00 -0800
+
 opx-base-model (1.0.1) unstable; urgency=medium
 
   * Initial release.

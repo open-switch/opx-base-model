@@ -1,5 +1,5 @@
 module dell-yang-types {
-  namespace "http://www.dell.com/esg/networking/os10/dell-yang-types";
+  namespace "http://www.dellemc.com/networking/os10/dell-yang-types";
   prefix common;
 
   import ietf-inet-types {

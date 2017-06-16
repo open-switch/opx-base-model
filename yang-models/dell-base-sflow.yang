@@ -1,6 +1,6 @@
 module dell-base-sflow {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-sflow";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-sflow";
     prefix "base-sflow";
 
 	import dell-base-common {
@@ -8,10 +8,10 @@ module dell-base-sflow {
     }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-    "http://www.dell.com/support/softwarecontacts";
+    "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions provided
@@ -35,8 +35,28 @@ module dell-base-sflow {
 				"Session id to uniquely identify a sflow session";
 		}
 
+        choice  if {
+            case index {
+                leaf ifindex {
+                    type base-cmn:logical-ifindex;
+                    description
+                        "Interface Index which is unique across switch to identify
+                        logical/physical interface";
+                }
+            }
+            case name {
+                leaf ifname {
+                    type string;
+                    description
+                        "Interface name which is unique across switch to identify
+                        logical/physical interface";
+                }
+            }
+        }
+
         leaf ifindex {
             type base-cmn:logical-ifindex;
+            status deprecated;
         	mandatory true;	
             description
             	"Interface index which uniquely identifies physical

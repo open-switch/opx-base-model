@@ -1,6 +1,6 @@
 module dell-base-switch-element {
 
-namespace "http://www.dell.com/esg/networking/os10/dell-base-switch-element";
+namespace "http://www.dellemc.com/networking/os10/dell-base-switch-element";
 prefix "base-switch";
 
 import dell-base-common {
@@ -8,14 +8,14 @@ import dell-base-common {
 }
 
 organization
-"Dell Inc";
+"Dell EMC";
 
 contact
-    "http://www.dell.com/support/softwarecontacts";
+    "http://www.dell.com/support";
 
 description
 "This module contains a collection of YANG definitions for
-managing configuration and operational data for Dell Switch Element";
+managing configuration and operational data for Dell EMC Switch Element";
 
 revision 2014-08-06 {
 description
@@ -200,6 +200,44 @@ typedef hash-fields {
         }
     }
 
+    typedef profile-name {
+        type string {
+            length "1..32";
+        }
+    }
+    typedef uft-mode {
+        type enumeration {
+            enum "default-mode" {
+              value 1;
+            }
+            enum "scaled-l2" {
+              value 2;
+            }
+            enum "scaled-l3-routes" {
+              value 3;
+            }
+            enum "scaled-l3-hosts" {
+              value 4;
+            }
+        }
+    }
+
+    grouping mode-info {
+        leaf l2-mac-table-size {
+            type uint32;
+            description "l2 table size";
+        }
+        leaf l3-route-table-size {
+            type uint32;
+            description "l3 table size";
+        }
+        leaf host-table-size {
+            type uint32;
+            description "ARP/NBR table size";
+        }
+    }
+
+
 list switching-entity-env {
     key "switch-id";
     description  "the list of switching entities environment.";
@@ -242,6 +280,10 @@ container switching-entities {
     	description "The switches hash algorithm setting";
     }
 
+    leaf lag-hash-seed-value {
+        type uint32;
+        description "The switch lag hash seed value";
+    }
     leaf-list lag-hash-fields {
     	type hash-fields;
     	description "The switches hash fields used for lags";
@@ -262,7 +304,7 @@ container switching-entities {
     }
 
     leaf bridge-table-size {
-    	config false;
+        config false;
         type uint32;
         description "Size of Layer2 FDB";
     }
@@ -278,6 +320,11 @@ container switching-entities {
     	description "The switch ecmp hash algorithm setting";
     }
 
+    leaf ecmp-hash-seed-value {
+        type uint32;
+        description "The switch ecmp hash seed value";
+    }
+
     leaf-list ecmp-hash-fields {
     	type hash-fields;
     	description "The fields used for hasing in the case of ecmp";
@@ -288,25 +335,30 @@ container switching-entities {
         description "Maximum number of ECMP groups";
     }
     leaf max-ecmp-entry-per-group {
-        type uint32;
-        description "Maximum ECMP entries per group";
+        type uint32 {range "2..1024";}
+        default 64;
+        description "Configure maximum ECMP entries per group";
     }
     leaf ipv4-route-table-size {
+        config false;
         type uint32;
         description "Size of IPv4 Routing table";
     }
 
     leaf ipv6-route-table-size {
+        config false;
         type uint32;
         description "Size of IPv6 Routing table";
     }
 
     leaf ipv4-host-size {
+        config false;
         type uint32;
         description "Size of IPv4 NBR table";
     }
 
     leaf ipv6-host-size {
+        config false;
         type uint32;
         description "Size of IPv6 NBR table";
     }
@@ -411,6 +463,37 @@ container switching-entities {
     leaf counter-refresh-interval{
         type uint32;
         description "Time interval in seconds at which the counters will be read from NPU";
+    }
+    leaf switch-profile {
+        type profile-name;
+        description "configure switch profile, each profile will have different set of ports with
+                    differnt speeds conbination";
+    }
+    leaf-list supported-profiles {
+        config false;
+        type profile-name;
+        description "list of all supported switch profiles for a given platform";
+    }
+    leaf default-profile {
+        config false;
+        type profile-name;
+        description "default switch profile";
+    }
+    leaf uft-mode {
+        type uft-mode;
+        description "configured Unified Forwarding Table (UFT) mode";
+        default "default-mode";
+    }
+    list uft-mode-info {
+        config false;
+        description "describes the table size values for the given mode. by default
+                    returns all the modes and their respective table size";
+        key "mode";
+        leaf mode {
+            type uft-mode;
+            description "Unified Forwarding Table (UFT) mode";
+        }
+        uses mode-info;
     }
 
   }

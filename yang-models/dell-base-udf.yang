@@ -1,6 +1,6 @@
 module dell-base-udf {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-udf";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-udf";
     prefix "base-udf";
 
     import dell-base-common {
@@ -12,16 +12,16 @@ module dell-base-udf {
     }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions
         for managing User Defined Filters (UDFs).
 
-        Copyright (c) 2015-2016 by Dell, Inc.
+        Copyright (c) 2015-2016 by Dell EMC,
         All rights reserved.";
 
     revision 2016-10-04 {

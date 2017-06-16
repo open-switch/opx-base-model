@@ -1,5 +1,5 @@
 module dell-base-if-vlan {
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-if-vlan";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-if-vlan";
 
     prefix "base-if-vlan";
 
@@ -14,10 +14,10 @@ module dell-base-if-vlan {
         prefix "base-cmn";
     }
 
-    organization "Dell Inc";
-    contact "http://www.dell.com/support/softwarecontacts";
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell specific
+    description "This model augments the standard interface and adds Dell EMC specific
     				vlan extensions.";
 
     revision "2016-01-01" {

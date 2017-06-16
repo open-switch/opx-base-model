@@ -1,6 +1,6 @@
 module dell-base-qos {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-qos";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-qos";
     prefix "base-qos";
 
     import dell-base-common {
@@ -13,15 +13,15 @@ module dell-base-qos {
         prefix "inet";
     }
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "http://www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions for QoS objects
 
-         Copyright (c) 2015-2016 by Dell, Inc.
+         Copyright (c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
     revision 2016-03-31 {
@@ -216,6 +216,35 @@ module dell-base-qos {
             }
             enum DYNAMIC {
                 value 2;
+            }
+        }
+    }
+
+    typedef ecn-mark-mode {
+        type enumeration {
+            enum NONE {
+                value 0;
+            }
+            enum GREEN {
+                value 1;
+            }
+            enum YELLOW {
+                value 2;
+            }
+            enum RED {
+                value 3;
+            }
+            enum GREEN-YELLOW {
+                value 4;
+            }
+            enum GREEN-RED {
+                value 5;
+            }
+            enum YELLOW-RED {
+                value 6;
+            }
+            enum ALL {
+                value 7;
             }
         }
     }
@@ -466,9 +495,16 @@ module dell-base-qos {
         }
 
         leaf ecn-enable {
+            status deprecated;
             default false;
             type boolean;
             description "Flag to indicate if ECN generation is enabled on congestion";
+        }
+
+        leaf ecn-mark {
+            type ecn-mark-mode;
+            description "Flag to indicate what type of packets will be ECN-marked
+                         during congestion";
         }
 
         leaf-list npu-id-list {
@@ -514,6 +550,11 @@ module dell-base-qos {
             type base-cmn:base-obj-id-type;
             config false;
             description "unique queue id across the whole switch assigned to the queue";
+        }
+
+        leaf parent {
+            type base-cmn:base-obj-id-type;
+            description "parent scheduler group node in case of Hierarchical QoS support";
         }
 
         leaf wred-id {
@@ -828,9 +869,19 @@ module dell-base-qos {
                          Other values beyond this range are invalid.";
         }
 
+        leaf max-child {
+            type uint32;
+            description "Maximum number of child on group";
+        }
+
         leaf scheduler-profile-id {
             type base-cmn:base-obj-id-type;
             description "scheduler profile id associated to this scheduler group";
+        }
+
+        leaf parent {
+            type base-cmn:base-obj-id-type;
+            description "Scheduler group parent node. If the level is 0, the parent-node is the port.";
         }
     }
 
@@ -956,6 +1007,8 @@ module dell-base-qos {
     }
 
     list dot1p-to-tc-color-map {
+        status deprecated;
+
         key "id";
         description "This defines a map which maps the incoming dot1p values
                      to traffic-classes and marks a packet with a different color
@@ -1042,6 +1095,8 @@ module dell-base-qos {
     }
 
     list dscp-to-tc-color-map {
+        status deprecated;
+
         key "id";
         description "This defines a map which maps the incoming dscp values
                      to traffic-classes and  marks a packet with a different color
@@ -1133,6 +1188,8 @@ module dell-base-qos {
     }
 
     list tc-to-dot1p-map {
+        status deprecated;
+
         key "id";
         description "This defines a map which maps the traffic class to
                      egress dot1p values.
@@ -1173,6 +1230,8 @@ module dell-base-qos {
     }
 
     list tc-to-dscp-map {
+        status deprecated;
+
         key "id";
         description "This defines a map which maps the traffic class to
                      egress dscp values.
@@ -1437,6 +1496,10 @@ module dell-base-qos {
                          DYNAMIC means the threshold is defined in relative size
                          of the shared buffer.";
         }
+        leaf xoff-size {
+            type uint32;
+            description "Shared headroom pool size in bytes for lossless traffic.";
+        }
     }
 
     list buffer-pool-stat {
@@ -1489,12 +1552,20 @@ module dell-base-qos {
         }
 
         leaf shared-dynamic-threshold {
-            type uint32;
-            description "Dynamic threshold for the shared usage.
-                         The value is set to the 1/n of available
-                         buffer of the pool.
-                         Mandatory when the buffer pool threshold mode
-                         is dynamic.";
+            type uint8;
+            description "This attribute provides an index to an Alpha value,
+                         which is used to calculate the dynamic threshold for
+                         shared buffer usage.
+                         The valid range is [0..10], an index to the following
+                         array of Alpha values,
+                             [1/128, 1/64, 1/32, 1/16, 1/8, 1/4, 1/2, 1, 2, 4].
+                         The dynamic buffer threshold is calculated based on
+                         the following formula:
+                             (Alpha) / ((Number_of_Active_Queues * Alpha) + 1)
+                         For example, if Number_of_Active_Queues = 1, then the
+                         shared-dynamic-threshold setting of [0..10] results in
+                         [1/129, 1/65, 1/33, 1/17, 1/9, 1/5, 1/3, 1/2, 2/3, 4/5,
+                          8/9] of total shared buffer respectively.";
         }
 
         leaf shared-static-threshold {
@@ -1512,9 +1583,26 @@ module dell-base-qos {
 
         leaf xon-threshold {
             type uint32;
-            description "Generate XON when the total buffer usage of the PG
-                         is less than this threshold and available buffer
-                         in the PG buffer is larger than the XOFF threshold.";
+            description "XON non-hysteresis threshold in byte.
+                         Generate XON when the total buffer usage of the PG is
+                         less than the maximum of xon-threshold and the total
+                         buffer limit minus xon-offset-threshold, and available
+                         buffer in the PG buffer is larger than the XOFF threshold.
+                         The XON trigger condition is governed by:
+                         total buffer usage <=
+                         max(xon-threshold, total buffer limit - xon-offset-threshold)";
+        }
+
+        leaf xon-offset-threshold {
+            type uint32;
+            description "XON hysteresis threshold in byte.
+                         Generate XON when the total buffer usage of the PG is
+                         less than the maximum of xon-threshold and the total
+                         buffer limit minus xon-offset-threshold, and available
+                         buffer in the PG buffer is larger than the XOFF threshold.
+                         The XON trigger condition is governed by:
+                         total buffer usage <=
+                         max(xon-threshold, total buffer limit - xon-offset-threshold)";
         }
 
         leaf name {
@@ -1650,6 +1738,7 @@ module dell-base-qos {
         }
 
         leaf dot1p-to-tc-color-map {
+            status deprecated;
             type base-cmn:base-obj-id-type;
             description "A valid dot1p-to-tc-color-map id will enable trust-dot1p on the port,
                          (assigning traffic class) and color the incoming packet
@@ -1669,6 +1758,7 @@ module dell-base-qos {
         }
 
         leaf dscp-to-tc-color-map {
+            status deprecated;
             type base-cmn:base-obj-id-type;
             description "A valid dscp-to-color-map id will enable trust-dscp on the port,
                          (assigning traffic class) and color the incoming packet
@@ -1815,6 +1905,7 @@ module dell-base-qos {
         }
 
         leaf tc-to-dot1p-map {
+            status deprecated;
             type base-cmn:base-obj-id-type;
             description "A valid tc-to-dot1p-map id defines what dot1p value is set
                          for a packet egressing this destination port;
@@ -1823,6 +1914,7 @@ module dell-base-qos {
         }
 
         leaf tc-to-dscp-map {
+            status deprecated;
             type base-cmn:base-obj-id-type;
             description "A valid tc-to-dscp-map id defines what dscp value is set
                          for a packet egressing this destination port;

@@ -1,6 +1,6 @@
 module dell-base-neighbor {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-neighbor";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-neighbor";
     prefix "base-neighbor";
 
     import dell-base-common {
@@ -16,14 +16,19 @@ module dell-base-neighbor {
     }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "http://www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions for
         managing configuration and operational data for Neighbor Object";
+
+   revision 2017-03-13 {
+        description
+            "Clear neighbor functionality";
+    }
 
     revision 2016-11-03 {
         description
@@ -46,4 +51,32 @@ module dell-base-neighbor {
             description "Flush the neighbor entries configured/learnt on this interface";
         }
     }
+
+
+    /* For clear arp/neighbor support */
+    rpc flush {
+     description "Flush all the Neighbor entries per Interface or AF";
+     input {
+
+       leaf vrf-id {
+            type uint32;
+            default 0;
+            description "VRF ID";
+       }
+
+       leaf af {
+            type base-cmn:af-type;
+            /* Default Address family - IPv4 (supports both IPv4 and IPv6) */
+            default "inet";
+            description "Address Family of the Neighbor entries to be cleared";
+       }
+
+        /* To flush the Neighbor entries on a specific interface name */
+       leaf ifname {
+            type string;
+            description "Flush the Neighbor entries configured/learnt on this interface";
+       }
+     }
+    }
+
 }

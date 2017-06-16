@@ -1,16 +1,16 @@
 
 
 module dell-base-ip {
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-ip";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-ip";
     prefix "base-ip";
 
     import dell-base-interface-common {
         prefix "base-if";
     }
 
-    organization "Dell Inc";
+    organization "Dell EMC";
 
-    contact "http://www.dell.com/support/softwarecontacts";
+    contact "http://www.dell.com/support";
 
     description "This model will support the configruation of IP address.
 

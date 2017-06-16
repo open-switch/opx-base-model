@@ -1,13 +1,13 @@
 module dell-base-hash {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-hash";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-hash";
     prefix "base-traffic-hash";
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions for managing

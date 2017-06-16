@@ -35,7 +35,10 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/dell-base-etl.yang \
     $(top_srcdir)/yang-models/dell-base-neighbor.yang \
     $(top_srcdir)/yang-models/dell-base-hash.yang \
-    $(top_srcdir)/yang-models/dell-base-udf.yang
+    $(top_srcdir)/yang-models/dell-base-udf.yang \
+    $(top_srcdir)/yang-models/dell-base-if-fc.yang \
+    $(top_srcdir)/yang-models/dell-base-port-group.yang \
+    $(top_srcdir)/yang-models/dell-port-group.yang
 
 #Create VPATH for yang models
 YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
@@ -77,7 +80,10 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/dell-base-etl.cpp \
     @YANG_OUTPUT@/dell-base-neighbor.cpp \
     @YANG_OUTPUT@/dell-base-hash.cpp \
-    @YANG_OUTPUT@/dell-base-udf.cpp
+    @YANG_OUTPUT@/dell-base-udf.cpp \
+    @YANG_OUTPUT@/dell-base-if-fc.cpp \
+    @YANG_OUTPUT@/dell-base-port-group.cpp \
+    @YANG_OUTPUT@/dell-port-group.cpp
 
 YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/yumaworks-extensions.h \
@@ -115,7 +121,10 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/dell-base-etl.h \
     @YANG_OUTPUT@/dell-base-neighbor.h \
     @YANG_OUTPUT@/dell-base-hash.h \
-    @YANG_OUTPUT@/dell-base-udf.h
+    @YANG_OUTPUT@/dell-base-udf.h \
+    @YANG_OUTPUT@/dell-base-if-fc.h \
+    @YANG_OUTPUT@/dell-base-port-group.h \
+    @YANG_OUTPUT@/dell-port-group.h
 
 BUILT_SOURCES = ${YANG_GENERATED_SRCS} ${YANG_GENERATED_HDRS}
 
@@ -157,7 +166,10 @@ lib_LTLIBRARIES = \
     libcpsclass_dell-base-etl.la \
     libcpsclass_dell-base-neighbor.la \
     libcpsclass_dell-base-hash.la \
-    libcpsclass_dell-base-udf.la
+    libcpsclass_dell-base-udf.la \
+    libcpsclass_dell-base-if-fc.la \
+    libcpsclass_dell-base-port-group.la \
+    libcpsclass_dell-port-group.la
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
 AM_CXXFLAGS = -fPIC --std=c++11
@@ -270,6 +282,15 @@ libcpsclass_dell_base_hash_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
 libcpsclass_dell_base_udf_la_SOURCES = @YANG_OUTPUT@/dell-base-udf.cpp
 libcpsclass_dell_base_udf_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_dell_base_if_fc_la_SOURCES = @YANG_OUTPUT@/dell-base-if-fc.cpp
+libcpsclass_dell_base_if_fc_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_dell_base_port_group_la_SOURCES = @YANG_OUTPUT@/dell-base-port-group.cpp
+libcpsclass_dell_base_port_group_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_dell_port_group_la_SOURCES = @YANG_OUTPUT@/dell-port-group.cpp
+libcpsclass_dell_port_group_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang

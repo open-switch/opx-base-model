@@ -1,14 +1,14 @@
 module dell-base-etl-common {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-etl-common";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-etl-common";
 
     prefix base-etl-common;
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "http://www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of common YANG definitions for ETL logging and event notification objects.";
@@ -19,36 +19,36 @@ module dell-base-etl-common {
 
     typedef severity-level-type {
         type enumeration {
-            enum "log-emerg" { 
+            enum "log-emerg" {
                 value "0";
                 description "Emergency level - enum definition starts at 0 due to
                              required mapping to Linux syslog severity level definitions";
             }
-            enum "log-alert" { 
+            enum "log-alert" {
                 value "1";
                 description "Alert level";
             }
-            enum "log-crit" { 
+            enum "log-crit" {
                 value "2";
                 description "Critical level";
             }
-            enum "log-err" { 
+            enum "log-err" {
                 value "3";
                 description "Error level";
             }
-            enum "log-warning" { 
+            enum "log-warning" {
                 value "4";
                 description "Warning level";
             }
-            enum "log-notice" { 
+            enum "log-notice" {
                 value "5";
                 description "Notice level";
             }
-            enum "log-info" { 
+            enum "log-info" {
                 value "6";
                 description "Info level";
             }
-            enum "log-debug" { 
+            enum "log-debug" {
                 value "7";
                 description "Debug level";
             }
@@ -74,23 +74,23 @@ module dell-base-etl-common {
 
     typedef log-config-type {
         type enumeration {
-            enum "buffer" { 
+            enum "buffer" {
                 value "1";
                 description "Buffer configuration";
             }
-            enum "console" { 
+            enum "console" {
                 value "2";
                 description "Console configuration";
             }
-            enum "terminal-monitor" { 
+            enum "terminal-monitor" {
                 value "3";
                 description "Terminal monitor configuration";
             }
-            enum "history" { 
+            enum "history" {
                 value "4";
                 description "History configuration";
             }
-            enum "all-log-enable" { 
+            enum "all-log-enable" {
                 value "5";
                 description "All logging enable configuration";
             }

@@ -1,6 +1,6 @@
 module dell-base-acl {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-acl";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-acl";
     prefix "base-acl";
 
     import ietf-inet-types {
@@ -20,16 +20,16 @@ module dell-base-acl {
     }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions
          for managing Access Control Lists (ACLs).
 
-         Copyright (c) 2015-2016 by Dell, Inc.
+         Copyright (c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
     revision 2014-12-01 {
@@ -272,6 +272,16 @@ module dell-base-acl {
             enum UDF {
               value 42;
                 description "Match packets based on UDF byte list";
+            }
+
+            enum IPV6_NEXT_HEADER {
+              value 43;
+                description "Match IPv6 packets based on next header byte";
+            }
+
+            enum RANGE_CHECK {
+              value 44;
+                description "Match based on range settings";
             }
         }
     }
@@ -1018,6 +1028,18 @@ module dell-base-acl {
             uses udf-match;
             description "Value for UDF byte array.";
         }
+
+        container IPV6_NEXT_HEADER_VALUE {
+            when "../type = IPV6_NEXT_HEADER";
+            uses uint8-match;
+            description "Value for IPv6 next header byte.";
+        }
+
+        leaf-list RANGE_CHECK_VALUE {
+            when "../type = RANGE_CHECK";
+            type base-cmn:base-obj-id-type;
+            description "List of ACL range checker IDs.";
+        }
     }
 
     grouping action-parameters {
@@ -1426,7 +1448,7 @@ module dell-base-acl {
                     The existing ACL entry will be overwritten with the new
                     ACL entry defined by such an object.
 .
-              - Incremental mode
+              -emental mode
                     By forming CPS Object out of the inner Match filter or Action
                     sub-object using the Table ID, Entry ID and Match-Type or
                     Action-Type as keys and providing the values for a
@@ -1625,6 +1647,70 @@ module dell-base-acl {
                  associated with this counter on the given NPU.
                  This is valid only if BYTE counter type is enabled
                  for this counter.";
+        }
+    }
+
+    typedef range-type {
+        type enumeration {
+            enum L4_SRC_PORT {
+                value 1;
+                description "Checking source port field of TCP/UDP
+                             header.";
+            }
+
+            enum L4_DST_PORT {
+                value 2;
+                description "Checking destination port field of
+                             TCP/UDP header.";
+            }
+
+            enum OUTER_VLAN {
+                value 3;
+                description "Checking outer VLAN ID.";
+            }
+
+            enum INNER_VLAN {
+                value 4;
+                description "Checking inner VLAN ID.";
+            }
+
+            enum PACKET_LENGTH {
+                value 5;
+                description "Checking length in bytes of L3 payload
+                             plus L3 header.";
+            }
+        }
+    }
+
+    list range {
+        key "id";
+
+        description "List defines Range Checker to check if a certain
+                     parameter falls within a range value";
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ID generated upon Create request.
+                         Subsequent Modify and Delete request required
+                         this Range ID to be passed in.";
+        }
+
+        leaf type {
+            mandatory true;
+            type range-type;
+            description "Specify parameter type to check.";
+        }
+
+        leaf limit_min {
+            mandatory true;
+            type uint32;
+            description "Minimum limit of range";
+        }
+
+        leaf limit_max {
+            mandatory true;
+            type uint32;
+            description "Maximum limit of range";
         }
     }
 }

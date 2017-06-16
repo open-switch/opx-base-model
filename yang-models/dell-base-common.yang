@@ -1,10 +1,10 @@
 module dell-base-common {
-  namespace "http://www.dell.com/esg/networking/os10/dell-base-common";
+  namespace "http://www.dellemc.com/networking/os10/dell-base-common";
   prefix base-cmn;
 
-  organization "Dell Inc";
+  organization "Dell EMC";
   contact
-    "http://www.dell.com/support/softwarecontacts";
+    "http://www.dell.com/support";
   description
     "This module contains a collection of common YANG derived types used
      in other Base Yang modules.";
@@ -138,6 +138,29 @@ module dell-base-common {
       }
     }
     default "ingress-egress";
+  }
+
+  typedef fec-type {
+    type enumeration {
+      enum "auto" {
+        value 1;
+      }
+      enum "off" {
+        value 2;
+      }
+      enum "cl91-rs" {
+        value 3;
+      }
+      enum "cl74-fc" {
+        value 4;
+      }
+      enum "cl108-rs" {
+        value 5;
+      }
+      enum "not-supported" {
+        value 6;
+      }
+    }
   }
 
   typedef admin-status-type {
@@ -418,6 +441,7 @@ module dell-base-common {
     }
   }
   typedef breakout-type {
+    /* Breakout NxM implies N logical interfaces derived from M front panel ports */
     type enumeration {
       enum DISABLED {
         value 1;
@@ -431,7 +455,21 @@ module dell-base-common {
       enum BREAKOUT_1x1 {
         value 4;
       }
+      enum BREAKOUT_8x2 {
+        value 5; /* 8 logical interfaces derived from 2 front panel ports */
+      }
+      enum BREAKOUT_2x2 {
+        value 6; /* 2 logical interfaces derived from 2 front panel ports */
+      }
+      enum BREAKOUT_4x4 {
+        value 7; /* 4 logical interfaces derived from 4 front panel ports */
+      }
+      enum BREAKOUT_2x4 {
+        value 8; /* 2 logical interfaces derived from 4 front panel ports */
+      }
+      enum BREAKOUT_4x2 {
+        value 9; /* 4 logical interfaces derived from 2 front panel ports */
+      }
     }
   }
-
 }

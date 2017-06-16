@@ -1,6 +1,6 @@
 module dell-base-l2-mac {
 
-    namespace "http://www.dell.com/esg/networking/os10/dell-base-l2-mac";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-l2-mac";
     prefix "base-mac";
 
 
@@ -9,16 +9,16 @@ module dell-base-l2-mac {
     }
 
     organization
-        "Dell Inc";
+        "Dell EMC";
 
     contact
-        "www.dell.com/support/softwarecontacts";
+        "http://www.dell.com/support";
 
     description
         "This module contains a collection of YANG definitions provided
          by OS10 base for managing MAC objects
 
-         Copyright(c) 2015-2016 by Dell, Inc.
+         Copyright(c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
     revision 2015-10-30 {
@@ -116,6 +116,37 @@ module dell-base-l2-mac {
                 description
                     "mac entry was deleted in npu";
             }
+            enum moved {
+            	value 4;
+            	description
+            		"mac entry was moved";
+    		}
+        }
+    }
+
+    typedef mac-flush-type {
+
+        type enumeration {
+            enum port {
+                value 1;
+                description
+                    "mac flush on the port";
+            }
+            enum vlan-port {
+                value 2;
+                description
+                    "mac flush on the given vlan port combination";
+            }
+            enum vlan {
+                value 3;
+                description
+                    "mac flush on the given vlan";
+            }
+            enum all {
+            	value 4;
+            	description
+            		"mac flush on all vlan/ports";
+    		}
         }
     }
 
@@ -191,11 +222,18 @@ module dell-base-l2-mac {
 
 
         leaf event-type{
-        	type mac-event-type;
-        	config false;
-        	description
-        	"When entry is published it will be published with the event type like learnt, aged, flushed";
+            type mac-event-type;
+            config false;
+            description
+                "When entry is published it will be published with the event type like learnt, aged, flushed";
     	}
+
+        leaf publish{
+            type boolean;
+            default false;
+            description
+                "When entry is programmed by application in npu, if entry needs to be published";
+        }
     }
 
     list table {
@@ -247,6 +285,58 @@ module dell-base-l2-mac {
     		uses entry;
 		}
 	}
+	
+	grouping flush{
+		description "This grouping is to define the mac flush attributes";
+		leaf vlan {
+			type base-cmn:vlan-id;
+			description
+			"Vlan ID where mac flush is to be done";
+        }
+
+		leaf ifindex {
+			type base-cmn:logical-ifindex;
+			description
+			    "System wide unique identifier of the interface
+				 where MAC flush is to be done.";
+        }
+
+        leaf ifname {
+            type string;
+            description
+                "Interface name associated with this MAC entry";
+        }
+        		
+        leaf all {
+            type boolean;
+            default false;
+            description
+                "By default only dynamic entries will be flushed. It this
+                 option is set then static and dynamic shall be flushed.";
+        }
+
+        leaf flush-type{
+        	description
+        		"Type of the mac flush";
+    		type mac-event-type;
+		}
+    }
+		
+		
+    container flush-event{
+        description "MAC flush events to be published. This object is used only for publishing
+                     events.";
+     	config false;
+        list filter{
+        	uses flush;
+        	
+        	leaf-list member-ifindex{
+        		description "leaf list of member interface indexes which were affected by the flush";
+    		    type base-cmn:logical-ifindex;
+    		}	
+    	}
+        	
+    }
 
     rpc flush {
     description "Flush the mac-addresses learned on a VLAN
@@ -254,32 +344,7 @@ module dell-base-l2-mac {
     input {
         list filter {
             description "List of VLAN and/or interface";
-            leaf vlan {
-                type base-cmn:vlan-id;
-                description
-                    "Vlan ID where mac flush is to be done";
-            }
-
-            leaf ifindex {
-                type base-cmn:logical-ifindex;
-                description
-                    "System wide unique identifier of the interface
-                     where MAC flush is to be done.";
-            }
-
-            leaf ifname {
-                type string;
-                description
-                    "Interface name associated with this MAC entry";
-            }
-        		
-            leaf all {
-                type boolean;
-                default false;
-                description
-                    "By default only dynamic entries will be flushed. It this
-                     option is set then static and dynamic shall be flushed.";
-                }
+        	uses flush;	
             }
         }
     }
