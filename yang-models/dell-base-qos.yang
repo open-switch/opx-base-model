@@ -1496,10 +1496,6 @@ module dell-base-qos {
                          DYNAMIC means the threshold is defined in relative size
                          of the shared buffer.";
         }
-        leaf xoff-size {
-            type uint32;
-            description "Shared headroom pool size in bytes for lossless traffic.";
-        }
     }
 
     list buffer-pool-stat {
@@ -1583,26 +1579,9 @@ module dell-base-qos {
 
         leaf xon-threshold {
             type uint32;
-            description "XON non-hysteresis threshold in byte.
-                         Generate XON when the total buffer usage of the PG is
-                         less than the maximum of xon-threshold and the total
-                         buffer limit minus xon-offset-threshold, and available
-                         buffer in the PG buffer is larger than the XOFF threshold.
-                         The XON trigger condition is governed by:
-                         total buffer usage <=
-                         max(xon-threshold, total buffer limit - xon-offset-threshold)";
-        }
-
-        leaf xon-offset-threshold {
-            type uint32;
-            description "XON hysteresis threshold in byte.
-                         Generate XON when the total buffer usage of the PG is
-                         less than the maximum of xon-threshold and the total
-                         buffer limit minus xon-offset-threshold, and available
-                         buffer in the PG buffer is larger than the XOFF threshold.
-                         The XON trigger condition is governed by:
-                         total buffer usage <=
-                         max(xon-threshold, total buffer limit - xon-offset-threshold)";
+            description "Generate XON when the total buffer usage of the PG
+                         is less than this threshold and available buffer
+                         in the PG buffer is larger than the XOFF threshold.";
         }
 
         leaf name {

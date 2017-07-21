@@ -1,0 +1,42 @@
+module dell-base-alms {
+
+  namespace "http://www.dellemc.com/networking/os10/dell-base-alms";
+
+  prefix "base-alms";
+
+  import dell-yang-types {
+    prefix common;
+  }
+
+  import dell-base-common {
+    prefix "base-cmn";
+  }
+
+  organization "Dell EMC";
+
+  contact "http://www.dell.com/support";
+
+  description "Alarm objects
+
+  Copyright (c) 2017 by Dell, Inc.
+
+  All rights reserved.";
+
+  revision 2017-03-02 {
+    description "Initial revision.";
+  }
+
+  list active-alms {
+       description "List of active alarms";
+
+       leaf timestamp {
+           description "Time alarm occurred";
+           type string;
+       }
+
+       leaf alarm {
+       	   description "Alarm message";
+           type string;
+       }
+  }
+}

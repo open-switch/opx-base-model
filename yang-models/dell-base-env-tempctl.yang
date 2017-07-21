@@ -99,4 +99,29 @@ module dell-base-env-tempctl {
       config true;
     }
   }
+
+  list entity-fault {
+    description
+      "Entity faults";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf ppid {
+        description "True <=> given entity has incorrect ppid";
+        type boolean;
+    }
+
+    leaf airflow {
+        description "True <=> given entity has incorrect airflow";
+        type boolean;
+    }
+  }
 }

@@ -248,23 +248,6 @@ module dell-base-platform-common {
      }
   }
 
-  typedef port-type {
-    description "Port Type";
-    type enumeration {
-      enum PLUGGABLE {
-        description "Pluggable port type";
-        value "1";
-      }
-      enum FIXED {
-        description "Fixed port type";
-        value "2";
-      }
-      enum BACKPLANE {
-        description "Backplane port type";
-        value "3";
-      }
-    }
-  }
   typedef media-category {
     description "Media category";
     type enumeration {
@@ -307,10 +290,6 @@ module dell-base-platform-common {
       enum DEPOP-QSFP28 {
         value "10";
         description "Depopulated QSFP28 media category";
-      }
-      enum FIXED {
-        value "11";
-        description "Fixed media category";
       }
     }
   }
@@ -1035,18 +1014,6 @@ module dell-base-platform-common {
           enum QSFP28-DD_200GBASE_SR4_2_HALFM {
               value 178;
               description "Pluggable optics QSFP28-DD_200GBASE_SR4_2_HALFM";
-          }
-          enum 1GBASE_COPPER {
-              value 179;
-              description "Fixed copper port 1GBASE_COPPER";
-          }
-          enum 10GBASE_COPPER {
-              value 180;
-              description "Fixed copper port 10GBASE_COPPER";
-          }
-          enum 25GBASE_BACKPLANE {
-              value 181;
-              description "Fixed backplane port 25GBASE_BACKPLANE";
           }
 
       }
@@ -1946,15 +1913,6 @@ module dell-base-platform-common {
       // Notification: Yes; parameters (present)
     }
 
-    leaf port-type {
-      description "Media type is pluggable or fixed or backplane or ...";
-      type port-type;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: None
-      // Persistent: N/A
-      // Notification: Yes; parameters (present)
-    }
     leaf insertion-cnt {
       description "Number of times adapter inserted";
       type yang:gauge64;

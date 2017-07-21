@@ -280,10 +280,6 @@ container switching-entities {
     	description "The switches hash algorithm setting";
     }
 
-    leaf lag-hash-seed-value {
-        type uint32;
-        description "The switch lag hash seed value";
-    }
     leaf-list lag-hash-fields {
     	type hash-fields;
     	description "The switches hash fields used for lags";
@@ -318,11 +314,6 @@ container switching-entities {
     leaf ecmp-hash-algorithm {
     	type hash-algorithm;
     	description "The switch ecmp hash algorithm setting";
-    }
-
-    leaf ecmp-hash-seed-value {
-        type uint32;
-        description "The switch ecmp hash seed value";
     }
 
     leaf-list ecmp-hash-fields {

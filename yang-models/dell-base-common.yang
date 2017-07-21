@@ -157,9 +157,6 @@ module dell-base-common {
       enum "cl108-rs" {
         value 5;
       }
-      enum "not-supported" {
-        value 6;
-      }
     }
   }
 
