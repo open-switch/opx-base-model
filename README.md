@@ -107,4 +107,4 @@ The following set of models provides the networking access-related models/classe
 - `dell-base-packet.yang`            
 - `dell-interface.yang`
 
-(c) 2017 Dell
+© 2017 Dell EMC
