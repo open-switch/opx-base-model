@@ -1,0 +1,45 @@
+module os-icmp-config {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-os-icmp-config";
+    prefix "os-icmp-cfg";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This model controls the ICMP unreachable message generation from
+        the OS for non-routable traffic.";
+
+    revision "2017-08-22" {
+        description "Initial version.";
+    }
+
+    rpc ip-unreachables-config {
+        description "This method controls the generation of ICMP unreachable
+            message for non-routable traffic from the OS.";
+
+        input {
+            leaf enable {
+                mandatory true;
+                description "This is set to true to enable ICMP unreachable message
+                    generation for the non-routable traffic from the OS and false otherwise.";
+                type boolean;
+            }
+
+            leaf af {
+                mandatory true;
+                type base-cmn:af-type;
+                description "Address Family";
+            }
+
+            leaf ifname {
+                type string;
+                description "Network interface name, if this attribute is not set,
+                            ICMP configuration will be applied globally for all interfaces.
+                            ICMP unreachable message generation is enabled by default
+                            on all interfaces in the OS.";
+            }
+        }
+    }
+}

@@ -26,7 +26,7 @@ module dell-interface {
         must "/if:interfaces/if:interface[if:name = current()]"
          +   "/dell-if:vlan-type = 'DATA'" {
           error-message
-            "The default VLAN must be a data VLAN!";
+            "Cannot configure default VLAN as management VLAN!";
         }
         default "vlan1";
         description
@@ -102,7 +102,6 @@ module dell-interface {
         }
         leaf auto-negotiation {
           type boolean;
-          default "true";
           description
                 "Link auto-negotiation setting on the interface";
         }
@@ -296,6 +295,24 @@ module dell-interface {
     }
   }
 
+  augment "/if:interfaces-state/if:interface" {
+   when "if:type = 'ianaift:fibreChannel'";
+
+       leaf bb-credit {
+           type uint32;
+           description "The Buffer-to-Buffer Credit allocation";
+       }
+
+       leaf fc-mtu {
+           type uint32;
+           description
+              "FC port MTU";
+       }
+       leaf npu-speed {
+           type base-if:speed;
+           description "Port's NPU Speed";
+       }
+    }
 
   augment "/if:interfaces-state/if:interface/if:statistics" {
      description

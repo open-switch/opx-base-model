@@ -1,3 +1,15 @@
+opx-base-model (3.79.0) unstable; urgency=medium
+
+  * Feature: Added acl-config, os-icmp-config and os-routing-events models
+  * Update: ACL - Added lookup hits for match, packet coloring, named tables and entries, specifying allowed actions
+  * Update: Mirroring - Added ERSPAN attributes
+  * Update: Added support for additional types of optical media adapters
+  * Update: QoS - Named WRED profiles, port pools
+  * Update: Routing - VRF naming, special next-hop entires
+  * Bugfix: Temperature control - Added missing key specifier
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Fri, 06 Oct 2017 11:00:00 -0800
+
 opx-base-model (3.55.0) unstable; urgency=medium
 
   * Feature: Added dell-base-if-fc, dell-base-port-group and dell-port-group object models

@@ -4,8 +4,8 @@ module dell-base-ip {
     namespace "http://www.dellemc.com/networking/os10/dell-base-ip";
     prefix "base-ip";
 
-    import dell-base-interface-common {
-        prefix "base-if";
+    import dell-base-common {
+        prefix "base-cmn";
     }
 
     organization "Dell EMC";
@@ -28,12 +28,13 @@ module dell-base-ip {
 	    }		
 		leaf enabled {
 			type boolean;
-			description "This is true if IPv4 is enabled.";
+			description "Set to true to enable IPv6 for the interface.
+                IPv6 is enabled by default for L3 interfaces.";
 		}		
 		leaf forwarding {
 			type boolean;
-			description "This will be set true if the system has IP forwarding enabled.
-			This will only set the kernel IP forwarding flags.";			
+			description "Set to true to enable IP forwarding.
+                IP forwarding is enabled by default.";
 		}		
 		leaf vrf-id {
 			type uint32;
@@ -46,7 +47,7 @@ module dell-base-ip {
 	}
 
 	list ipv4 {
-		key "vrf-id ifindex";
+		key "name";
 		
 		uses common-ip-config-params;
 		
@@ -64,12 +65,19 @@ module dell-base-ip {
 	}
 	
 	list ipv6 {
-		key "vrf-id ifindex";
+		key "name";
 		
 		uses common-ip-config-params;
 
 		leaf dup-addr-detect-transmits {
 			type uint32;			
+		}
+
+        leaf autoconf {
+            type boolean;
+            description "Set to true to enable IPv6 address auto-configuration
+                using prefix information in Router advertisements.
+                IPv6 autoconfiguration is enabled by default if forwarding is disabled.";
 		}
 		
 		list address {			

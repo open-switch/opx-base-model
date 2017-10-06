@@ -157,6 +157,9 @@ module dell-base-common {
       enum "cl108-rs" {
         value 5;
       }
+      enum "not-supported" {
+        value 6;
+      }
     }
   }
 
@@ -280,6 +283,9 @@ module dell-base-common {
       }
       enum "lag" {
         value 11;
+      }
+      enum "vrf" {
+        value 12;
       }
     }
     description

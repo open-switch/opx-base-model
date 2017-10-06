@@ -248,6 +248,23 @@ module dell-base-platform-common {
      }
   }
 
+  typedef port-type {
+    description "Port Type";
+    type enumeration {
+      enum PLUGGABLE {
+        description "Pluggable port type";
+        value "1";
+      }
+      enum FIXED {
+        description "Fixed port type";
+        value "2";
+      }
+      enum BACKPLANE {
+        description "Backplane port type";
+        value "3";
+      }
+    }
+  }
   typedef media-category {
     description "Media category";
     type enumeration {
@@ -290,6 +307,10 @@ module dell-base-platform-common {
       enum DEPOP-QSFP28 {
         value "10";
         description "Depopulated QSFP28 media category";
+      }
+      enum FIXED {
+        value "11";
+        description "Fixed media category";
       }
     }
   }
@@ -1015,7 +1036,63 @@ module dell-base-platform-common {
               value 178;
               description "Pluggable optics QSFP28-DD_200GBASE_SR4_2_HALFM";
           }
+          enum 1GBASE_COPPER {
+              value 179;
+              description "Fixed copper port 1GBASE_COPPER";
+          }
+          enum 10GBASE_COPPER {
+              value 180;
+              description "Fixed copper port 10GBASE_COPPER";
+          }
+          enum 25GBASE_BACKPLANE {
+              value 181;
+              description "Fixed backplane port 25GBASE_BACKPLANE";
+          }
 
+          enum SFPPLUS_10GBASE_SR_AOC1M {
+              value 182;
+              description "Pluggable optics SFPPLUS_10GBASE_SR_AOC1M";
+          }
+
+          enum SFPPLUS_10GBASE_SR_AOC3M {
+              value 183;
+              description "Pluggable optics SFPPLUS_10GBASE_SR_AOC3M";
+          }
+
+          enum SFPPLUS_10GBASE_SR_AOC5M {
+              value 184;
+              description "Pluggable optics SFPPLUS_10GBASE_SR_AOC5M";
+          }
+
+          enum SFPPLUS_10GBASE_SR_AOC10M {
+              value 185;
+              description "Pluggable optics SFPPLUS_10GBASE_SR_AOC10M";
+          }
+
+          enum QSFPPLUS_4X10_10GBASE_SR_AOC10M {
+              value 186;
+              description "Pluggable optics QSFPPLUS_4X10_10GBASE_SR_AOC10M";
+          }
+
+          enum QSFPPLUS_40GBASE_SR_AOC3M {
+              value 187;
+              description "Pluggable optics QSFPPLUS_40GBASE_SR_AOC3M";
+          }
+
+          enum QSFPPLUS_40GBASE_SR_AOC5M {
+              value 188;
+              description "Pluggable optics QSFPPLUS_40GBASE_SR_AOC5M";
+          }
+
+          enum QSFPPLUS_40GBASE_SR_AOC7M {
+              value 189;
+              description "Pluggable optics QSFPPLUS_40GBASE_SR_AOC7M";
+          }
+
+          enum QSFPPLUS_40GBASE_SR_AOC10M {
+              value 190;
+              description "Pluggable optics QSFPPLUS_40GBASE_SR_AOC10M";
+          }
       }
   }
 
@@ -1894,6 +1971,12 @@ module dell-base-platform-common {
       type boolean;
       config false;
     }
+    leaf identification-led-control {
+      description "Identification LED control flag, PAS owns front panel port identification 
+                   led control if this attribute value is True";
+      type boolean;
+      config false;
+    }
   }
 
 
@@ -1911,6 +1994,30 @@ module dell-base-platform-common {
       // Dependencies: None
       // Persistent: N/A
       // Notification: Yes; parameters (present)
+    }
+
+    leaf port-type {
+      description "Media type is pluggable or fixed or backplane or ...";
+      type port-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf-list sub-port-id {
+      description "The effective id for that port. Normally a single number except in cases where a port has >1 density; for example QSFP28-DD. List length is port density";
+      type uint32;
+      config false;
+      // Dependencies: Number of items in list is the port density for that port
+    }
+
+    leaf port-density {
+      description "Used to account for ports that have multiple logical ports; example QSFP28-DD. This is also the number of sub-port-ids";
+      type uint32;
+      config false;
+      // Notes: Default is 1 since most ports map to 1 logical port
     }
 
     leaf insertion-cnt {

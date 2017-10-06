@@ -1,0 +1,78 @@
+module acl-config {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-acl";
+    prefix "acl-config";
+
+
+    list entry {
+        key "name";
+
+        description "This element contains all of the created ACLs entry";
+
+        leaf name {
+            description "A user created field to identify the entry - if none provided one will be generated. ";
+            type string;
+        }
+
+	    leaf rule {
+            description "This holds the Access Control List (ACL) entry.  This field attempts to mimmic the standard
+                IP tables rules supporting the following switches:
+                -i, --in-interface name
+                    Input interface name - at this time must be a valid front panel port
+                -o, --out-interface name
+                    The output interface name - at this time must be a valid front panel port
+                -j, --jump target
+                    This can be one of the following two values.
+                    ACCEPT - the packet is accepted
+                    DROP - the packet will be dropped
+                -I chain rule-number
+                    Insert the rule into the specified chain at the rule-number location (rules are numberd from 1>).
+                    The supported chains are:
+                        INPUT packets entering the switch
+                        OUTPUT packets exiting the switch
+                --dport port
+                    The destination port
+                --sport port
+                    The source port
+                -p, --protocol protocol
+                    Filter based on a port or protocol.  The protocols that are supported are included in
+                    the /etc/protocols in addition to tcp, udp, icmp or all
+                -d, --destination address[/mask]
+                    The destination address which can be either IPv4/IPv6 or hostname
+                -s, --source address[/mask]
+                    The source address/mask of the packet which can be IPv4/IPv6 or a hostname
+                -m mac
+                    Load the MAC module.  The following two options are available after loading the MAC module
+                    --mac-source source-mac
+                        This combination loads the MAC module and enables MAC filtering on source addresses in the
+                        ethernet packet
+                    --mac-destination destion-mac
+                        This combination loads the MAC module and enables MAC filtering on destination addresses in the
+                        ethernet packet
+                 Examples:
+                     -A INPUT -p tcp --dport 80 -j ACCEPT
+                     -A INPUT -p tcp -m mac --mac-source 00:00:00:00:00:001 --dport 80 -j DROP
+                     -A INPUT -p tcp -m mac --mac-source 00:00:00:00:00:001 --dport 22 -j DROP
+                     ";
+            type string;
+        }
+
+
+    }
+    rpc reload {
+        description "This triggers a reload of the ACL configuration subsystem.  The filename specified will be loaded
+            and the differences applied";
+        input {
+            leaf filename {
+                type string;
+                description "The name of the file containing the input.";
+            }
+        }
+        output {
+            leaf result {
+                type string;
+                description "The result of the request which may be successful or a failure response.";
+            }
+        }
+    }
+
+}

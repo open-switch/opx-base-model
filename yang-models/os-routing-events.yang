@@ -1,0 +1,27 @@
+module os-routing-events {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-os-routing";
+    prefix "os-re";
+
+    import dell-base-routing { prefix "base-route"; }
+
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This model augments the dell-base-routing YANG model for OS Route/Neighbor events.";
+
+    revision "2017-07-17" {
+        description "Initial version.";
+    }
+
+    /* Base route object augmented for publishing the route add/delete events from OS. */
+    augment "/base-route:obj/base-route:entry" {
+    }
+
+    /* Base neighbor object augmented for publishing the neighbor add/delete events from OS. */
+    augment "/base-route:obj/base-route:nbr" {
+        leaf mbr-ifindex {
+            type base-cmn:logical-ifindex;
+            description "The member interface index through which the MAC neighbor is learnt.";
+        }
+    }
+}

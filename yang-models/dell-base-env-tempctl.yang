@@ -104,6 +104,8 @@ module dell-base-env-tempctl {
     description
       "Entity faults";
 
+    key "entity-type slot";
+
     leaf entity-type {
         description "Entity type";
         type platform:entity-type;

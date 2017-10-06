@@ -96,6 +96,22 @@ module dell-base-mirror {
             description
                 "ERSPAN Tunnel L2 Header VLAN id";
         } 			
+        leaf ttl {
+            type uint8;
+            description
+                "ERSPAN Tunnel header TTL value";
+        }
+		
+        leaf dscp {
+            type uint8;
+            description
+            "ERSPAN Tunnel header DSCP";
+        }
+		
+        leaf gre-protocol-type{
+            type uint16;
+            description "ERSPAN GRE protocol id";
+        } 		
     }
 
     list entry {

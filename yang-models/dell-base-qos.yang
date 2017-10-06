@@ -268,11 +268,13 @@ module dell-base-qos {
         }
 
         leaf type {
+            mandatory true;
             type meter-type;
             description "meter based on packets or bytes";
         }
 
         leaf mode {
+            mandatory true;
             type meter-mode;
             description "Single-Rate/Two-Rate Two-Color/Tri-Color Meter";
         }
@@ -532,16 +534,19 @@ module dell-base-qos {
         }
 
         leaf port-id {
+            mandatory true;
             type base-cmn:logical-ifindex;
             description "Physical port to which this queue belongs.";
         }
 
         leaf type {
+            mandatory true;
             type queue-type;
             description "Queue type";
         }
 
         leaf queue-number {
+            mandatory true;
             type uint32;
             description "locally unique id within a port and a specific queue type";
         }
@@ -553,6 +558,7 @@ module dell-base-qos {
         }
 
         leaf parent {
+            mandatory true;
             type base-cmn:base-obj-id-type;
             description "parent scheduler group node in case of Hierarchical QoS support";
         }
@@ -687,66 +693,10 @@ module dell-base-qos {
             description "red color dropped bytes count";
         }
 
-        leaf green-discard-dropped-packets {
-            type yang:counter64;
-            description "WRED green color dropped packets count";
-        }
+        uses wred-stat;
 
-        leaf green-discard-dropped-bytes {
-            type yang:counter64;
-            description "WRED green color dropped bytes count";
-        }
+        uses buffer-stat;
 
-        leaf yellow-discard-dropped-packets {
-            type yang:counter64;
-            description "WRED yellow color dropped packets count";
-        }
-
-        leaf yellow-discard-dropped-bytes {
-            type yang:counter64;
-            description "WRED yellow color dropped bytes count";
-        }
-
-        leaf red-discard-dropped-packets {
-            type yang:counter64;
-            description "WRED red color dropped packets count";
-        }
-
-        leaf red-discard-dropped-bytes {
-            type yang:counter64;
-            description "WRED red color dropped bytes count";
-        }
-
-        leaf discard-dropped-packets {
-            type yang:counter64;
-            description "WRED dropped packets count";
-        }
-
-        leaf discard-dropped-bytes {
-            type yang:counter64;
-            description "WRED dropped bytes count";
-        }
-
-        leaf current-occupancy-bytes {
-            type yang:counter64;
-            config false;
-            description "current queue occupancy in bytes";
-        }
-
-        leaf watermark-bytes {
-            type yang:counter64;
-            description "watermark bytes";
-        }
-
-        leaf shared-current-occupancy-bytes {
-            type yang:counter64;
-            description "current queue shared occupancy in bytes";
-        }
-
-        leaf shared-watermark-bytes {
-            type yang:counter64;
-            description "queue shared occupancy watermark in bytes";
-        }
     }
 
 
@@ -856,11 +806,13 @@ module dell-base-qos {
         }
 
         leaf port-id {
+            mandatory true;
             type  base-cmn:logical-ifindex;
             description "port id to which the scheduler group belongs";
         }
 
         leaf level {
+            mandatory true;
             type uint32;
             description "scheduler group level.
                          Level 0 scheduler group is the Port-level scheduler group;
@@ -870,16 +822,19 @@ module dell-base-qos {
         }
 
         leaf max-child {
+            mandatory true;
             type uint32;
             description "Maximum number of child on group";
         }
 
         leaf scheduler-profile-id {
+            mandatory true;
             type base-cmn:base-obj-id-type;
             description "scheduler profile id associated to this scheduler group";
         }
 
         leaf parent {
+            mandatory true;
             type base-cmn:base-obj-id-type;
             description "Scheduler group parent node. If the level is 0, the parent-node is the port.";
         }
@@ -1480,11 +1435,13 @@ module dell-base-qos {
         }
 
         leaf pool-type {
+            mandatory true;
             type buffer-pool-type;
             description "buffer pool type: Ingress or Egress buffer pool";
         }
 
         leaf size {
+            mandatory true;
             type uint32;
             description "the total size of this buffer pool in bytes";
         }
@@ -1495,6 +1452,18 @@ module dell-base-qos {
                          STATIC means the threshold is defined in bytes;
                          DYNAMIC means the threshold is defined in relative size
                          of the shared buffer.";
+        }
+        leaf xoff-size {
+            type uint32;
+            description "Shared headroom pool size in bytes for lossless traffic.";
+        }
+
+        leaf wred-profile-id {
+            type base-cmn:base-obj-id-type;
+            description "WRED profile associated with the pool.
+                    WRED Drop/ECN marking based on pool threshold will happen
+                    only when at least one of the queues refers to this buffer pool
+                    and the queue is configured to enable WRED.";
         }
     }
 
@@ -1530,6 +1499,7 @@ module dell-base-qos {
         }
 
         leaf pool-id {
+            mandatory true;
             type base-cmn:base-obj-id-type;
             description "buffer pool to be occupied.
                          Zero means no buffer pool is specified;
@@ -1537,6 +1507,7 @@ module dell-base-qos {
         }
 
         leaf buffer-size {
+            mandatory true;
             type uint32;
             description "buffer size to be reserved";
         }
@@ -1579,9 +1550,26 @@ module dell-base-qos {
 
         leaf xon-threshold {
             type uint32;
-            description "Generate XON when the total buffer usage of the PG
-                         is less than this threshold and available buffer
-                         in the PG buffer is larger than the XOFF threshold.";
+            description "XON non-hysteresis threshold in byte.
+                         Generate XON when the total buffer usage of the PG is
+                         less than the maximum of xon-threshold and the total
+                         buffer limit minus xon-offset-threshold, and available
+                         buffer in the PG buffer is larger than the XOFF threshold.
+                         The XON trigger condition is governed by:
+                         total buffer usage <=
+                         max(xon-threshold, total buffer limit - xon-offset-threshold)";
+        }
+
+        leaf xon-offset-threshold {
+            type uint32;
+            description "XON hysteresis threshold in byte.
+                         Generate XON when the total buffer usage of the PG is
+                         less than the maximum of xon-threshold and the total
+                         buffer limit minus xon-offset-threshold, and available
+                         buffer in the PG buffer is larger than the XOFF threshold.
+                         The XON trigger condition is governed by:
+                         total buffer usage <=
+                         max(xon-threshold, total buffer limit - xon-offset-threshold)";
         }
 
         leaf name {
@@ -1842,6 +1830,7 @@ module dell-base-qos {
         leaf wred-profile-id {
             type base-cmn:base-obj-id-type;
             description "WRED profile associated with the port";
+            status obsolete;
         }
 
         leaf scheduler-profile-id {
@@ -1927,6 +1916,113 @@ module dell-base-qos {
         leaf-list buffer-profile-id-list {
             type base-cmn:base-obj-id-type;
             description "egress buffer profile id list";
+        }
+    }
+    list port-pool {
+        key "port-id buffer-pool-id";
+        description "This list defines per interface per buffer pool characteristics";
+        	
+        leaf port-id {
+            type base-cmn:logical-ifindex;
+            description "Physical port on which QoS egress params are configured.
+                         Logical ports like LAG interfaces are not allowed.";
+            mandatory true;
+        }
+
+        leaf buffer-pool-id {
+            type base-cmn:base-obj-id-type;
+            description "Buffer pool id of the interface.";
+            mandatory true;
+        }
+       	
+        leaf wred-profile-id {
+    	    type base-cmn:base-obj-id-type;
+            description "WRED profile to be applied";
+        }
+    }
+
+    list port-pool-stat {
+        key "port-id buffer-pool-id";
+        description "This list defines per interface per buffer pool counter statistics";
+        	
+        leaf port-id {
+            type base-cmn:logical-ifindex;
+            description "Physical port on which QoS egress params are configured.
+                         Logical ports like LAG interfaces are not allowed.";
+        }
+
+        leaf buffer-pool-id {
+            type base-cmn:base-obj-id-type;
+            description "Buffer pool id of the interface.";
+        }
+       	
+        uses wred-stat;
+
+        uses buffer-stat;
+    }
+
+    grouping wred-stat {
+        leaf green-discard-dropped-packets {
+            type yang:counter64;
+            description "WRED green color dropped packets count";
+        }
+
+        leaf green-discard-dropped-bytes {
+            type yang:counter64;
+            description "WRED green color dropped bytes";
+        }
+
+        leaf yellow-discard-dropped-packets {
+            type yang:counter64;
+            description "WRED yellow color dropped packets count";
+        }
+
+        leaf yellow-discard-dropped-bytes {
+            type yang:counter64;
+            description "WRED yellow color dropped bytes";
+        }
+
+        leaf red-discard-dropped-packets {
+            type yang:counter64;
+            description "WRED red color dropped packets count";
+        }
+
+        leaf red-discard-dropped-bytes {
+            type yang:counter64;
+            description "WRED red color dropped bytes";
+        }
+
+        leaf discard-dropped-packets {
+            type yang:counter64;
+            description "WRED dropped packets count";
+        }
+
+        leaf discard-dropped-bytes {
+            type yang:counter64;
+            description "WRED dropped bytes";
+        }
+    }
+
+    grouping buffer-stat {
+        leaf current-occupancy-bytes {
+            type yang:counter64;
+            config false;
+            description "current buffer occupancy in bytes";
+        }
+
+        leaf watermark-bytes {
+            type yang:counter64;
+            description "watermark bytes";
+        }
+
+        leaf shared-current-occupancy-bytes {
+            type yang:counter64;
+            description "current shared buffer occupancy in bytes";
+        }
+
+        leaf shared-watermark-bytes {
+            type yang:counter64;
+            description "shared buffer occupancy watermark in bytes";
         }
     }
 }

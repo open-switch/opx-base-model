@@ -39,7 +39,11 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/dell-base-if-fc.yang \
     $(top_srcdir)/yang-models/dell-base-port-group.yang \
     $(top_srcdir)/yang-models/dell-port-group.yang \
-    $(top_srcdir)/yang-models/dell-base-alms.yang
+    $(top_srcdir)/yang-models/dell-base-alms.yang \
+    $(top_srcdir)/yang-models/acl-config.yang \
+    $(top_srcdir)/yang-models/os-icmp-config.yang \
+    $(top_srcdir)/yang-models/os-routing-events.yang
+
 
 #Create VPATH for yang models
 YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
@@ -85,7 +89,10 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/dell-base-if-fc.cpp \
     @YANG_OUTPUT@/dell-base-port-group.cpp \
     @YANG_OUTPUT@/dell-port-group.cpp \
-    @YANG_OUTPUT@/dell-base-alms.cpp
+    @YANG_OUTPUT@/dell-base-alms.cpp \
+    @YANG_OUTPUT@/acl-config.cpp \
+    @YANG_OUTPUT@/os-icmp-config.cpp \
+    @YANG_OUTPUT@/os-routing-events.cpp
 
 YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/yumaworks-extensions.h \
@@ -127,7 +134,10 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/dell-base-if-fc.h \
     @YANG_OUTPUT@/dell-base-port-group.h \
     @YANG_OUTPUT@/dell-port-group.h \
-    @YANG_OUTPUT@/dell-base-alms.h
+    @YANG_OUTPUT@/dell-base-alms.h \
+    @YANG_OUTPUT@/acl-config.h \
+    @YANG_OUTPUT@/os-icmp-config.h \
+    @YANG_OUTPUT@/os-routing-events.h
 
 BUILT_SOURCES = ${YANG_GENERATED_SRCS} ${YANG_GENERATED_HDRS}
 
@@ -173,7 +183,11 @@ lib_LTLIBRARIES = \
     libcpsclass_dell-base-if-fc.la \
     libcpsclass_dell-base-port-group.la \
     libcpsclass_dell-port-group.la \
-    libcpsclass_dell-base-alms.la
+    libcpsclass_dell-base-alms.la \
+    libcpsclass_acl-config.la \
+    libcpsclass_os-icmp-config.la \
+    libcpsclass_os-routing-events.la
+
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
 AM_CXXFLAGS = -fPIC --std=c++11
@@ -299,11 +313,21 @@ libcpsclass_dell_port_group_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 libcpsclass_dell_base_alms_la_SOURCES = @YANG_OUTPUT@/dell-base-alms.cpp
 libcpsclass_dell_base_alms_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
+libcpsclass_acl_config_la_SOURCES = @YANG_OUTPUT@/acl-config.cpp
+libcpsclass_acl_config_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_os_icmp_config_la_SOURCES = @YANG_OUTPUT@/os-icmp-config.cpp
+libcpsclass_os_icmp_config_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_os_routing_events_la_SOURCES = @YANG_OUTPUT@/os-routing-events.cpp
+libcpsclass_os_routing_events_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang
 	@ rm -f @YANG_OUTPUT@/$*.cpp
 	@ rm -f @YANG_OUTPUT@/$*.h
-	YANG_PATH=${YANG_DIRS} /usr/lib/opx/ar_parse_yang.sh $< @YANG_OUTPUT@ @YANG_OUTPUT@
+	YANG_PATH=${YANG_DIRS} /usr/lib/opx/ar_parse_yang.sh $(notdir $<) @YANG_OUTPUT@ @YANG_OUTPUT@
 
 clean-local:
 	@(  if [ -d @YANG_OUTPUT@ ] ; then  \

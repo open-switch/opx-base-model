@@ -11,6 +11,9 @@ import dell-base-common {
    prefix "base-cmn";
 }
 
+import dell-base-interface-common {
+   prefix "base-if";
+}
 
 organization
 "Dell EMC";
@@ -193,6 +196,33 @@ typedef nh-type {
  }
 
 
+  typedef special-next-hop {
+    type enumeration {
+      enum blackhole {
+        value 1;
+        description
+          "Silently discard the packet.";
+      }
+      enum unreachable {
+        value 2;
+        description
+          "Discard the packet and notify the sender with an error
+           message indicating that the destination host is unreachable.";
+      }
+      enum prohibit {
+        value 3;
+        description
+          "Discard the packet and notify the sender with an error
+           message indicating that the communication is
+           administratively prohibited.";
+      }
+      enum receive {
+        value 4;
+        description
+          "The packet will be received by the local system.";
+      }
+    }
+  }
 /*
 * Configuration of the core elements of the Switch
 */
@@ -267,6 +297,18 @@ typedef nh-type {
 
    }
 
+   grouping special-next-hop-entry {
+      description
+         "This grouping provides a leaf with an enumeration of special
+          next-hops.";
+
+      leaf special-next-hop {
+         type special-next-hop;
+         description
+            "Special next-hop options.";
+      }
+   }
+
 
    grouping l3-route-entry {
      description
@@ -336,6 +378,7 @@ typedef nh-type {
           description "Is NPU programming done for this entry?";
      }
 
+     uses special-next-hop-entry;
    }
 
 grouping l3-neighbor-entry {
@@ -411,6 +454,11 @@ list obj {
   type uint32;
  }
 
+ leaf vrf-name {
+  type string;
+  description "VRF device name";
+ }
+
  leaf switch-id {
    type uint32;
    description "Logical Switch to which this routing-domain belongs.";
@@ -459,6 +507,10 @@ grouping nexthop-tracking-object {
       description "VRF ID";
     }
 
+    leaf vrf-name {
+      type string;
+      description "VRF device name";
+    }
     leaf af {
       type base-cmn:af-type;
       description "Address Family";
@@ -605,6 +657,11 @@ grouping nexthop-tracking-object {
             description "VRF ID";
         }
 
+        leaf vrf-name {
+            type string;
+            description "VRF device name";
+        }
+
         leaf af {
             mandatory true;
             type base-cmn:af-type;
@@ -655,6 +712,10 @@ grouping nexthop-tracking-object {
       description "VRF ID";
     }
 
+    leaf vrf-name {
+      type string;
+      description "VRF device name";
+    }
     leaf ifname {
       type string;
       description "Physical/Logical L3 interface";
@@ -681,6 +742,11 @@ grouping nexthop-tracking-object {
         type uint32;
         default 0;
         description "VRF ID";
+      }
+
+      leaf vrf-name {
+        type string;
+        description "VRF device name";
       }
 
       leaf af {
@@ -711,6 +777,42 @@ grouping nexthop-tracking-object {
         key "nh-addr";
         description "Next-Hop info depending on the number of next-hops added/deleted";
         uses next-hop;
+      }
+    }
+  }
+  list ip-unreachables-config {
+     description "Provide list of network interfaces that can initiate ICMP unreachable messages for non-routable traffic.";
+     key "af ifname";
+
+    leaf af {
+      type base-cmn:af-type;
+      description "Address Family";
+    }
+
+    leaf ifname {
+      type string;
+      description "Network interface";
+    }
+  }
+  rpc interface-mode-change {
+    description "This method is used to notify routing component for change
+      of the interface mode from None to L2 or vice versa.
+      On receiving this notification, routing component will perform the following:
+      when mode changes from None to L2, routing configurations on this interface
+       will be removed from hardware.
+      when mode changes from L2 to None, cached routing configurations (if any)
+       on this interface will be applied to hardware.";
+    input {
+      leaf ifname {
+        mandatory true;
+        type string;
+        description "Interface name for which the mode change is triggered";
+      }
+      leaf mode {
+        mandatory true;
+        type base-if:mode;
+        description "Interface mode in notification.
+          Modes that are of interest to routing component is None/L2.";
       }
     }
   }
