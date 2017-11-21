@@ -1,0 +1,102 @@
+module vrf-mgmt {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-vrf-mgmt";
+    prefix "vrf-mgmt";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+    
+    import ietf-network-instance {
+        prefix ni;
+    }
+    import ietf-interfaces {
+        prefix if;
+    }
+
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This model augments the ietf-network-instance YANG model for VRF mangement in the OS";
+
+    revision "2017-09-27" {
+        description "This revision adds the IP services configuration.";
+    }
+    revision "2017-09-19" {
+        description "Initial version.";
+    }
+    typedef ip-protocols {
+        type enumeration {
+            enum tcp {
+                value 1;
+                description
+                    "Transmission Control Protocol (TCP) Transport Protocol.";
+            }
+            enum udp {
+                value 2;
+                description
+                    "User Datagram Protocol (UDP) Transport Protocol";
+            }
+            enum icmp {
+                value 3;
+                description
+                    "Internet Control Message Protocol (ICMP) Transport "+
+                    "Protocol";
+            }
+        }
+        description
+            "Enumeration of well known IP protocols.";
+    }
+
+    typedef protocol-action {
+        description "Enumeration of protocol actions";
+
+        type enumeration {
+            enum ALLOW {
+                value 1;
+                description "Allow protocol packets.";
+            }
+            enum DENY {
+                value 2;
+                description "Deny protocol packets.";
+            }
+        }
+    }
+
+    // This augmentation is used for network instance create/delete operation in the OS.
+    augment "/ni:network-instances/ni:network-instance" {
+    }
+    // This augmentation is used for interface mapping create/delete with network instance in the OS.
+    augment "/ni:if/ni:interfaces/ni:interface" {
+    }
+
+    list ip-services-config {
+        description "Provide list of IP table configurations in the OS.";
+        key "ni-name af protocol dst-port";
+
+        leaf ni-name {
+            type leafref {
+                path "/ni:network-instances/ni:network-instance/ni:name";
+            }
+            description
+                "Device scoped identifier for the network instance.";
+        }
+
+        leaf af {
+            type base-cmn:af-type;
+            description "Address Family";
+        }
+
+        leaf protocol {
+            type ip-protocols;
+            description "IP protocols.";
+        }
+        leaf dst-port {
+            type uint32;
+            description "Destination port.";
+        }
+        leaf action {
+            type protocol-action;
+            description "Allow/Deny the protocol packets.";
+        }
+    }
+}

@@ -1,0 +1,139 @@
+module vrf-firewall {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-vrf-firewall";
+    prefix "vrf-firewall";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-network-instance {
+        prefix ni;
+    }
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This model adds the configurations for incoming and outgoing management services.";
+
+    revision "2017-09-29" {
+        description "Initial version.";
+    }
+    typedef ip-protocols {
+        type enumeration {
+            enum tcp {
+                value 1;
+                description
+                    "Transmission Control Protocol (TCP) Transport Protocol.";
+            }
+            enum udp {
+                value 2;
+                description
+                    "User Datagram Protocol (UDP) Transport Protocol";
+            }
+            enum icmp {
+                value 3;
+                description
+                    "Internet Control Message Protocol (ICMP) Transport "+
+                    "Protocol";
+            }
+        }
+        description
+            "Enumeration of well known IP protocols.";
+    }
+
+    typedef protocol-action {
+        description "Enumeration of protocol actions";
+
+        type enumeration {
+            enum ALLOW {
+                value 1;
+                description "Allow protocol packets.";
+            }
+            enum DENY {
+                value 2;
+                description "Deny protocol packets.";
+            }
+        }
+    }
+
+    list ns-incoming-service {
+        description "Provide list of incoming management services.";
+        key "ni-name af protocol dst-port";
+
+        leaf ni-name {
+            type leafref {
+                path "/ni:network-instances/ni:network-instance/ni:name";
+            }
+            description
+                "Device scoped identifier for the network instance.";
+        }
+
+        leaf af {
+            type base-cmn:af-type;
+            description "Address Family";
+        }
+
+        leaf protocol {
+            type ip-protocols;
+            description "IP protocols.";
+        }
+        leaf dst-port {
+            type uint32;
+            description "Destination port.";
+        }
+        leaf action {
+            type protocol-action;
+            description "Allow/Deny the protocol packets.";
+        }
+    }
+
+    list ns-outgoing-service {
+        description "Provide list of outgoing management services.
+            also, mapping for public IP, public port with
+            the private IP and private port to handle multiple different public IP destinations
+            with same/different destination port for applications like rsyslog, SNMP traps..etc
+            in the default namespace to remote destinations through management namespace.";
+        key "ni-name af public-ip protocol public-port";
+
+        leaf ni-name {
+            type leafref {
+                path "/ni:network-instances/ni:network-instance/ni:name";
+            }
+            description
+                "Device scoped identifier for the network instance.";
+        }
+
+        leaf af {
+            type base-cmn:af-type;
+            description "Address Family";
+        }
+        leaf public-ip {
+            type base-cmn:ip-address;
+            description "Public destination IP address.";
+        }
+
+        leaf protocol {
+            type ip-protocols;
+            description "IP protocols.";
+        }
+        leaf public-port {
+            type uint32;
+            description "Public destination port.";
+        }
+
+        leaf private-ip {
+            type base-cmn:ip-address;
+            config false;
+            description "Private destination IP address
+                (vEth end point IP in the management namespace),
+                this will be replaced with the actual public IP in the management namespace.";
+        }
+
+        leaf private-port {
+            type uint32;
+            config false;
+            description "Private destination port, this will be replaced
+                with the actual public port in the management namespace.";
+        }
+    }
+}
+

@@ -44,6 +44,10 @@ module dell-base-ip {
 			type string;
 			description "The interfaces's name.";
 		}
+		leaf vrf-name {
+			type string;
+			description "The VRF name.";
+		}
 	}
 
 	list ipv4 {

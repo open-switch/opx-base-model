@@ -42,8 +42,12 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/dell-base-alms.yang \
     $(top_srcdir)/yang-models/acl-config.yang \
     $(top_srcdir)/yang-models/os-icmp-config.yang \
-    $(top_srcdir)/yang-models/os-routing-events.yang
-
+    $(top_srcdir)/yang-models/os-routing-events.yang \
+    $(top_srcdir)/rfc/ietf-network-instance.yang \
+    $(top_srcdir)/rfc/ietf-yang-library.yang \
+    $(top_srcdir)/rfc/ietf-yang-schema-mount.yang \
+    $(top_srcdir)/yang-models/vrf-mgmt.yang \
+    $(top_srcdir)/yang-models/vrf-firewall.yang
 
 #Create VPATH for yang models
 YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
@@ -92,7 +96,12 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/dell-base-alms.cpp \
     @YANG_OUTPUT@/acl-config.cpp \
     @YANG_OUTPUT@/os-icmp-config.cpp \
-    @YANG_OUTPUT@/os-routing-events.cpp
+    @YANG_OUTPUT@/os-routing-events.cpp \
+    @YANG_OUTPUT@/ietf-network-instance.cpp \
+    @YANG_OUTPUT@/ietf-yang-library.cpp \
+    @YANG_OUTPUT@/ietf-yang-schema-mount.cpp \
+    @YANG_OUTPUT@/vrf-mgmt.cpp \
+    @YANG_OUTPUT@/vrf-firewall.cpp
 
 YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/yumaworks-extensions.h \
@@ -137,7 +146,12 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/dell-base-alms.h \
     @YANG_OUTPUT@/acl-config.h \
     @YANG_OUTPUT@/os-icmp-config.h \
-    @YANG_OUTPUT@/os-routing-events.h
+    @YANG_OUTPUT@/os-routing-events.h \
+    @YANG_OUTPUT@/ietf-network-instance.h \
+    @YANG_OUTPUT@/ietf-yang-library.h \
+    @YANG_OUTPUT@/ietf-yang-schema-mount.h \
+    @YANG_OUTPUT@/vrf-mgmt.h \
+    @YANG_OUTPUT@/vrf-firewall.h
 
 BUILT_SOURCES = ${YANG_GENERATED_SRCS} ${YANG_GENERATED_HDRS}
 
@@ -186,7 +200,12 @@ lib_LTLIBRARIES = \
     libcpsclass_dell-base-alms.la \
     libcpsclass_acl-config.la \
     libcpsclass_os-icmp-config.la \
-    libcpsclass_os-routing-events.la
+    libcpsclass_os-routing-events.la \
+    libcpsclass_ietf-network-instance.la \
+    libcpsclass_ietf-yang-library.la \
+    libcpsclass_ietf-yang-schema-mount.la \
+    libcpsclass_vrf-mgmt.la \
+    libcpsclass_vrf-firewall.la
 
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
@@ -322,6 +341,20 @@ libcpsclass_os_icmp_config_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 libcpsclass_os_routing_events_la_SOURCES = @YANG_OUTPUT@/os-routing-events.cpp
 libcpsclass_os_routing_events_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
+libcpsclass_ietf_network_instance_la_SOURCES = @YANG_OUTPUT@/ietf-network-instance.cpp
+libcpsclass_ietf_network_instance_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_yang_library_la_SOURCES = @YANG_OUTPUT@/ietf-yang-library.cpp
+libcpsclass_ietf_yang_library_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_yang_schema_mount_la_SOURCES = @YANG_OUTPUT@/ietf-yang-schema-mount.cpp
+libcpsclass_ietf_yang_schema_mount_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_vrf_mgmt_la_SOURCES = @YANG_OUTPUT@/vrf-mgmt.cpp
+libcpsclass_vrf_mgmt_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_vrf_firewall_la_SOURCES = @YANG_OUTPUT@/vrf-firewall.cpp
+libcpsclass_vrf_firewall_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang
