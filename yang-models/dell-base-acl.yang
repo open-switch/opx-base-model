@@ -32,6 +32,14 @@ module dell-base-acl {
          Copyright (c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
+    revision 2017-11-09 {
+        description "Add method to clear acl entries for a next-hop group";
+    }
+
+    revision 2017-11-03 {
+        description "Add matching qualifier of Drop-bit";
+    }
+
     revision 2014-12-01 {
         description "Initial revision";
     }
@@ -287,6 +295,11 @@ module dell-base-acl {
             enum FDB_DST_HIT {
               value 45;
                 description "Packet destination MAC address match in FDB";
+            }
+
+            enum DROP_MARKED {
+              value 46;
+                description "Match based on marked Drop-bit";
             }
         }
     }
@@ -1085,6 +1098,13 @@ module dell-base-acl {
             type boolean;
             description "Value to specify packet destination MAC address match or not match FDB";
         }
+
+        leaf DROP_MARKED_VALUE {
+            when "../type = DROP_MARKED";
+            type boolean;
+            description "Value to specify packet drop-bit match or not match";
+        }
+
     }
 
     grouping action-parameters {
@@ -1831,6 +1851,19 @@ module dell-base-acl {
             mandatory true;
             type uint32;
             description "Maximum limit of range";
+        }
+    }
+    rpc clear-acl-entries-for-nh {
+        description "This method is used to notify ACL component for removal of ACL entries associated with the opaque data.
+           This method is triggered from routing component and the opaque data is associated with next-hop group";
+        input {
+            leaf data {
+                mandatory "true";
+                type base-cmn:ip-nexthop-group-opaque-data;
+                description
+                    "Opaque blob containing hardware specific data for
+                     the Next-Hop Group for which the ACL entries are to be deleted.";
+            }
         }
     }
 }

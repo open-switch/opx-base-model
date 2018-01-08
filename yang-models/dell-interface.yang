@@ -7,6 +7,7 @@ module dell-interface {
   import dell-base-interface-common { prefix "base-if"; }
   import ietf-yang-types { prefix yang; }
   import iana-if-type { prefix "ianaift"; }
+  import ietf-network-instance { prefix "ni"; }
 
   organization "Dell EMC";
   contact "http://www.dell.com/support";
@@ -14,6 +15,36 @@ module dell-interface {
   description "This model augments the standard interface and adds Dell EMC specific
     extensions. This model contains the entry point for the interface
     object extensions.";
+
+  revision "2017-11-20" {
+    description "Moving must statement on the default-vlan-id leaf to platform specific yang annotation.";
+  }
+
+  revision "2017-10-24" {
+    description "Add ecn-marked packet counter";
+  }
+
+  revision "2017-10-23" {
+    description "Change VLAN member tagged/untagged leaf constrains.";
+  }
+
+  revision "2017-10-10" {
+    description "Add vlanSubInterface and vxlan interface attributes";
+  }
+
+  revision 2017-10-09 {
+        description
+            "Add lag-mode attribute to interface state LAG object.";
+  }
+
+  revision 2017-10-04 {
+        description
+            "Add MAC learn mode attribute to interface object.";
+  }
+
+  revision "2017-09-27" {
+    description "Add per interface supported auto-negotiation attribute.";
+  }
 
   revision "2016-01-01" {
     description "Initial version.";
@@ -23,11 +54,6 @@ module dell-interface {
     container vlan-globals {
       leaf default-vlan-id {
         type if:interface-ref;
-        must "/if:interfaces/if:interface[if:name = current()]"
-         +   "/dell-if:vlan-type = 'DATA'" {
-          error-message
-            "Cannot configure default VLAN as management VLAN!";
-        }
         default "vlan1";
         description
               "Default vlan id for the switch";
@@ -49,6 +75,12 @@ module dell-interface {
         description
           "The interface's address at its protocol sub-layer.";
     }
+    leaf mac-learn {
+        type base-if:mac-learn-mode;
+        description "MAC address learning mode for the port or vlan/vxlan interface.";
+        default "HW";
+    }
+
     leaf eee {
         type uint32;
         description
@@ -129,6 +161,16 @@ module dell-interface {
       }
 
 
+    augment "/if:interfaces/if:interface" {
+        when "if:type = 'base-if:vlanSubInterface'";
+        description "VLAN sub-interface is created for the combination of Physical
+                      interface/LAG and Vlan Id.";
+
+        leaf vlan-id {
+            type base-cmn:vlan-id;
+            description "VLAN ID of the sub-interface.";
+        }
+    }
 
     augment "/if:interfaces-state/if:interface" {
         when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'
@@ -162,6 +204,10 @@ module dell-interface {
                   management subsystem re-initialized itself.";
         }
 
+        leaf supported-autoneg {
+            type base-if:supported-autoneg;
+            description "Supported auto-negotiation value for the interface.";
+        }
     }
 
   // LAG specfic
@@ -205,6 +251,19 @@ module dell-interface {
           }
         }
       }
+
+  // LAG specfic - state
+  augment "/if:interfaces-state/if:interface" {
+        when "if:type = 'ianaift:ieee8023adLag'";
+        description "This extension is focused on LAG state attributes.";
+
+        leaf lag-mode {
+          description "Mode of lag configured.";
+          type base-if:lag-mode-type;
+          default "STATIC";
+        }
+      }
+
   /* Ethernet specific */
   augment "/if:interfaces/if:interface" {
     when "if:type = 'ianaift:ethernetCsmacd'";
@@ -259,7 +318,7 @@ module dell-interface {
 
     leaf learning-mode {
       type boolean;
-            description "Enable/Disable learning per VLAN";
+            description "Enable/Disable MAC learning per VLAN";
     }
 
     leaf vlan-type {
@@ -272,11 +331,22 @@ module dell-interface {
       type if:interface-ref;
       must "/if:interfaces/if:interface[if:name = current()]"
          + "/dell-if:mode = 'MODE_L2HYBRID'"
-         + " or (../dell-if:vlan-type = 'MANAGEMENT'"
-         + " and /if:interfaces/if:interface[if:name = current()]"
+         + " or (/if:interfaces/if:interface[if:name = current()]"
          + "/if:type = 'base-if:management')" {
         error-message
           "Interface being added (to vlan) is not in switchport mode trunk!";
+      }
+      must "(../dell-if:vlan-type = 'DATA'"
+         + " and /if:interfaces/if:interface[if:name = current()]"
+         + "/if:type != 'base-if:management') or (../dell-if:vlan-type = 'MANAGEMENT')" {
+        error-message
+          "Data vlan cannot have management interface as member. Vlan type can be changed only when it has no members!";
+      }
+      must "(../dell-if:vlan-type = 'MANAGEMENT'"
+         + " and /if:interfaces/if:interface[if:name = current()]"
+         + "/if:type = 'base-if:management') or (../dell-if:vlan-type = 'DATA')" {
+        error-message
+          "Management vlan cannot have data interface as member. Vlan type can be changed only when it has no members!";
       }
     }
 
@@ -286,12 +356,67 @@ module dell-interface {
          + "/dell-if:mode = 'MODE_L2' or
             /if:interfaces/if:interface[if:name = current()]"
          + "/dell-if:mode = 'MODE_L2HYBRID'"
-         + " or (../dell-if:vlan-type = 'MANAGEMENT'"
-         + " and /if:interfaces/if:interface[if:name = current()]"
+         + " or (/if:interfaces/if:interface[if:name = current()]"
          + "/if:type = 'base-if:management')" {
         error-message
           "Interface being added (to vlan) is not in switchport mode access or trunk!";
       }
+      must "(../dell-if:vlan-type = 'DATA'"
+         + " and /if:interfaces/if:interface[if:name = current()]"
+         + "/if:type != 'base-if:management') or (../dell-if:vlan-type = 'MANAGEMENT')" {
+        error-message
+          "Data vlan cannot have management interface as member. Vlan type can be changed only when it has no members!";
+      }
+      must "(../dell-if:vlan-type = 'MANAGEMENT'"
+         + " and /if:interfaces/if:interface[if:name = current()]"
+         + "/if:type = 'base-if:management') or (../dell-if:vlan-type = 'DATA')" {
+        error-message
+          "Management vlan cannot have data interface as member. Vlan type can be changed only when it has no members!";
+      }
+    }
+  }
+
+  // VXLAN specfic
+  augment "/if:interfaces/if:interface" {
+    when "if:type = 'base-if:vxlan'";
+
+        leaf vni {
+            type base-cmn:vni;
+            description "VXLAN Network Identifier";
+        }
+
+        container source-ip {
+            uses base-cmn:ip;
+            description "VXLAN Tunnel Source IP Address";
+        }
+
+        uses base-if:vn-remote-endpoints {
+            description "List of remote VTEP endpoints associated with this vxlan. Remote endpoints
+                          configured in the flooding domain using this model.";
+            //Qualifiers Observed : list of all remote endpoints associated with the VTEP."
+            //Qualifiers Target: List of remote endpoints associated with this vtep's flooding domain"
+        }
+    }
+
+
+  //Macvlan/VLAN sub interface specific
+  augment "/if:interfaces/if:interface" {
+    when "if:type = 'base-if:macvlan' or if:type = 'base-if:vlanSubInterface'";
+    description "Macvlan Interface configuration attributes";
+
+    leaf parent-interface {
+      type if:interface-ref;
+      description "The interface name from which macvlan interface is to be created";
+    }
+  }
+
+  augment "/if:interfaces-state/if:interface" {
+    when "if:type = 'base-if:macvlan' or if:type = 'base-if:vlanSubInterface'";
+    description "Macvlan Interface configuration attributes";
+
+    leaf parent-interface {
+      type if:interface-ref;
+      description "The interface name from which macvlan interface is to be created";
     }
   }
 
@@ -313,6 +438,21 @@ module dell-interface {
            description "Port's NPU Speed";
        }
     }
+
+  augment "/if:interfaces-state/if:interface" {
+    when "if:type = 'base-if:management'";
+    description "Interface state attributes applicable for
+                 ethernet/management/LAG/L2VLAN/L3VLAN interfaces.";
+
+       leaf bind-ni-name {
+         type leafref {
+           path "/ni:network-instances/ni:network-instance/ni:name";
+         }
+         description
+           "Network Instance to which an interface is bound.";
+       }
+  }
+
 
   augment "/if:interfaces-state/if:interface/if:statistics" {
      description
@@ -416,6 +556,10 @@ module dell-interface {
         }
         leaf discard-dropped-bytes {
             description "Number of WRED dropped packet bytes";
+            type yang:counter64;
+        }
+        leaf ecn-marked-packets {
+            description "Number of ECN-marked packets";
             type yang:counter64;
         }
         leaf ether-in-pkts-64-octets {
@@ -750,7 +894,6 @@ module dell-interface {
           description
             "Total number of errors, including rx and tx";
         }
-
     }
 
     rpc clear-counters {

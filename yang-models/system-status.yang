@@ -1,0 +1,129 @@
+module system-status {
+
+	namespace "http://www.dellemc.com/networking/os10/system-status";
+
+	prefix "system-status";
+
+	organization "Dell EMC";
+
+    description
+        "This module contains YANG definition for system status, which provides an overall system 
+		 status as well as individual sensor details such as usage, threshold, and fault states.
+         Copyright (c) 2017 by Dell EMC,
+         All rights reserved.";
+
+    revision "2017-11-07" {
+  	    description "Add node id attribute to current status. ";
+    }
+
+    revision "2017-09-18" {
+  	    description "Initial version.";
+    }
+
+	typedef status-levels {
+		type enumeration {
+			enum RED { 
+			    value 1;
+				description "System's fault status is Red.";
+			}
+			enum YELLOW {
+			    value 2;
+				description "System's fault status is Yellow.";
+			}
+			enum GREEN { 
+			    value 3; 
+				description "System's status is Green - no fault.";
+			}
+		}
+	}
+	typedef sensor-type {
+		description "This type lists available sensors in the system";
+		type enumeration {
+			enum CPU { value 1; }
+			enum DISK { value 2; }
+			enum FAN { value 3; }
+			enum MEM { value 4; }
+			enum POWER { value 5; }
+			enum SWAP { value 6; }
+			enum TEMPERATURE { value 7; }
+		}
+	}
+
+
+	typedef sensor-value-type {
+		description "This describes the data type of the value that sensor provides";
+		type enumeration {
+			enum INT { value 1; }
+			enum FLOAT { value 2; }
+			enum STRING { value 3; }
+		}
+	}
+
+	container current-status {
+		leaf status {
+		    config false;
+			description "The status field represents overall system status which considers all sensors 
+			    including CPU, disk, memory, temperature, fan and other system events. Events will be 
+				sent out when the status changes and this field can be queried.";
+			type status-levels;
+		}
+
+		leaf node-id {
+			config false;
+			description "This is the name to uniquely identify a node.";
+			type string;
+		}
+
+		list sensor {
+			description "This is the list of sensors that go into the current status field.  This list 
+				can be checked independently of the overall current-status/status field.";
+
+			key "name";
+
+			leaf name {
+		        config false;
+				description "This is the name of the sensor included in the overall health status, 
+				    e.g. CPU, disk, memory, swap, fan, power, temperature, etc.";
+				type sensor-type;
+			}
+
+			leaf description {
+		        config false;
+				description "This is an indication of the sensor name, value, and default threshold information.";
+				type string;
+			}
+
+			leaf value-type {
+		        config false;
+				description "The type of the value and threshold fields.  It is up to the back end service
+					and application to determine the correct parsing logic based on the type specified.";
+				type sensor-value-type;
+			}
+
+			leaf value {
+		        config false;
+				description "This is the performance/status data of the sensor, e.g. fan speed, CPU usage, 
+				    free disk/memory/swap space, etc. This value is of string type and its numeric type is 
+					described in value-type attribute"; 
+				type string;
+			}
+
+			leaf threshold {
+				description "This is an optional threshold. The fault state of a sensor is triggered from false 
+				    to true when the value of the sensor goes above or below the threshold, depending on the 
+					sensor type (e.g. fault is triggered when fan speed goes lower than its threshold, or CPU usage 
+					exceeds its threshold, etc.). This value is of string type and its numeric type is described in 
+					value-type attribute.";
+				type string;
+			}
+			
+			leaf fault-state {
+		        config false;
+				description "Indicates if the threshold value has been activated.";
+				type boolean;
+			}
+
+		}
+	}
+}
+

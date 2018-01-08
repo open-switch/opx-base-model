@@ -9,6 +9,11 @@ module os-routing-events {
 
     description "This model augments the dell-base-routing YANG model for OS Route/Neighbor events.";
 
+    revision "2017-11-01" {
+        description "VLAN id attribute is added to neighbor object to identify the VLAN on
+                     which neighbor entry is learnt.";
+    }
+
     revision "2017-07-17" {
         description "Initial version.";
     }
@@ -23,5 +28,12 @@ module os-routing-events {
             type base-cmn:logical-ifindex;
             description "The member interface index through which the MAC neighbor is learnt.";
         }
+
+        leaf vlan-id {
+            type base-cmn:vlan-id;
+            description "VLAN Id through which the neighbour entry is learnt.";
+        }
+
+
     }
 }

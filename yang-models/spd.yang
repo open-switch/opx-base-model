@@ -1,0 +1,102 @@
+module spd {
+    namespace "http://www.dellemc.com/networking/os10/spd";
+    prefix "spd";
+
+    import ietf-ipsec {
+        prefix "eipsec";
+    }
+    import ietf-inet-types {
+        prefix "inet";
+    }
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This model Security Policy Database (SPD) augments IETF IPsec and adds security association grouping to policy database
+                 since it contains generic attributes required for policy database. ";
+
+    revision "2017-08-18" {
+        description "Initial version.";
+    }
+
+    typedef ipsec-level {
+        description "IPSec level which could be required or use";
+
+        type enumeration {
+            enum REQUIRED {
+                value 1;
+                description "IPSec required level";
+            }
+            enum USE {
+                value 2;
+                description "IPSec use level";
+            }
+        }
+    }
+
+    deviation "/eipsec:ipsec/eipsec:sad/eipsec:sad-entries/eipsec:ah/eipsec:authentication-algorithm/eipsec:hmac-sha1-96/eipsec:key-str" {
+        deviate replace {
+            type string;
+        }
+    }
+
+    grouping ip-prefix {
+        description "This grouping provides ip-prefix represenation for source and destination ip addresses.";
+
+        leaf source-ip-address {
+            type inet:ip-prefix;
+            description "Source Interface ip prefix.";
+        }
+
+        leaf destination-ip-address {
+            type inet:ip-prefix;
+            description "Destination Interface ip prefix.";
+        }
+    }
+
+    augment "/eipsec:ipsec/eipsec:spd/eipsec:spd-entries" {
+        description "The following grouping will be used to configure security policy database";
+
+        uses eipsec:ipsec-sa-grouping;
+
+        uses ip-prefix;
+
+        leaf ifname {
+            type if:interface-ref;
+            description "Network interface on which the policy is applied.";
+        }
+
+        leaf policy-level {
+            type ipsec-level;
+            description "IPSec policy level.";
+        }
+
+        leaf priority {
+            type uint32;
+            default 0;
+            description "Priority Value for the policy.";
+        }
+    }
+
+     augment "/eipsec:spd/eipsec:spd-entries" {
+        description "The following grouping will be used to get security policy database information";
+
+        uses ip-prefix;
+        leaf ifname {
+            type if:interface-state-ref;
+            description "Network interface on which the policy is applied.";
+        }
+
+        leaf priority {
+            type uint32;
+            description "Priority Value for the policy.";
+        }
+
+
+     }
+
+}

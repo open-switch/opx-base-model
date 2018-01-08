@@ -1,0 +1,111 @@
+module bridge-domain {
+    namespace "http://www.dellemc.com/networking/os10/bridge";
+    prefix "bridge-domain";
+
+
+    import ietf-interfaces { prefix "if"; }
+    import dell-base-interface-common { prefix "base-if-cmn";}
+
+
+    import ietf-yang-schema-mount {
+        prefix yangmnt;
+    }
+
+    description "This module contains a collection of YANG definitions to configure the
+                 bridge doamin";
+
+    revision "2017-10-10" {
+        description "Initial revision";
+    }
+
+    list bridge {
+        key "name";
+
+        description "a bridge domain ";
+
+        leaf name {
+            type string;
+            description "Bridge name.";
+        }
+        leaf-list member-interface {
+            type if:interface-ref;
+            description " List of Members of the Bridge sharing the same broadcast and flooding domain.
+                          Member could be Vlan sub-interface, physical interface, LAG or VXLAN type interface";
+        }
+
+        leaf mode{
+            type base-if-cmn:bridge-mode;
+            description "Mode of the bridge 1D if bridge is VLAN unaware, 1Q if bridge is VLAN aware";
+        }
+    }
+
+    typedef operation-type {
+        description " Operation type on the bridge";
+        type enumeration {
+            enum CREATE {
+                value 1;
+                description "Operation to create interface";
+            }
+            enum DELETE {
+                value 2;
+                description "Operation to delete interface";
+            }
+            enum UPDATE {
+                value 3;
+                description "Operation to update interface attributes";
+            }
+            enum ADD-MEMBER {
+                value 4;
+                description "Operation to add new members to the bridge";
+            }
+            enum DELETE-MEMBER {
+                value 5;
+                description "Operation to delete members from the bridge";
+            }
+
+        }
+    }
+
+    rpc set-bridge {
+        description "This method is used to created/delete and set properties of the bridge.
+                     It also support addition of new members and deletion of existing members.
+                     For create and delete, it expects bridge name as mandatory parameter.
+                     For member addition/deletion, It expects the same attribute ID as defined under bridge object";
+        input {
+
+            // Mounts the bridge container defined above here to used its attributes
+            // inside this rpc
+            yangmnt:mount-point bridge;
+
+
+            leaf operation {
+                type operation-type;
+                description "Specify operation type for the RPC request.";
+            }
+        }
+    }
+
+    rpc bridge-vlan-update{
+
+        description
+            "RPC to add/remove VLANs from Bridge.
+             Bridge has to be in 1D mode if trying to add more than one VLAN.";
+
+        input {
+            leaf bridge-name {
+                type string;
+                description "Bridge Identifier name";
+            }
+
+            leaf add {
+                type boolean;
+                description "If VLAN needs to be added then true, if VLAN needs to be deleted then false";
+            }
+
+            leaf vlan-name{
+                type string;
+                description "Name of the VLAN to be associated to bridge";
+            }
+        }
+    }
+}

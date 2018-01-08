@@ -9,6 +9,12 @@ module dell-base-common {
     "This module contains a collection of common YANG derived types used
      in other Base Yang modules.";
 
+  revision "2017-10-10" {
+    description "Add grouping for ip address.
+                 Add typedef vni for VxLAN.
+                 Add enumeration for bridge and vxlan for interface type";
+  }
+
   revision 2015-09-24 {
     description
       "Added Enum values to breakout-mode";
@@ -67,6 +73,14 @@ module dell-base-common {
     reference "IEEE 802.1Q";
   }
 
+  typedef vni {
+    type uint32 {
+        range "1 .. 16777215";
+    }
+    description
+      "This type denotes a VXLAN Network Identifier.
+       It is 24 bit long so can provide 16 million unique ID's";
+  }
   typedef mac-address {
     type binary {
       length "6";
@@ -99,6 +113,7 @@ module dell-base-common {
       type base-cmn:ipv4-address;
       type base-cmn:ipv6-address;
     }
+
     description
       "This type denotes a IP address (V4 or V6) 4/16 binary number
        in network-byte order.";
@@ -287,6 +302,16 @@ module dell-base-common {
       enum "vrf" {
         value 12;
       }
+      enum "macvlan" {
+        value 13;
+      }
+      enum "vxlan" {
+        value 14;
+      }
+      enum "bridge" {
+        value 15;
+      }
+
     }
     description
       "Enumeration of the various support interface types";
@@ -473,6 +498,42 @@ module dell-base-common {
       enum BREAKOUT_4x2 {
         value 9; /* 4 logical interfaces derived from 2 front panel ports */
       }
+      enum BREAKOUT_UNKNOWN {
+        value 10; /* The breakout mode cannot be determined */
+      }
+      enum NO_BREAKOUT {
+        value 11; /* Device does not breakout  */
+      }
     }
+  }
+
+  grouping ip {
+      description "IPv4 or IPv6 address and address family type";
+      leaf addr-family {
+          type base-cmn:af-type;
+          description "IP address family type";
+      }
+      leaf addr {
+        type base-cmn:ip-address;
+        description "IPv4/IPv6 address";
+      }
+  }
+
+  typedef operation-type {
+      description "Generic operation types.";
+      type enumeration {
+          enum CREATE {
+              value 1;
+              description "Create operation.";
+          }
+          enum DELETE {
+              value 2;
+              description "Delete operation.";
+          }
+          enum UPDATE {
+              value 3;
+              description "Update operation.";
+          }
+      }
   }
 }

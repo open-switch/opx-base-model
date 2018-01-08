@@ -3,6 +3,7 @@ module dell-base-interface-common {
     namespace "http://www.dellemc.com/networking/os10/dell-base-interface-common";
     prefix "base-if";
 
+    import ietf-interfaces { prefix "if"; }
     import iana-if-type { prefix "ianaift"; }
     import dell-base-common { prefix "base-cmn"; }
 
@@ -14,6 +15,25 @@ module dell-base-interface-common {
     description
         "This module contains the collection of YANG definitions for
         managing interfaces";
+
+    revision "2017-10-10" {
+        description "Add vxlan and vlanSubInterface identity. Add typedef for bridge mode.
+                     Add grouping for vn-remote-endpoints for VxLAN";
+    }
+
+    revision 2017-10-05 {
+        description
+            "Add an enumeration for VLAN type INTERNAL.";
+    }
+    revision 2017-10-04 {
+        description
+            "Add MAC learn mode types.";
+    }
+
+    revision 2017-09-27 {
+        description
+            "Add an enumeration for supported auto-negotiation values.";
+    }
 
     revision 2015-01-29 {
         description
@@ -34,6 +54,59 @@ module dell-base-interface-common {
       base ianaift:iana-interface-type;
       description "CPU interface type";
     }
+
+    identity vlanSubInterface {
+      base ianaift:iana-interface-type;
+      description "VLAN sub interface type";
+    }
+
+    identity vxlan {
+      base ianaift:iana-interface-type;
+      description "VXLAN interface type";
+	}
+	
+    identity macvlan {
+      base ianaift:iana-interface-type;
+      description "Macvlan interface type";
+    }
+
+    typedef supported-autoneg {
+        description "Enumeration of supported auto-negotiation values.";
+        type enumeration {
+            enum NOT_SUPPORTED {
+                value 1;
+                description "autoneg not supported.";
+            }
+            enum ON_SUPPORTED {
+                value 2;
+                description "autoneg on supported only.";
+            }
+            enum OFF_SUPPORTED {
+                value 3;
+                description "autoneg off supported only.";
+            }
+            enum BOTH_SUPPORTED {
+                value 4;
+                description "autoneg on and off supported.";
+            }
+        }
+    }
+
+    typedef bridge-mode {
+        description "Enumeration of bridge mode";
+        type enumeration {
+            enum 1D {
+                value 1;
+                description "Bridge is VLAN unaware.";
+            }
+
+            enum 1Q{
+                value 2;
+                description "Bridge is VLAN aware.";
+            }
+        }
+    }
+
     typedef speed {
         description "Enumeration of port speed.";
         type enumeration {
@@ -113,6 +186,26 @@ module dell-base-interface-common {
                 value 16;
                 description "32G FC data rate.";
             }
+            enum 2GFC {
+                value 17;
+                description "2G FC data rate.";
+            }
+            enum 64GFC {
+                value 18;
+                description "64G FC data rate.";
+            }
+            enum 128GFC {
+                value 19;
+                description "128G FC data rate.";
+            }
+            enum 4GIGE {
+                value 20;
+                description "4G Ethernet data rate.";
+            }
+            enum 1GFC {
+                value 21;
+                description "1G FC data rate.";
+            }
         }
     }
 
@@ -185,6 +278,10 @@ module dell-base-interface-common {
             }
             enum MANAGEMENT {
                 value 2;
+            }
+            enum INTERNAL {
+                value 3;
+                description "Applications can use this VLAN type to create VLAN used for internal purpose.";
             }
         }
     }
@@ -306,6 +403,39 @@ module dell-base-interface-common {
       }
     }
   }
+
+    typedef mac-learn-mode{
+        description "FDB Learning mode of the interface";
+
+        type enumeration{
+
+            enum DROP{
+              value 1;
+                description "Drop packets with unkown source MAC address. Do not learn, Do not forward";
+            }
+
+            enum DISABLE{
+              value 2;
+                description "Do not learn new source MAC address. Forward Based on destination MAC";
+            }
+
+            enum HW{
+              value 3;
+                description "Hardware Learning. Learn source MAC address. Forward based on destination";
+            }
+
+            enum CPU_TRAP{
+              value 4;
+                description "Trap packets with unknown source MAC address to CPU. Do not learn. Do not forward";
+            }
+
+            enum CPU_LOG{
+              value 5;
+                description "Trap packets with unknown source MAC address to CPU. Do not learn. Forward based on destination MAC";
+            }
+        }
+    }	
+	
   grouping breakout-capabilities {
         list br-cap {
         key "phy-mode breakout-mode port-speed";
@@ -329,6 +459,20 @@ module dell-base-interface-common {
         }
     }
 
+   grouping vn-remote-endpoints {
+       list remote-endpoint {
+           key "addr-family addr";
+           description "List of remote VTEP endpoints which are part of this VXLAN.";
+
+           uses base-cmn:ip;
+
+           leaf flooding-enabled {
+               type boolean;
+               config false;
+               description "The remote endpoint address is part of flooding domain if this flag is set.";
+           }
+       }
+   }
 
 }
 

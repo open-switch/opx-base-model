@@ -25,6 +25,11 @@ module dell-base-if-phy {
     description "This model augments the standard interface and adds Dell EMC specific
     				physical port extensions.";
 
+    revision "2017-09-27" {
+        description
+        "Add per interface supported auto-negotiation attribute.";
+    }
+
     revision "2016-01-01" {
         description "Initial version.";
     }
@@ -47,7 +52,7 @@ module dell-base-if-phy {
 	}
 
     typedef mac-learn-mode{
-        description "FDB Learning mode of the interface";
+        description "FDB Learning mode of the interface.";
 
         type enumeration{
 
@@ -135,6 +140,24 @@ module dell-base-if-phy {
         leaf port-speed {
             type base-if:speed;
             description "port speed of the front panel port";
+        }
+
+        leaf default-phy-mode {
+            config false;
+            type base-if:phy-mode-type;
+            description "Default Port PHY mode, Ethernet or FC";
+        }
+
+        leaf default-breakout-mode {
+            config false;
+            type base-cmn:breakout-type;
+            description "Default platform breakout mode for the port";
+        }
+
+        leaf default-port-speed {
+            config false;
+            type base-if:speed;
+            description "Default speed for the port";
         }
 		
         uses base-if:breakout-capabilities;
@@ -242,6 +265,12 @@ module dell-base-if-phy {
             description "Physical media type ";
         }
 
+        leaf hw-profile {
+            type uint32;
+            description "Hardware profile ID specific to the physical port. It is a platform specific property.
+                         It depends on the port configuration and the media-type present in the port.";
+        }
+
         leaf loopback {
            type base-cmn:loopback-type;
         }
@@ -273,6 +302,11 @@ module dell-base-if-phy {
         			description "port accepts both untagged and tagged packets.";
         		}
         	}
+        }
+
+        leaf supported-autoneg {
+            type base-if:supported-autoneg;
+            description "Supported auto-negotiation value for the interface.";
         }
 	}		
 	rpc breakout {

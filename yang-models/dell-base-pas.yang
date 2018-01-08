@@ -18,6 +18,10 @@ module dell-base-pas {
     description "Initial revision.";
   }
 
+  revision 2017-11-09 {
+    description "Input Power Monitor Support";
+  }
+
   //PAS Notify subcategory
 
   list ready {
@@ -252,6 +256,31 @@ module dell-base-pas {
     }
 
     uses platform:temp_threshold;
+  }
+
+  // Power-monitor subcategory
+
+  list power-monitor {
+    description "Attributes of an Input Power Monitor which is the total power consumed (including PSU loss) by the system";
+
+    key "entity-type slot monitor-index";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf monitor-index {
+        description "Index of power monitor chip on entity";
+        type uint8;
+    }
+
+    uses platform:power-monitor;
   }
 
   // PLD subcategory

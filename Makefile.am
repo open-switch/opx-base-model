@@ -47,7 +47,20 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/rfc/ietf-yang-library.yang \
     $(top_srcdir)/rfc/ietf-yang-schema-mount.yang \
     $(top_srcdir)/yang-models/vrf-mgmt.yang \
-    $(top_srcdir)/yang-models/vrf-firewall.yang
+    $(top_srcdir)/yang-models/vrf-firewall.yang \
+    $(top_srcdir)/rfc/ietf-access-control-list.yang \
+    $(top_srcdir)/rfc/ietf-dhcp.yang \
+    $(top_srcdir)/rfc/ietf-igmp-mld-snooping.yang \
+    $(top_srcdir)/rfc/ietf-ipsec.yang \
+    $(top_srcdir)/rfc/ietf-key-chain.yang \
+    $(top_srcdir)/rfc/ietf-ntp.yang \
+    $(top_srcdir)/rfc/ietf-packet-fields.yang \
+    $(top_srcdir)/rfc/ietf-routing-types.yang \
+    $(top_srcdir)/rfc/ietf-routing.yang \
+    $(top_srcdir)/yang-models/bridge-model.yang \
+    $(top_srcdir)/yang-models/l2-multicast.yang \
+    $(top_srcdir)/yang-models/spd.yang \
+    $(top_srcdir)/yang-models/system-status.yang
 
 #Create VPATH for yang models
 YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
@@ -101,7 +114,20 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/ietf-yang-library.cpp \
     @YANG_OUTPUT@/ietf-yang-schema-mount.cpp \
     @YANG_OUTPUT@/vrf-mgmt.cpp \
-    @YANG_OUTPUT@/vrf-firewall.cpp
+    @YANG_OUTPUT@/vrf-firewall.cpp \
+    @YANG_OUTPUT@/ietf-access-control-list.cpp \
+    @YANG_OUTPUT@/ietf-dhcp.cpp \
+    @YANG_OUTPUT@/ietf-igmp-mld-snooping.cpp \
+    @YANG_OUTPUT@/ietf-ipsec.cpp \
+    @YANG_OUTPUT@/ietf-key-chain.cpp \
+    @YANG_OUTPUT@/ietf-ntp.cpp \
+    @YANG_OUTPUT@/ietf-packet-fields.cpp \
+    @YANG_OUTPUT@/ietf-routing-types.cpp \
+    @YANG_OUTPUT@/ietf-routing.cpp \
+    @YANG_OUTPUT@/bridge-model.cpp \
+    @YANG_OUTPUT@/l2-multicast.cpp \
+    @YANG_OUTPUT@/spd.cpp \
+    @YANG_OUTPUT@/system-status.cpp
 
 YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/yumaworks-extensions.h \
@@ -151,7 +177,20 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/ietf-yang-library.h \
     @YANG_OUTPUT@/ietf-yang-schema-mount.h \
     @YANG_OUTPUT@/vrf-mgmt.h \
-    @YANG_OUTPUT@/vrf-firewall.h
+    @YANG_OUTPUT@/vrf-firewall.h \
+    @YANG_OUTPUT@/ietf-access-control-list.h \
+    @YANG_OUTPUT@/ietf-dhcp.h \
+    @YANG_OUTPUT@/ietf-igmp-mld-snooping.h \
+    @YANG_OUTPUT@/ietf-ipsec.h \
+    @YANG_OUTPUT@/ietf-key-chain.h \
+    @YANG_OUTPUT@/ietf-ntp.h \
+    @YANG_OUTPUT@/ietf-packet-fields.h \
+    @YANG_OUTPUT@/ietf-routing-types.h \
+    @YANG_OUTPUT@/ietf-routing.h \
+    @YANG_OUTPUT@/bridge-model.h \
+    @YANG_OUTPUT@/l2-multicast.h \
+    @YANG_OUTPUT@/spd.h \
+    @YANG_OUTPUT@/system-status.h
 
 BUILT_SOURCES = ${YANG_GENERATED_SRCS} ${YANG_GENERATED_HDRS}
 
@@ -205,7 +244,20 @@ lib_LTLIBRARIES = \
     libcpsclass_ietf-yang-library.la \
     libcpsclass_ietf-yang-schema-mount.la \
     libcpsclass_vrf-mgmt.la \
-    libcpsclass_vrf-firewall.la
+    libcpsclass_vrf-firewall.la \
+    libcpsclass_ietf-access-control-list.la \
+    libcpsclass_ietf-dhcp.la \
+    libcpsclass_ietf-igmp-mld-snooping.la \
+    libcpsclass_ietf-ipsec.la \
+    libcpsclass_ietf-key-chain.la \
+    libcpsclass_ietf-ntp.la \
+    libcpsclass_ietf-packet-fields.la \
+    libcpsclass_ietf-routing-types.la \
+    libcpsclass_ietf-routing.la \
+    libcpsclass_bridge-model.la \
+    libcpsclass_l2-multicast.la \
+    libcpsclass_spd.la \
+    libcpsclass_system-status.la
 
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
@@ -355,6 +407,45 @@ libcpsclass_vrf_mgmt_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
 libcpsclass_vrf_firewall_la_SOURCES = @YANG_OUTPUT@/vrf-firewall.cpp
 libcpsclass_vrf_firewall_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_access_control_list_la_SOURCES = @YANG_OUTPUT@/ietf-access-control-list.cpp
+libcpsclass_ietf_access_control_list_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_dhcp_la_SOURCES = @YANG_OUTPUT@/ietf-dhcp.cpp
+libcpsclass_ietf_dhcp_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_igmp_mld_snooping_la_SOURCES = @YANG_OUTPUT@/ietf-igmp-mld-snooping.cpp
+libcpsclass_ietf_igmp_mld_snooping_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_ipsec_la_SOURCES = @YANG_OUTPUT@/ietf-ipsec.cpp
+libcpsclass_ietf_ipsec_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_key_chain_la_SOURCES = @YANG_OUTPUT@/ietf-key-chain.cpp
+libcpsclass_ietf_key_chain_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_ntp_la_SOURCES = @YANG_OUTPUT@/ietf-ntp.cpp
+libcpsclass_ietf_ntp_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_packet_fields_la_SOURCES = @YANG_OUTPUT@/ietf-packet-fields.cpp
+libcpsclass_ietf_packet_fields_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_routing_types_la_SOURCES = @YANG_OUTPUT@/ietf-routing-types.cpp
+libcpsclass_ietf_routing_types_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_ietf_routing_la_SOURCES = @YANG_OUTPUT@/ietf-routing.cpp
+libcpsclass_ietf_routing_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_bridge_model_la_SOURCES = @YANG_OUTPUT@/bridge-model.cpp
+libcpsclass_bridge_model_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_l2_multicast_la_SOURCES = @YANG_OUTPUT@/l2-multicast.cpp
+libcpsclass_l2_multicast_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_spd_la_SOURCES = @YANG_OUTPUT@/spd.cpp
+libcpsclass_spd_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
+
+libcpsclass_system_status_la_SOURCES = @YANG_OUTPUT@/system-status.cpp
+libcpsclass_system_status_la_LIBADD = -lopx_cps_class_map -lopx_cps_api_common
 
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang

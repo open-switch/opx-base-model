@@ -8,6 +8,8 @@ module dell-base-l2-mac {
         prefix "base-cmn";
     }
 
+  import dell-base-interface-common { prefix "base-if"; }
+
     organization
         "Dell EMC";
 
@@ -20,6 +22,11 @@ module dell-base-l2-mac {
 
          Copyright(c) 2015-2016 by Dell EMC,
          All rights reserved.";
+
+    revision "2017-10-10" {
+        description "Add forwarding table object. Add endpoint-ip, br-name attributes
+                     to support MAC addresses learned from remote endpoint";
+    }
 
     revision 2015-10-30 {
         description
@@ -104,22 +111,22 @@ module dell-base-l2-mac {
             enum learnt {
                 value 1;
                 description
-                    "mac entry was learnt in npu";
+                    "MAC address entry was learnt in npu";
             }
             enum aged {
                 value 2;
                 description
-                    "mac entry was aged out in npu";
+                    "MAC address entry was aged out in npu";
             }
             enum flushed {
                 value 3;
                 description
-                    "mac entry was deleted in npu";
+                    "MAC address entry was deleted in npu";
             }
             enum moved {
             	value 4;
             	description
-            		"mac entry was moved";
+            		"MAC address entry was moved";
     		}
         }
     }
@@ -130,23 +137,36 @@ module dell-base-l2-mac {
             enum port {
                 value 1;
                 description
-                    "mac flush on the port";
+                    "MAC address flush on the port";
             }
             enum vlan-port {
                 value 2;
                 description
-                    "mac flush on the given vlan port combination";
+                    "MAC address flush on the given vlan port combination";
             }
             enum vlan {
                 value 3;
                 description
-                    "mac flush on the given vlan";
+                    "MAC address flush on the given vlan";
             }
             enum all {
             	value 4;
             	description
-            		"mac flush on all vlan/ports";
+            		"MAC address flush on all vlan/ports";
     		}
+    		
+            enum bridge {
+               value 5;
+                description
+                    "MAC address flush on the given bridge";
+            }
+
+            enum bridge-endpoint-ip {
+                value 6;
+                description
+                    "MAC address flush on the give bridge and
+                     endpoint ip address combination";
+            }
         }
     }
 
@@ -171,7 +191,8 @@ module dell-base-l2-mac {
         leaf vlan {
             type base-cmn:vlan-id;
             description
-            	"Vlan ID to which MAC belongs to";
+            	"VLAN ID to which MAC address entry belongs to in VLAN aware flooding domain.
+            	 For VLAN unaware flooding domain it is the vlan id of tagged access port";
         }
 
         leaf ifindex {
@@ -220,7 +241,6 @@ module dell-base-l2-mac {
                  configure it in the NPU";
         }
 
-
         leaf event-type{
             type mac-event-type;
             config false;
@@ -234,14 +254,38 @@ module dell-base-l2-mac {
             description
                 "When entry is programmed by application in npu, if entry needs to be published";
         }
+
+        container endpoint-ip {
+            uses base-cmn:ip;
+            description
+                "Endpoint IP address for MAC address entries learned on remote endpoints";
+        }
+
+        leaf br-name{
+            type string;
+            description
+                "Bridge name where MAC address entry belongs.";
+         }
+
     }
 
     list table {
             description
-                "MAC table list.
-                 Each entry is uniquely identified by vlan/mac-address combination within
+                "MAC address table list for VLAN aware flooding domain.
+                 Each entry is uniquely identified by VLAN/MAC address combination within
                  a switch domain";
             key "vlan mac-address";
+
+            uses entry;
+    }
+
+    list forwarding-table {
+            description
+                "MAC address table for VLAN unaware flooding domain.
+                 Each entry is uniquely identified by Bridge name/MAC address
+                 combination within a switch domain";
+
+            key "br-name mac-address";
 
             uses entry;
     }
@@ -306,7 +350,19 @@ module dell-base-l2-mac {
             description
                 "Interface name associated with this MAC entry";
         }
-        		
+
+        leaf br-name {
+            type string;
+            description
+                "Bridge interface name to which MAC address entry belongs to";
+        }	        	
+
+        container endpoint-ip {
+            uses base-cmn:ip;
+            description
+                "Endpoint IP address for MAC address entries learned on remote endpoints";
+        }	
+
         leaf all {
             type boolean;
             default false;
@@ -339,11 +395,13 @@ module dell-base-l2-mac {
     }
 
     rpc flush {
-    description "Flush the mac-addresses learned on a VLAN
-                 and/or an interface";
+    description "Flush the MAC addresses learned on flooding domain,interface,
+                 flooding domain/interface, interface/remote ip ";
     input {
         list filter {
-            description "List of VLAN and/or interface";
+            description "Flush input parameters which may include flooding domain name,
+                         interface name, flooding domain/interface name,
+                         interface/remote ip";
         	uses flush;	
             }
         }

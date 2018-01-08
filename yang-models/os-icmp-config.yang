@@ -20,6 +20,11 @@ module os-icmp-config {
             message for non-routable traffic from the OS.";
 
         input {
+            leaf operation {
+                mandatory true;
+                description "This indicates the operation type (create or delete).";
+                type base-cmn:operation-type;
+            }
             leaf enable {
                 mandatory true;
                 description "This is set to true to enable ICMP unreachable message

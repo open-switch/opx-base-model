@@ -15,22 +15,56 @@ module dell-base-ip {
     description "This model will support the configruation of IP address.
 
     	";
+    revision 2017-09-27 {
+        description "This revision adds the IPv6 DAD (Duplicate Address Detection)
+                     configurations. DAD operation helps the node to check whether an address
+                     is already in use.";
+    }
 
     revision 2015-08-12 {
         description "Initial version.";
     }
 
+    typedef dad-config {
+        type enumeration {
+            enum disable {
+                value 1;
+                description "Disable DAD.";
+            }
+            enum enable {
+                value 2;
+                description "Enable DAD (default).";
+            }
+            enum enable-dad-disable-ipv6-oper {
+                value 3;
+                description "Enable DAD, and disable IPv6 operation if MAC-based duplicate
+                    link-local address has been found.";
+            }
+        }
+    }
 
 	grouping common-ip-config-params {
 	    leaf ifindex {
 	     	type base-cmn:logical-ifindex;
 	      	description "The interface index";
 	    }		
-		leaf enabled {
-			type boolean;
-			description "Set to true to enable IPv6 for the interface.
-                IPv6 is enabled by default for L3 interfaces.";
-		}		
+        leaf enabled {
+            type boolean;
+            description "Set to true to enable to enable IPv6 for the interface.
+                IPv6 is enabled by default for L3 interfaces.
+                The per interface IPv6 related behavior depends on
+                the value of the attribute 'accept-dad'.
+                If 'accept-dad' is set to enable-dad-disable-ipv6-oper,
+                the system disables IPv6 if it detects a duplicate IPv6 link-local
+                address regardless of the value of this attribute - namely the 'enable' attribute.
+
+                When this value is changed from false to true (IPv6 is being enabled),
+                it will dynamically create a link-local address on the given
+                interface and start Duplicate Address Detection, if necessary.
+
+                When this value is changed from true to false (IPv6 is being disabled),
+                it will dynamically delete all address on the given interface.";
+        }		
 		leaf forwarding {
 			type boolean;
 			description "Set to true to enable IP forwarding.
@@ -43,6 +77,10 @@ module dell-base-ip {
 		leaf name {
 			type string;
 			description "The interfaces's name.";
+		}
+		leaf vrf-name {
+			type string;
+			description "The VRF name.";
 		}
 		leaf vrf-name {
 			type string;
@@ -84,6 +122,16 @@ module dell-base-ip {
                 IPv6 autoconfiguration is enabled by default if forwarding is disabled.";
 		}
 		
+        leaf accept-dad {
+            type dad-config;
+            description "Controls whether to accept DAD operation.";
+        }
+
+        leaf dad-failed {
+            type boolean;
+            description "This is set to true when DAD failed for the IPv6 address.";
+        }
+
 		list address {			
 			key "ip";
 		    leaf ip {

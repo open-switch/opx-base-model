@@ -30,6 +30,26 @@ module dell-base-platform-common {
 
   All rights reserved.";
 
+  revision 2017-11-21 {
+    description "Added leaf fabric id for hostsystem object";
+  }
+
+  revision 2017-11-08 {
+    description "Added power-monitor grouping for input power monitoring";
+  }
+
+  revision 2017-10-06 {
+    description "Added leaf for media channel count.";
+  }
+
+  revision 2017-10-05 {
+    description "Added leaf for media lockdown state.";
+  }
+
+  revision 2017-10-02 {
+    description "Added more QSFP28-DD media.";
+  }
+
   revision 2015-11-04 {
     description
       "Updated based on new guidelines for Yang Model update";
@@ -42,7 +62,6 @@ module dell-base-platform-common {
   revision 2015-04-03 {
     description "Initial revision.";
   }
-
 
   // An entity is any FRU within a chassis
 
@@ -1093,6 +1112,52 @@ module dell-base-platform-common {
               value 190;
               description "Pluggable optics QSFPPLUS_40GBASE_SR_AOC10M";
           }
+
+          enum QSFP28-DD_2x100GBASE_CR4 {
+              value 191;
+              description "Pluggable 2x breakout optics QSFP28-DD_2x100GBASE_CR4 with length unspecified ";
+          }
+
+          enum QSFP28-DD_2x100GBASE_CR4_1_HALFM {
+              value 192;
+              description "Pluggable breakout optics QSFP28-DD_2x100GBASE_CR4_1_HALFM";
+          }
+
+          enum QSFP28-DD_8x25GBASE_CR1 {
+              value 193;
+              description "Pluggable 8x breakout optics QSFP28-DD_8x25GBASE_CR1 with length unspecified";
+          }
+
+          enum QSFP28-DD_8x25GBASE_CR4_1_HALFM {
+              value 194;
+              description "Pluggable optics QSFP28-DD_8x25GBASE_CR4_1_HALFM";
+          }
+
+          enum QSFP28-DD_8x25GBASE_2SR4_AOC {
+              value 195;
+              description "Pluggable 8x breakout optics QSFP28-DD_8x25GBASE_2SR4_AOC with length unspecified ";
+          }
+
+          enum QSFP28-DD_200GBASE_2SR4_AOC {
+              value 196;
+              description "Pluggable optics QSFP28-DD_200GBASE_2SR4_AOC with length unspecified ";
+          }
+
+          enum QSFP28-DD_2x100GBASE_SR4_AOC {
+              value 197;
+              description "Pluggable 2x breakout optics QSFP28-DD_2x100GBASE_SR4_AOC with length unspecified ";
+          }
+
+          enum QSFP28-DD_200GBASE_CWDM4 {
+              value 198;
+              description "Pluggable optics QSFP28-DD_200GBASE_CWDM4";
+          }
+
+          enum QSFP28-DD_200GBASE_PSM4_IR {
+              value 199;
+              description "Pluggable optics QSFP28-DD_200GBASE_PSM4_IR";
+          }
+
       }
   }
 
@@ -1849,6 +1914,47 @@ module dell-base-platform-common {
     }
   }
 
+  /* Power Monitor grouping
+   * - Everything there is to know about an Input Power monitor
+   * Which is the total power consumed by the system (including PSU loss)
+   */
+
+  grouping power-monitor {
+    description "Attributes of an input power monitor";
+
+    leaf voltage {
+      description "Input Voltage value";
+      type common:xfloat;
+      config false;
+      units "Volts";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      // Persistent: No
+      // Notification: No
+    }
+
+    leaf current {
+      description "Input Current value";
+      type common:xfloat;
+      config false;
+      units "Amps";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      // Persistent: No
+      // Notification: No
+    }
+
+    leaf power {
+      description "Input Power value";
+      type common:xfloat;
+      config false;
+      units "Watts";
+      // Qualifiers: observed, realtime
+      // Dependencies: Valid only if entity present.
+      // Persistent: No
+      // Notification: No
+    }
+  }
 
   // PLD grouping - Everything there is to know about programmable logic
   //                devices (PLDs)
@@ -1972,7 +2078,7 @@ module dell-base-platform-common {
       config false;
     }
     leaf identification-led-control {
-      description "Identification LED control flag, PAS owns front panel port identification 
+      description "Identification LED control flag, PAS owns front panel port identification
                    led control if this attribute value is True";
       type boolean;
       config false;
@@ -2004,6 +2110,50 @@ module dell-base-platform-common {
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+    }
+
+    leaf lockdown-state {
+      description "This is whether or not the media is locked";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf channel-count {
+      description "This is the number of channels in the device";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf default-media-speed {
+      description "The default speed of the device inserted";
+      type base-if:speed;
+      config false;
+    }
+
+    leaf default-breakout-mode {
+      description "This is the physical (hence default) breakout property of the media type";
+      type base-cmn:breakout-type;
+      config false;
+    }
+
+    leaf default-breakout-speed {
+      description "The default speed of the individual breakouts";
+      type base-if:speed;
+      config false;
+    }
+
+    leaf default-phy-mode {
+      description "The default PHY mode";
+      type base-if:phy-mode-type;
+      config false;
     }
 
     leaf-list sub-port-id {
@@ -3019,6 +3169,12 @@ module dell-base-platform-common {
           type uint16;
       }
 
+      leaf fabric-id {
+          description "Host system fabric id ";
+          type string {
+              length "32";
+          }
+      }
   }
 
   // Contains all the attributes of a comm-dev

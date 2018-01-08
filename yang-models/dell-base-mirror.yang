@@ -91,7 +91,6 @@ module dell-base-mirror {
         }
 
         leaf erspan-vlan-id {
-            mandatory true;
             type base-cmn:vlan-id;
             description
                 "ERSPAN Tunnel L2 Header VLAN id";

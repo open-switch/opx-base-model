@@ -25,9 +25,10 @@ description
 "This module contains a collection of YANG definitions for
 managing configuration and operational data for Routing Object";
 
-revision 2014-08-06 {
+revision 2017-01-11 {
 description
-"Initial revision.";
+"This revision adds the event filter to publish the selective routes,
+by default, no route events will be published.";
 }
 
 revision 2016-04-05 {
@@ -35,6 +36,10 @@ description
 "VLT Peer routing enable/disable support";
 }
 
+revision 2014-08-06 {
+description
+"Initial revision.";
+}
 
 /*
 * Typedefs
@@ -317,6 +322,7 @@ typedef nh-type {
     leaf vrf-id {
       type uint32;
       description "VRF ID";
+      status obsolete;
     }
 
 
@@ -397,6 +403,7 @@ description
     leaf vrf-id {
       type uint32;
       description "VRF ID";
+      status obsolete;
     }
 
     leaf af {
@@ -447,11 +454,13 @@ description
 
 
 list obj {
- key "vrf-id";
+ key "vrf-name";
  description "This grouping defines the routing domain object";
 
  leaf vrf-id {
   type uint32;
+  description "vrf-name is used in place of vrf-id.";
+  status obsolete;
  }
 
  leaf vrf-name {
@@ -505,6 +514,7 @@ grouping nexthop-tracking-object {
     leaf vrf-id {
       type uint32;
       description "VRF ID";
+      status obsolete;
     }
 
     leaf vrf-name {
@@ -557,6 +567,7 @@ grouping nexthop-tracking-object {
       leaf vrf-id {
         type uint32;
         description "VRF ID";
+        status obsolete;
       }
 
      leaf hash-algo-seed-val {
@@ -655,6 +666,7 @@ grouping nexthop-tracking-object {
             type uint32;
             default 0;
             description "VRF ID";
+            status obsolete;
         }
 
         leaf vrf-name {
@@ -680,6 +692,7 @@ grouping nexthop-tracking-object {
       leaf vrf-id {
         type uint32;
         description "VRF ID";
+        status obsolete;
       }
 
       leaf af {
@@ -710,6 +723,7 @@ grouping nexthop-tracking-object {
       type uint32;
       default 0;
       description "VRF ID";
+      status obsolete;
     }
 
     leaf vrf-name {
@@ -742,6 +756,7 @@ grouping nexthop-tracking-object {
         type uint32;
         default 0;
         description "VRF ID";
+        status obsolete;
       }
 
       leaf vrf-name {
@@ -814,6 +829,28 @@ grouping nexthop-tracking-object {
         description "Interface mode in notification.
           Modes that are of interest to routing component is None/L2.";
       }
+    }
+  }
+
+  list event-filter {
+    key "vrf-name type";
+    description "Provide list of filters to publish the selective route events,
+                 by default, no route events will be published.";
+    leaf vrf-name {
+        type string;
+        description "VRF device name";
+    }
+
+    leaf type {
+        type rt-owner;
+        description "This type is used to publish the selective route type events,
+                     the event filter is now supported only for management routes.";
+    }
+
+    leaf enable {
+	  type boolean;
+	  description "If this is set to true, the filter will be applied for a selective
+          route type in the VRF and false otherwise.";
     }
   }
 }

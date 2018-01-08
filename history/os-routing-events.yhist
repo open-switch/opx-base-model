@@ -1,12 +1,15 @@
-# writing history/os-routing-events.yhist
-++obj cps_api_obj_CAT_OS_RE
-OS_RE_BASE_ROUTE_OBJ_ENTRY_OBJ=1
-OS_RE_BASE_ROUTE_OBJ_NBR_MBR_IFINDEX=3
-OS_RE_BASE_ROUTE_OBJ_NBR_OBJ=2
---obj cps_api_obj_CAT_OS_RE end
-++obj cps_api_obj_CAT_OS_ROUTING_EVENTS
-OS_ROUTING_EVENTS_BASE_ROUTE_OBJ_OBJ=1
---obj cps_api_obj_CAT_OS_ROUTING_EVENTS end
-++obj global
-cps_api_obj_CAT_OS_RE=279
---obj global end
+[global]
+category = cps_api_obj_CAT_OS_RE
+range-start = 18284544
+range-end = 18350080
+id = 279
+
+[cps_api_obj_CAT_OS_RE]
+OS_RE_BASE_ROUTE_OBJ_ENTRY_OBJ = 18284545 1
+OS_RE_BASE_ROUTE_OBJ_NBR_OBJ = 18284546 2
+OS_RE_BASE_ROUTE_OBJ_NBR_MBR_IFINDEX = 18284547 3
+OS_RE_BASE_ROUTE_OBJ_NBR_VLAN_ID = 18284548 4
+
+[cps_api_obj_CAT_OS_ROUTING_EVENTS]
+OS_ROUTING_EVENTS_BASE_ROUTE_OBJ_OBJ = 1
+

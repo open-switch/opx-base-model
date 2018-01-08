@@ -583,10 +583,17 @@ module dell-base-qos {
             config false;
             description "Internal hardware specific Queue data blob.";
         }
+
+        leaf-list mmu-index-list {
+            config false;
+            type uint32;
+            description "In multi-MMU (Memory Management Unit) system,
+                         1-based indexes of the MMUs where the queue is present.";
+        }
     }
 
     list queue-stat {
-        key "port-id type queue-number";
+        key "port-id type queue-number mmu-index";
 
         description "This defines QoS queue counter statistics.";
 
@@ -611,6 +618,13 @@ module dell-base-qos {
         leaf queue-number {
             type uint32;
             description "locally unique id within a port and a specific queue type";
+        }
+
+        leaf mmu-index {
+            type uint32;
+            default 0;
+            description "In multi-MMU system, if non-zero MMU-index is
+                provided, statistics on the specific MMU will be reported.";
         }
 
         leaf packets {
@@ -694,6 +708,8 @@ module dell-base-qos {
         }
 
         uses wred-stat;
+
+        uses wred-ecn-stat;
 
         uses buffer-stat;
 
@@ -1418,12 +1434,21 @@ module dell-base-qos {
     }
 
     list buffer-pool {
-        key "id";
+        key "id mmu-index";
         description "buffer pool";
 
         leaf id {
             type base-cmn:base-obj-id-type;
             description "buffer pool id";
+        }
+
+        leaf mmu-index {
+            type uint32;
+            default 0;
+            description "To create or configure buffer pool, MMU-index must be 0.
+                No individual MMU configuration will be accepted.
+                Non-zero MMU-index can be used in a multi-MMU system to retrieve
+                the buffer-pool state on a specific MMU.";
         }
 
         leaf shared-size {
@@ -1468,7 +1493,7 @@ module dell-base-qos {
     }
 
     list buffer-pool-stat {
-        key "id";
+        key "id mmu-index";
 
         description "This defines QoS buffer pool statistics.";
 
@@ -1477,16 +1502,38 @@ module dell-base-qos {
             description "buffer pool id";
         }
 
+        leaf mmu-index {
+            type uint32;
+            default 0;
+            description "In multi-MMU system, if non-zero MMU-index is
+                provided, statistics on the specific MMU will be reported.";
+        }
+
         leaf current-occupancy-bytes {
             type yang:counter64;
             config false;
-            description "current pool occupancy in bytes";
+            description "current shared buffer occupancy in bytes";
         }
 
         leaf watermark-bytes {
             type yang:counter64;
-            description "watermark pool occupancy in bytes";
+            description "watermark in the shared buffer in bytes";
         }
+
+        leaf xoff-headroom-occupancy-bytes {
+            type yang:counter64;
+            config false;
+            description "current headroom buffer occupancy in bytes";
+        }
+
+        leaf xoff-headroom-watermark-bytes {
+            type yang:counter64;
+            description "watermark in the headroom buffer in bytes";
+        }
+
+        uses wred-stat;
+
+        uses wred-ecn-stat;
     }
 
     list buffer-profile {
@@ -1605,10 +1652,18 @@ module dell-base-qos {
             type base-cmn:base-obj-id-type;
             description "buffer profile id associated to the priority group";
         }
+
+        leaf-list mmu-index-list {
+            config false;
+            type uint32;
+            description "In multi-MMU (Memory Management Unit) architecture,
+                         1-based indexes of the MMUs where the priority group
+                         is present.";
+        }
     }
 
     list priority-group-stat {
-        key "port-id local-id";
+        key "port-id local-id mmu-index";
 
         description "This defines QoS priority group counter statistics.";
 
@@ -1620,6 +1675,13 @@ module dell-base-qos {
         leaf local-id {
             type uint8;
             description "locally unique priority group id within a port.";
+        }
+
+        leaf mmu-index {
+            type uint32;
+            default 0;
+            description "In multi-MMU system, if non-zero MMU-index is
+                provided, statistics on the specific MMU will be reported.";
         }
 
         leaf packets {
@@ -1958,6 +2020,8 @@ module dell-base-qos {
        	
         uses wred-stat;
 
+        uses wred-ecn-stat;
+
         uses buffer-stat;
     }
 
@@ -2002,6 +2066,49 @@ module dell-base-qos {
             description "WRED dropped bytes";
         }
     }
+
+    grouping wred-ecn-stat {
+        leaf green-wred-ecn-marked-packets {
+            type yang:counter64;
+            description "WRED green color ECN marked packets count";
+        }
+
+        leaf green-wred-ecn-marked-bytes {
+            type yang:counter64;
+            description "WRED green color ECN marked bytes";
+        }
+
+        leaf yellow-wred-ecn-marked-packets {
+            type yang:counter64;
+            description "WRED yellow color ECN marked packets count";
+        }
+
+        leaf yellow-wred-ecn-marked-bytes {
+            type yang:counter64;
+            description "WRED yellow color ECN marked bytes";
+        }
+
+        leaf red-wred-ecn-marked-packets {
+            type yang:counter64;
+            description "WRED red color ECN marked packets count";
+        }
+
+        leaf red-wred-ecn-marked-bytes {
+            type yang:counter64;
+            description "WRED red color ECN marked bytes";
+        }
+
+        leaf wred-ecn-marked-packets {
+            type yang:counter64;
+            description "WRED ECN marked packets count";
+        }
+
+        leaf wred-ecn-marked-bytes {
+            type yang:counter64;
+            description "WRED ECN marked bytes";
+        }
+    }
+
 
     grouping buffer-stat {
         leaf current-occupancy-bytes {

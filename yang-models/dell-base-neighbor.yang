@@ -25,7 +25,16 @@ module dell-base-neighbor {
         "This module contains a collection of YANG definitions for
         managing configuration and operational data for Neighbor Object";
 
-   revision 2017-03-13 {
+    revision 2017-10-16 {
+        description
+            "This revision adds the auto neighbor refresh configuration.";
+    }
+    revision 2017-10-09 {
+        description
+            "This revision adds the vrf-name in the flush RPC.";
+    }
+
+    revision 2017-03-13 {
         description
             "Clear neighbor functionality";
     }
@@ -62,6 +71,13 @@ module dell-base-neighbor {
             type uint32;
             default 0;
             description "VRF ID";
+            status obsolete;
+       }
+
+       leaf vrf-name {
+           mandatory true;
+           type string;
+           description "VRF device name";
        }
 
        leaf af {
@@ -77,6 +93,26 @@ module dell-base-neighbor {
             description "Flush the Neighbor entries configured/learnt on this interface";
        }
      }
+    }
+
+    list auto-nbr-refresh {
+        key "vrf-name af";
+        description "This controls whether or not the auto neighbor refresh is enabled
+            for the stale neighbor.";
+
+        leaf vrf-name {
+            type string;
+            description "VRF device name";
+        }
+        leaf af {
+            type base-cmn:af-type;
+            description "Address Family";
+        }
+        leaf enable {
+            type boolean;
+            default true;
+            description "This set to true to enable auto neighbor refresh and false otherwise.";
+        }
     }
 
 }

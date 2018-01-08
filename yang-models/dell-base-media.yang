@@ -54,6 +54,12 @@ module dell-base-media {
             description "default duplex configuration for this physical media";
         }
 
+        leaf hw-profile {
+            config false;
+            type uint32;
+            description "The hardware profile ID of the physical media";
+        }
+
         leaf-list supported-speed {
             config false;
             type base-if:speed;

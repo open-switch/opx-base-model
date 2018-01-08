@@ -1,0 +1,48 @@
+module l2-multicast {
+
+    namespace "http://www.dellemc.com/networking/os10/l2-multicast";
+    prefix "base-l2-mcast";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This module contains a collection of YANG definitions
+                 for managing L2 multicast.";
+
+    revision "2017-11-01" {
+        description "Initial version.";
+    }
+
+    rpc cleanup-l2mc-member {
+        description "This method is used to notify L2 multicast component to remove input interface from member
+                     list of all multicast groups of specific VLAN. This method is triggered when interface is
+                     deleted or added to lag master";
+        input {
+            leaf ifindex {
+                type base-cmn:logical-ifindex;
+                description "Interface index to identify logical/physical interface for which multicast group
+                             member cleanup will be done. If this attribute is not given, ifname must be used
+                             as input to identify interface.";
+            }
+            leaf ifname {
+                type if:interface-ref;
+                description "Interface name to identify logical/physical interface for which multicast group
+                             member cleanup will be done. This attribute is only effective when ifindex is not
+                             given.";
+            }
+            leaf vlan-id {
+                type base-cmn:vlan-id;
+                description "The VLAN ID for which multicast group member cleanup will be done. If it is not
+                             given, cleanup will work on all VLANs for specific interface.";
+            }
+        }
+    }
+}

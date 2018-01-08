@@ -1,3 +1,14 @@
+opx-base-model (3.109.0) unstable; urgency=medium
+
+  * Feature: Management VRF support
+  * Feature: Input Power Monitoring
+  * Feature: Support for bridge-mode
+  * Update: IETF YANG models
+  * Update: VLAN id
+  * Update: VRF-id is now deprecated, use VRF-name.
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Thu, 07 Dec 2017 16:00:00 -0800
+
 opx-base-model (3.79.0) unstable; urgency=medium
 
   * Feature: Added acl-config, os-icmp-config and os-routing-events models
