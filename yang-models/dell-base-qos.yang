@@ -24,6 +24,12 @@ module dell-base-qos {
          Copyright (c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
+    revision 2017-12-01 {
+        description
+            "Add range to Meter, WRED-profile, Scheduler-profile, Map,
+             Buffer Pool and Buffer Profile Id.";
+    }
+
     revision 2016-03-31 {
         description
             "Add Buffer Management.";
@@ -263,7 +269,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..500";
+            }
             description "Ingress Meter Id";
         }
 
@@ -403,7 +411,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..500";
+            }
             description "WRED profile id";
         }
 
@@ -733,7 +743,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..2000";
+            }
             description "Scheduler profile Id";
         }
 
@@ -872,7 +884,9 @@ module dell-base-qos {
 
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -912,7 +926,10 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+                range "1..127";
+            }
+
             description "Map identifier.";
         }
 
@@ -952,7 +969,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -995,7 +1014,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1040,7 +1061,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1083,7 +1106,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1135,7 +1160,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1175,7 +1202,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1217,7 +1246,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1258,7 +1289,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1303,7 +1336,9 @@ module dell-base-qos {
         }
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1340,7 +1375,9 @@ module dell-base-qos {
                      which defines how to enforce flow control on an ingress packet";
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1371,7 +1408,9 @@ module dell-base-qos {
                      pfc-priorities";
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1403,7 +1442,9 @@ module dell-base-qos {
                      When applied on a port, it tells which egress queue should
                      honor a peer node's PFC request.";
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..127";
+            }
             description "Map identifier.";
         }
 
@@ -1438,7 +1479,9 @@ module dell-base-qos {
         description "buffer pool";
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..32";
+            }
             description "buffer pool id";
         }
 
@@ -1541,7 +1584,9 @@ module dell-base-qos {
         description "Buffer Profiles";
 
         leaf id {
-            type base-cmn:base-obj-id-type;
+            type base-cmn:base-obj-id-type {
+	            range "1..256";
+            }
             description "buffer profile id";
         }
 

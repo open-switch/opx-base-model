@@ -16,6 +16,10 @@ module dell-interface {
     extensions. This model contains the entry point for the interface
     object extensions.";
 
+  revision "2017-12-12" {
+    description "Added ip-mtu leaf to interface state object";
+  }
+
   revision "2017-11-20" {
     description "Moving must statement on the default-vlan-id leaf to platform specific yang annotation.";
   }
@@ -171,6 +175,17 @@ module dell-interface {
             description "VLAN ID of the sub-interface.";
         }
     }
+
+
+  augment "/if:interfaces-state/if:interface" {
+    description "The following attribute is common to all interface types.";
+
+    leaf ip-mtu {
+      type uint32;
+      description
+        "The IP MTU of the interface.";
+    }
+  }
 
     augment "/if:interfaces-state/if:interface" {
         when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'

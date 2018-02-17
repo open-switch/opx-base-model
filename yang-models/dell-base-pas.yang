@@ -22,6 +22,10 @@ module dell-base-pas {
     description "Input Power Monitor Support";
   }
 
+  revision 2017-12-04 {
+    description "new object for PAS platform fault";
+  }
+
   //PAS Notify subcategory
 
   list ready {
@@ -35,6 +39,14 @@ module dell-base-pas {
     }
 
     uses platform:pas_notify;
+  }
+
+  // PAS platform-fault subcategory
+
+  container platform-fault {
+      description "platform fault notification";
+
+      uses platform:pas_fault;
   }
 
   // comm-dev subcategory

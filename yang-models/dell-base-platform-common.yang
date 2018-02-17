@@ -30,6 +30,10 @@ module dell-base-platform-common {
 
   All rights reserved.";
 
+  revision 2017-12-04 {
+    description "Added platform fault grouping.";
+  }
+
   revision 2017-11-21 {
     description "Added leaf fabric id for hostsystem object";
   }
@@ -117,6 +121,9 @@ module dell-base-platform-common {
       }
       enum EPOWER {
         description "Power error";
+      }
+      enum ELPC {
+        description "lpc bus error";
       }
     }
   }
@@ -1218,6 +1225,20 @@ module dell-base-platform-common {
       config false;
     }
   }
+
+  // Platform fault grouping
+
+  grouping pas_fault {
+
+    description "Attributes of PAS fault notify";
+
+    leaf fault-type {
+      description " platform fault";
+      type fault-type;
+      config false;
+    }
+  }
+
 
   // EEPROM grouping - Everything there is to know about a
   //                   chassis' or entity's EEPROM
