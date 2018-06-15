@@ -3,9 +3,9 @@ module dell-base-interface-common {
     namespace "http://www.dellemc.com/networking/os10/dell-base-interface-common";
     prefix "base-if";
 
-    import ietf-interfaces { prefix "if"; }
     import iana-if-type { prefix "ianaift"; }
     import dell-base-common { prefix "base-cmn"; }
+    import ietf-yang-types { prefix yang; }
 
     organization
         "Dell EMC";
@@ -15,6 +15,24 @@ module dell-base-interface-common {
     description
         "This module contains the collection of YANG definitions for
         managing interfaces";
+
+    revision 2018-05-03 {
+        description
+            "Adding support to configure MAC learning mode for remote endpoint for VxLAN.";
+            reference "Network Platform Abstraction";
+    }
+
+    revision 2018-04-09 {
+        description
+            "Adding supported-profiles grouping for hybrid-group";
+            reference "Network Platform Abstraction";
+    }
+
+    revision 2018-03-12 {
+        description
+            "Add statistics grouping for remote endpoint.";
+            reference "Network Platform Abstraction";
+    }
 
     revision "2017-10-10" {
         description "Add vxlan and vlanSubInterface identity. Add typedef for bridge mode.
@@ -435,7 +453,23 @@ module dell-base-interface-common {
             }
         }
     }	
-	
+
+    grouping supported-profiles {
+        list supported-profiles {
+            key "profile-name";
+            description "Profile modes supported on hybrid group.
+                         Profile mode is a set of breakout mode and speed to be applied on port.";
+            leaf profile-name {
+                type string;
+                description "Name of the profile to be supported on hybrid-group";
+            }
+            leaf profile-description {
+                type string;
+                description "Description of the profile to be supported on hybrid-group";
+            }
+        }
+    }	
+
   grouping breakout-capabilities {
         list br-cap {
         key "phy-mode breakout-mode port-speed";
@@ -459,6 +493,33 @@ module dell-base-interface-common {
         }
     }
 
+     grouping stats {
+
+        leaf in-pkts {
+          type yang:counter64;
+          description
+            "Total number of incoming packets";
+        }
+
+        leaf out-pkts {
+          type yang:counter64;
+          description
+            "Total number of outgoing packets";
+        }
+
+        leaf in-octets {
+          type yang:counter64;
+          description
+            "Total number of incoming bytes";
+        }
+
+        leaf out-octets {
+          type yang:counter64;
+          description
+            "Total number of outgoing bytes";
+        }
+    }
+
    grouping vn-remote-endpoints {
        list remote-endpoint {
            key "addr-family addr";
@@ -466,13 +527,24 @@ module dell-base-interface-common {
 
            uses base-cmn:ip;
 
+           leaf tunnel-id {
+               type base-cmn:base-obj-id-type;
+               config false;
+               description "Tunnel Id of the corresponding remote endpoint.";
+           }
            leaf flooding-enabled {
                type boolean;
                config false;
                description "The remote endpoint address is part of flooding domain if this flag is set.";
            }
+           leaf mac-learning-mode {
+               type mac-learn-mode;
+               description "MAC-learning mode for remote endpoint.";
+           }
        }
    }
+
+
 
 }
 

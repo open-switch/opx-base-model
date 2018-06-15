@@ -25,6 +25,39 @@ description
 "This module contains a collection of YANG definitions for
 managing configuration and operational data for Routing Object";
 
+revision 2018-04-05 {
+    description
+        "This revision adds the NH VRF name in the existing RPC to append or
+        delete nexthop(s) to/from an existing leaked route from one VRF to another.";
+    reference
+        "Network Platform Abstraction";
+}
+
+revision 2018-04-02 {
+    description
+        "This revision adds the VRF name in the next-hop entry to support the route leaking from one VRF to another.";
+    reference
+        "Network Platform Abstraction";
+}
+
+revision 2018-03-12 {
+description
+    "This revision adds the support for proxy ARP enable/disable on router interface.";
+reference
+    "Update since last revision.";
+}
+
+revision 2018-02-09 {
+description
+"This revision adds the config support for virtual routing
+ configuration object to configure peer IP.";
+}
+
+revision 2018-01-23 {
+description
+"This revision adds the config support for ICMP redirects.";
+}
+
 revision 2017-01-11 {
 description
 "This revision adds the event filter to publish the selective routes,
@@ -272,6 +305,11 @@ typedef nh-type {
    grouping next-hop-entry {
       description
        "Grouping of the next hop entry";
+
+      leaf nh-vrf-name {
+          type string;
+          description "VRF device name";
+      }
 
       leaf nh-count {
         type uint32;
@@ -741,6 +779,38 @@ grouping nexthop-tracking-object {
      }
   }
 
+  container virtual-routing-config {
+
+    list virtual-routing-ip-config {
+      key "vrf-name af ifname ip";
+
+      leaf vrf-name {
+        type string;
+        description "VRF device name";
+      }
+
+      leaf af {
+         type base-cmn:af-type;
+         description "Address Family of the peer's IP address to be configured.";
+      }
+
+      leaf ifname {
+        type string;
+        description "Physical/Logical L3 interface";
+      }
+
+      leaf ip {
+         type base-cmn:ip-address;
+         description "Peer IP address to be configured.";
+      }
+
+      description "This defines the virtual routing IP configuration object to configure
+                   the peer routers IP for processing it when receiving it locally.";
+    }
+
+    description "This defines the virtual routing configuration object";
+  }
+
   rpc route-nh-operation {
     description "RPC to append or delete nexthop(s) to/from an existing route.";
     input {
@@ -786,6 +856,11 @@ grouping nexthop-tracking-object {
         mandatory true;
         type uint32;
         description "Number of next hops added/deleted";
+      }
+
+      leaf nh-vrf-name {
+          type string;
+          description "VRF device name for next hop";
       }
 
       list nh-list {
@@ -853,4 +928,36 @@ grouping nexthop-tracking-object {
           route type in the VRF and false otherwise.";
     }
   }
+
+  list ip-redirects-config {
+     key "vrf-name ifname";
+     description "Provide list of network interfaces that can initiate ICMP redirect messages for routable traffic, when it ingress and egress on same router interface.";
+
+    leaf vrf-name {
+        type string;
+        description "VRF device name";
+    }
+
+    leaf ifname {
+      type string;
+      description "Network interface";
+    }
+  }
+
+  list proxy-arp-config {
+      key "vrf-name ifname";
+      description "Provide list of network interfaces that can reply to ARP request
+                   on behalf of the neighbor for the target IP matching the local subnet.";
+
+      leaf vrf-name {
+          type string;
+          description "VRF device name";
+      }
+
+      leaf ifname {
+          type string;
+          description "Network interface";
+      }
+  }
+
 }

@@ -16,6 +16,49 @@ module dell-interface {
     extensions. This model contains the entry point for the interface
     object extensions.";
 
+  revision "2018-05-07" {
+    description "This revision adds ethernet ip/ipv6 interface statistics";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-04-26" {
+    description "This revision marks the vlan-globals container as presence container";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-04-19" {
+    description "Add leaf configured-fec in if/interface-state/interface. More details
+                 in the leaf description";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-04-02" {
+    description "This revision adds ethernet interface statistics ";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-03-29" {
+    description "Add parent bridge attribute as part of the vlan interface.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-02-26" {
+    description "Modifying l3vlan to l3ipvlan in accordance with iana-if-type";
+  }
+
+  revision "2018-02-08" {
+    description "Added statistics to track port headroom buffer occupancy.";
+  }
+
+  revision "2018-02-06" {
+    description "Added max-speed leaf to interface state object";
+  }
+
+  revision "2018-01-22" {
+    description "Added scaled-vlan attribute to enable scaled vlan deployment. Also
+                 added vlan-mode attribute to support l3 vlans in scaled vlan mode";
+  }
+
   revision "2017-12-12" {
     description "Added ip-mtu leaf to interface state object";
   }
@@ -33,7 +76,7 @@ module dell-interface {
   }
 
   revision "2017-10-10" {
-    description "Add vlanSubInterface and vxlan interface attributes";
+    description "Add vlanSubInterface and VXLAN interface attributes";
   }
 
   revision 2017-10-09 {
@@ -56,12 +99,21 @@ module dell-interface {
 
   augment "/if:interfaces" {
     container vlan-globals {
+      presence "Enable default vlan configurations";
       leaf default-vlan-id {
         type if:interface-ref;
         default "vlan1";
         description
               "Default vlan id for the switch";
       }
+
+      leaf scaled-vlan{
+            type boolean;
+            default false;
+            description
+                "To enable scaled VLAN configuration in the system. By default
+                 this is disabled.";
+       }
     }
   }
 
@@ -81,7 +133,7 @@ module dell-interface {
     }
     leaf mac-learn {
         type base-if:mac-learn-mode;
-        description "MAC address learning mode for the port or vlan/vxlan interface.";
+        description "MAC address learning mode for the port or VLAN/VXLAN interface.";
         default "HW";
     }
 
@@ -191,6 +243,17 @@ module dell-interface {
         when "if:type = 'ianaift:ethernetCsmacd' or if:type = 'base-if:management'
              or  if:type = 'ianaift:fibreChannel'";
 
+        leaf configured-fec {
+          type base-cmn:fec-type;
+          description
+             " If user configures the fec-type to auto, the configured fec-type in hw is based
+               on the media type. This leaf 'configured-fec' reflects the value set in hw
+               for auto. The other leaf /if:interfaces-state/if:interface/fec is the
+               negotiated value. Forward Error Correction type auto, disable or FEC type.
+               It is only applicable for 100G, 50G and 25G interfaces and it will throw Error
+               on any other type of interfaces. BASE module sets the default configuration
+               based on the support by plugged-in media and the Hardware";
+        }
 
         leaf duplex {
           type base-cmn:duplex-type;
@@ -206,6 +269,11 @@ module dell-interface {
         leaf-list supported-speed {
             type base-if:speed;
             description "list of supported speeds in the interface";
+        }
+        leaf max-speed {
+            type base-if:speed;
+            description
+                "maximum speed that can be configured for the interface";
         }
 
         leaf discontinuity-time-timeticks {
@@ -324,7 +392,7 @@ module dell-interface {
   }
   // VLAN specfic
   augment "/if:interfaces/if:interface" {
-    when "if:type = 'ianaift:l2vlan' or if:type = 'ianaift:l3vlan'";
+    when "if:type = 'ianaift:l2vlan' or if:type = 'ianaift:l3ipvlan'";
 
     leaf enable-statistics {
       type boolean;
@@ -340,6 +408,12 @@ module dell-interface {
       description "VLAN type (data/management)";
       type base-if:vlan-type;
       default "DATA";
+    }
+
+    leaf vlan-mode {
+      type base-if:mode;
+      description "VLAN mode can be change to L3 when global scaled-vlan config is enabled.
+      If global scaled-vlan is disabled then vlan-mode is not taken in account.";
     }
 
     leaf-list tagged-ports {
@@ -389,6 +463,13 @@ module dell-interface {
           "Management vlan cannot have data interface as member. Vlan type can be changed only when it has no members!";
       }
     }
+    leaf parent-bridge {
+      type string;
+      description " This is an optional configuration.
+                    The VLAN becomes part of the bridge domain indicated by the parent-bridge. All its tagged and untagged
+                    members becomes part of the bridge domain. VLAN inherits L3 properties of the parent-bridge.
+                    IP address and route info should be configured on the parent bridge only.";
+    }
   }
 
   // VXLAN specfic
@@ -406,15 +487,15 @@ module dell-interface {
         }
 
         uses base-if:vn-remote-endpoints {
-            description "List of remote VTEP endpoints associated with this vxlan. Remote endpoints
+            description "List of remote VTEP endpoints associated with this VXLAN. Remote endpoints
                           configured in the flooding domain using this model.";
             //Qualifiers Observed : list of all remote endpoints associated with the VTEP."
             //Qualifiers Target: List of remote endpoints associated with this vtep's flooding domain"
         }
+
     }
 
-
-  //Macvlan/VLAN sub interface specific
+  //Macvlan VLAN sub interface specific
   augment "/if:interfaces/if:interface" {
     when "if:type = 'base-if:macvlan' or if:type = 'base-if:vlanSubInterface'";
     description "Macvlan Interface configuration attributes";
@@ -433,6 +514,27 @@ module dell-interface {
       type if:interface-ref;
       description "The interface name from which macvlan interface is to be created";
     }
+  }
+
+  augment "/if:interfaces-state/if:interface" {
+    when "if:type = 'base-if:vxlan'";
+
+        leaf vni {
+            type base-cmn:vni;
+            description "VXLAN Network Identifier";
+        }
+
+        container source-ip {
+            uses base-cmn:ip;
+            description "VXLAN Tunnel Source IP Address";
+        }
+
+        uses base-if:vn-remote-endpoints {
+            description "List of remote VTEP endpoints associated with this VXLAN. Remote endpoints
+                          configured in the flooding domain using this model.";
+            //Qualifiers Observed : list of all remote endpoints associated with the VTEP."
+            //Qualifiers Target: List of remote endpoints associated with this vtep's flooding domain"
+        }
   }
 
   augment "/if:interfaces-state/if:interface" {
@@ -673,6 +775,10 @@ module dell-interface {
             description "port shared coccupancy watermark in bytes";
             type yang:counter64;
         }
+        leaf xoff-room-current-occupancy-bytes {
+            description "current port xoff room occupancy in bytes";
+            type yang:counter64;
+        }
         leaf pause-rx-pkts {
             description "number of pause frames received on the port";
             type yang:counter64;
@@ -769,8 +875,8 @@ module dell-interface {
     }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
-        when "if:type = 'ianaift:l2vlan' or if:type = 'ianaift:l3vlan' or "
-           + "if:type = 'ianaift:softwareLoopback' or if:type = 'base-if:management'";
+        when "../if:type = 'ianaift:l2vlan' or ../if:type = 'ianaift:l3ipvlan' or "
+           + "../if:type = 'ianaift:softwareLoopback' or ../if:type = 'base-if:management'";
 
         leaf in-pkts {
           type yang:counter64;
@@ -785,7 +891,7 @@ module dell-interface {
     }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
-        when "if:type = 'ianaift:fibreChannel'";
+        when "../if:type = 'ianaift:fibreChannel'";
 
         leaf rx-bytes {
           type yang:counter64;
@@ -909,6 +1015,284 @@ module dell-interface {
           description
             "Total number of errors, including rx and tx";
         }
+    }
+
+   grouping ipv4-stats {
+       leaf ip-in-receives {
+            description "The total number of input datagrams received from
+                      interfaces, including those received in error.";
+            type yang:counter64;
+            reference
+              "RFC 1213: Network Management of TCP/IP-based internets";
+        }
+
+        leaf ip-in-hdr-errors {
+            description "The number of input datagrams discarded due to
+                      errors in their IP headers, including bad
+                      checksums, version number mismatch, other format
+                      errors, time-to-live exceeded, errors discovered
+                      in processing their IP options, etc.";
+            type yang:counter64;
+            reference
+              "RFC 1213: Network Management of TCP/IP-based internets";
+        }
+
+        leaf ip-in-discards {
+            description "The number of input IP datagrams for which no
+                      problems were encountered to prevent their
+                      continued processing, but which were discarded
+                      (e.g., for lack of buffer space).  Note that this
+                      counter does not include any datagrams discarded
+                      while awaiting re-assembly.";
+            type yang:counter64;
+            reference
+              "RFC 1213: Network Management of TCP/IP-based internets";
+        }
+
+        leaf ip-in-forw-datagrams {
+            description "The number of input datagrams for which this
+                      entity was not their final IP destination, as a
+                      result of which an attempt was made to find a
+                      route to forward them to that final destination.
+                      In entities which do not act as IP Gateways, this
+                      counter will include only those packets which were
+                      Source-Routed via this entity, and the Source-
+                      Route option processing was successful.";
+            type yang:counter64;
+            reference
+              "RFC 1213: Network Management of TCP/IP-based internets";
+        }
+
+   }
+
+   grouping ipv6-stats {
+       leaf ipv6-in-receives {
+            description "The total number of input datagrams received by
+                the interface, including those received in error.";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-in-hdr-errors {
+            description "The number of input datagrams discarded due to
+                errors in their IPv6 headers, including version
+                number mismatch, other format errors, hop count
+                exceeded, errors discovered in processing their
+                IPv6 options, etc.";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-in-addr-errors {
+            description "The number of input datagrams discarded because
+                the IPv6 address in their IPv6 header's destination
+                field was not a valid address to be received at
+                this entity.  This count includes invalid
+                addresses (e.g., ::0) and unsupported addresses
+                (e.g., addresses with unallocated prefixes).  For
+                entities which are not IPv6 routers and therefore
+                do not forward datagrams, this counter includes
+                datagrams discarded because the destination address
+                was not a local address.";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-in-discards {
+            description "The number of input IPv6 datagrams for which no
+                problems were encountered to prevent their
+                continued processing, but which were discarded
+                (e.g., for lack of buffer space).  Note that this
+                counter does not include any datagrams discarded
+                while awaiting re-assembly.";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-out-discards {
+            description "The number of output IPv6 datagrams for which no
+                 problem was encountered to prevent their
+                 transmission to their destination, but which were
+                 discarded (e.g., for lack of buffer space).  Note
+                 that this counter would include datagrams counted
+                 in ipv6IfStatsOutForwDatagrams if any such packets
+                 met this (discretionary) discard criterion.";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-out-forw-datagrams {
+            description "The number of output datagrams which this
+                entity received and forwarded to their final
+                destinations.  In entities which do not act
+                as IPv6 routers, this counter will include
+                only those packets which were Source-Routed
+                via this entity, and the Source-Route
+                processing was successful.  Note that for
+                a successfully forwarded datagram the counter
+                of the outgoing interface is incremented.";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-in-mcast-pkts {
+            description "The number of multicast packets received
+                 by the interface";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+
+        leaf ipv6-out-mcast-pkts {
+            description "The number of multicast packets transmitted
+                 by the interface";
+            type yang:counter64;
+            reference
+              "RFC 2465: Management Information Base for IP Version 6";
+        }
+   }
+
+    augment "/if:interfaces-state/if:interface/if:statistics" {
+        when "../if:type = 'ianaift:ethernetCsmacd'";
+
+        leaf alignment-errors {
+            description "A count of frames received on a particular
+                       interface that are not an integral number of
+                       octets in length and do not pass the FCS check.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf fcs-errors {
+            description "A count of frames received on a particular
+                       interface that are an integral number of octets
+                       in length but do not pass the FCS check.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf single-collision-frames {
+            description "A count of frames that are involved in a single
+                       collision, and are subsequently transmitted
+                       successfully.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf multiple-colision-frames {
+            description "A count of frames that are involved in more
+                         than one collision and are subsequently
+                         transmitted successfully.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf sqe-test-errors {
+            description "A count of times that the SQE TEST ERROR
+                       is received on a particular interface.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf deferred-transmissions {
+            description "A count of frames for which the first
+                       transmission attempt on a particular interface
+                       is delayed because the medium is busy.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf late-collisions {
+            description "The number of times that a collision is
+                       detected on a particular interface later than
+                       one slotTime into the transmission of a packet.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf excessive-collisions {
+            description "A count of frames for which transmission on a
+                       particular interface fails due to excessive
+                       collisions.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf internal-mac-transmit-errors {
+            description "A count of frames for which transmission on a
+                       particular interface fails due to an internal
+                       MAC sublayer transmit error.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf carrier-sense-errors {
+            description "The number of times that the carrier sense
+                       condition was lost or never asserted when
+                       attempting to transmit a frame on a particular
+                       interface.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf frame-too-long {
+            description "A count of frames received on a particular
+                       interface that exceed the maximum permitted
+                       frame size.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf internal-mac-receive-errors {
+            description "A count of frames for which reception on a
+                       particular interface fails due to an internal
+                       MAC sublayer receive error.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf symbol-errors {
+            description "This is a read-only counter that logs various carrier events
+                         on an interface depending on its speed and type.
+                         Eg. 'invalid data symbol' (100 Mb/s speed),
+                         'Data reception error'(1000 Mb/s speed and half-duplex),
+                         'Carrier extend error'(1000 Mb/s speed and full-duplex),
+                         For more details refer RFC 3635 Section 4.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        leaf in-unknown-opcodes {
+            description "A count of MAC Control frames received on this
+                       interface that contain an opcode that is not
+                       supported by this device.";
+            type yang:counter64;
+            reference
+              "RFC 3635: EtherLike-MIB";
+        }
+
+        uses ipv4-stats;
+        uses ipv6-stats;
+
     }
 
     rpc clear-counters {

@@ -9,6 +9,18 @@ module os-routing-events {
 
     description "This model augments the dell-base-routing YANG model for OS Route/Neighbor events.";
 
+    revision "2018-03-12" {
+        description "This revision adds the lower layer interface (L2 interface) for router interface to bind the neighbor with the MAC.";
+        reference
+            "Update since last revision.";
+    }
+
+    revision "2018-02-27" {
+        description "This revision adds the VRF identifier in the route and neighbor updates for identifier based lookup.";
+        reference
+            "Update since last revision.";
+    }
+
     revision "2017-11-01" {
         description "VLAN id attribute is added to neighbor object to identify the VLAN on
                      which neighbor entry is learnt.";
@@ -20,6 +32,11 @@ module os-routing-events {
 
     /* Base route object augmented for publishing the route add/delete events from OS. */
     augment "/base-route:obj/base-route:entry" {
+        leaf vrf-id {
+            type uint32;
+            description "Internal VRF identifier which is used to uniquely identify
+                the route updates from OS";
+        }
     }
 
     /* Base neighbor object augmented for publishing the neighbor add/delete events from OS. */
@@ -33,7 +50,15 @@ module os-routing-events {
             type base-cmn:vlan-id;
             description "VLAN Id through which the neighbour entry is learnt.";
         }
-
-
+        leaf vrf-id {
+            type uint32;
+            description "Internal VRF identifier which is used to uniquely identify
+                the neighbor updates from OS";
+        }
+        leaf lower-layer-if {
+            type base-cmn:logical-ifindex;
+            description "This is the lower layer interface of the router interface
+                when the router interface is in the non-default VRF context.";
+        }
     }
 }

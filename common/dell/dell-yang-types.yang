@@ -6,6 +6,11 @@ module dell-yang-types {
     prefix inet;
   }
 
+  revision 2017-12-12 {
+    description
+      "Add ptcp,ssl,pssl to typedef protocol-name.";
+  }
+
   revision 2015-06-04 {
     description
       "Add scp,http,https to typedef protocol-name.";
@@ -354,6 +359,15 @@ module dell-yang-types {
       }
       enum "stp" {
         value 30;
+      }
+      enum "ptcp" {
+        value 31;
+      }
+      enum "ssl" {
+        value 32;
+      }
+      enum "pssl" {
+        value 33;
       }
     }
     description

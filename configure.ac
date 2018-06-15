@@ -1,11 +1,12 @@
 #                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ([2.69])
-AC_INIT([opx-base-model], [3.112.0], [ops-dev@lists.openswitch.net])
+AC_INIT([opx-base-model], [3.142.0], [ops-dev@lists.openswitch.net])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 AC_CONFIG_SRCDIR([yang-models])
 AC_CONFIG_HEADERS([config.h])
 LT_INIT([shared])
+AM_MAINTAINER_MODE([enable])
 
 # Checks for programs.
 AC_PROG_CXX
@@ -19,9 +20,8 @@ AC_PROG_RANLIB
 #AM_PATH_PYTHON
 
 # Checks for libraries.
-AC_CHECK_LIB([pthread], [pthread_self])
-AC_CHECK_LIB([rt], [main])
-
+#AC_CHECK_LIB([pthread], [pthread_self])
+#AC_CHECK_LIB([rt], [main])
 
 # Python is needed for the C++ bindings.
 #AM_PATH_PYTHON([2.7])

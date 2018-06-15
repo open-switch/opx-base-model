@@ -30,6 +30,69 @@ module dell-base-platform-common {
 
   All rights reserved.";
 
+  revision 2018-05-18 {
+    description "Added media attribute for media name. This name is used to refer to the particular media type
+                 Added media attribute for category display string, which is used in 'show' commands";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-05-11 {
+    description
+      "Added 25G 5M DAC to list of supported media";
+  }
+
+  revision 2018-05-08 {
+    description "Added media types for 100G ESR4, DWDM2, ER4 LITE, AOC, SR4 NOF, 40G BIDI, 10G BX10/40";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-04-19 {
+    description "Added media attributes for:
+                       Max media power: this is the theoretical upper bound for the power a device can draw form the port. This number does not change in realtime
+                       Max port power: this is the maximum power that the port can allow a connected device to draw. If a device requires higher power, it is put in low power mode (idle)
+                       Power limit flag: this flag states if the max media power exceeds the port power.
+                       NOTE: if the power limit flag is set, the device cannot be expected to funtion normally as it will likely be put in idle mode";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-04-16 {
+    description "Added media attributes for:
+                       Default autoneg: for the default autoneg setting based on the media informatiom
+                       Default FEC: for the default FEC (forward error correction) setting recommended for the media.
+                       Note: The default values for Autoneg and FEC correspond to the default mode of operation of the media.
+                             If multiple-mode-supported is true, then other values are supported as well.";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-04-03 {
+    description "Added leaves for:
+                 media cable length in centimeters: which extends the former integer leaf (meters). This allows fractional lengths to be represented,
+                 lane count: which is useful for identifying how many lanes of transmission there are. For example SR vs SR4 has 1 vs 4 lanes respectively,
+                 ESR media interfac: which is an additional interface to be supported,
+                 separable connector flag: which tells if the transmission cable is separable from the transceiver module";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-03-27 {
+    description "Added leaves for media connector, cable type, QSA adapter, device ready status.
+                 Added QSA adapter type";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-03-20 {
+    description "Some PSUs do not have fans - define a not-applicable enum fan-airflow-type for those cases.";
+    reference "Networking Platform Abstraction";
+  }
+
+  revision 2018-03-07 {
+    description "Added display string for media: this allow consistency since the display string to be provided by one source.
+                 Added media connector type info which specifies the type of connector of the media inserted
+                 Added media cable type for specifying the type of cable ";
+
+
+    reference "Dell Proprietary";
+  }
+
   revision 2017-12-04 {
     description "Added platform fault grouping.";
   }
@@ -165,6 +228,10 @@ module dell-base-platform-common {
         value "3";
         description "Reverse airflow";
       }
+      enum NOT-APPLICABLE {
+          value "4";
+          description "airflow type not applicable";
+      }
     }
   }
 
@@ -272,6 +339,339 @@ module dell-base-platform-common {
          value "2";
        }
      }
+  }
+
+  typedef qsa-adapter {
+    description "Type of QSA adapter connected";
+    type enumeration {
+      enum UNKNOWN {
+        value "1";
+        description "QSA type/status is unknown";
+      }
+      enum NO-QSA {
+        value "2";
+        description "No QSA is connected";
+      }
+      enum QSA {
+        value "3";
+        description "QSA is connected";
+      }
+      enum QSA28 {
+        value "4";
+        description "QSA28 is connected";
+      }
+    }
+  }
+
+  typedef ext_spec_compliance_code {
+    description "Used to specify certain special fields based on SFF-8024: 4.4";
+    type enumeration {
+      enum UNKNOWN {
+        value "1";
+        description "Unkown";
+      }
+      enum 25GBASE-CR-CA-S {
+        value "2";
+        description "CA-S type for 25G";
+      }
+      enum 25GBASE-CR-CA-N {
+        value "3";
+        description "CA-N type for 25G";
+      }
+      enum 25GBASE-CR-CA-L {
+        value "4";
+        description "CA-L type for 25G";
+      }
+      enum NOT-APPLICABLE {
+        value "5";
+        description "This type is not applicable for given media";
+      }
+    }
+  }
+
+  typedef media-cable-type {
+    description "High level type of cable of the inserted media";
+    type enumeration {
+      enum UNKNOWN {
+        value "1";
+        description "Cable type is unknown";
+      }
+      enum FIBER {
+        value "2";
+        description "Cable is fiber cable";
+      }
+      enum DAC {
+        value "3";
+        description "Directly attached copper";
+      }
+      enum AOC {
+        value "4";
+        description "Active optical cable";
+      }
+      enum ACC {
+        value "5";
+        description "Active copper cable";
+      }
+      enum RJ45 {
+        value "6";
+        description "RJ45 cable";
+      }
+    }
+  }
+
+  typedef media-connector-type {
+    description "The connector type of the inserted media";
+    type enumeration {
+      enum UNKNOWN {
+        value "1";
+        description "Connector type is unknown";
+      }
+      enum LC {
+        value "2";
+        description "LC: Lucent connector. Commonly used for optics";
+      }
+      enum MU {
+        value "3";
+        description "MU connector type";
+      }
+      enum OPTICAL-PIGTAIL {
+        value "4";
+        description "Optical pigtail type";
+      }
+      enum MPO-1X12 {
+        value "5";
+        description "MPO connector 1x12";
+      }
+      enum MPO-2X16 {
+        value "6";
+        description "MPO connector 2x16";
+      }
+      enum COPPER-PIGTAIL {
+        value "7";
+        description "Copper pigtail. Commonly used for DACs";
+      }
+      enum RJ45 {
+        value "8";
+        description "RJ45 connector";
+      }
+      enum NON-SEPARABLE {
+        value "9";
+        description "Cable is fixed to transceiver. Used for AOCs and DACs";
+      }
+      enum MXC-2X16 {
+        value "10";
+        description "MXC 2x16 connector";
+      }
+      enum CS {
+        value "11";
+        description "CS connector";
+      }
+      enum BACKPLANE {
+        value "12";
+        description "Backplane connector";
+      }
+
+    }
+  }
+
+  typedef media-interface {
+     description "Interface type of the lineside of the media ";
+
+     type enumeration {
+
+       enum UNKNOWN {
+         value "1";
+         description "Unknown media interface type";
+       }
+       enum BASE-T {
+         value "2";
+         description "BASE-T; commonly used for RJ45";
+       }
+       enum FX {
+         value "3";
+         description "FX";
+       }
+       enum BIDI {
+         value "4";
+         description "BIDI; bidirectional";
+       }
+       enum BX10 {
+         value "5";
+         description "BX10; BX with 10km distance";
+       }
+       enum BX40 {
+         value "6";
+         description "BX40; BX with 40km distance";
+       }
+       enum BX80 {
+         value "7";
+         description "BX80; BX with 80km distance";
+       }
+       enum CR {
+         value "8";
+         description "CR; copper reach. Used for DAC (directlt attached copper). Protocol is purely electrical";
+       }
+       enum SR {
+         value "9";
+         description "SR; short reach optics";
+       }
+       enum LR {
+         value "10";
+         description "LR; long reach optics";
+       }
+       enum ER {
+         value "11";
+         description "ER";
+       }
+       enum ZR {
+         value "12";
+         description "ZR";
+       }
+       enum USR {
+         value "13";
+         description "USR; ultra short reach optics";
+       }
+       enum CWDM {
+         value "14";
+         description "CWDM; coarse wavelength division multiplexing optics";
+       }
+       enum DWDM {
+         value "15";
+         description "CWDM; dense wavelength division multiplexing optics";
+       }
+       enum SWDM {
+         value "16";
+         description "SWDM; short wavelength division multiplexing optics";
+       }
+       enum SX {
+         value "17";
+         description "SX; short reach optics";
+       }
+       enum LX {
+         value "18";
+         description "LX; long reach optics";
+       }
+       enum ZX {
+         value "19";
+         description "ZR; extended reach optics";
+       }
+       enum LM {
+         value "20";
+         description "LM";
+       }
+       enum LRM {
+         value "21";
+         description "LRM";
+       }
+       enum PSM {
+         value "22";
+         description "PSM";
+       }
+       enum PLR {
+         value "23";
+         description "PLR";
+       }
+       enum SM {
+         value "24";
+         description "SM";
+       }
+       enum SW {
+         value "25";
+         description "Sw";
+       }
+       enum LW {
+         value "26";
+         description "LW";
+       }
+       enum RJ45 {
+         value "27";
+         description "RJ45";
+       }
+       enum ELECTRICAL-LOOPBACK {
+         value "28";
+         description "Electrical loopback";
+       }
+       enum BACKPLANE {
+         value "29";
+         description "Backplane type";
+       }
+       enum CX {
+         value "30";
+         description "CX";
+       }
+       enum PX {
+         value "31";
+         description "PX";
+       }
+       enum ESR {
+         value "32";
+         description "ESR";
+       }
+    }
+  }
+
+  typedef media-interface-qualifier {
+     description "Interface qualifier type of the lineside of the media. This provides additional info about the media interface ";
+
+     type enumeration {
+
+       enum UNKNOWN {
+         value "1";
+         description "Unknown media interface qualifier";
+       }
+       enum NO-QUALIFIER {
+         value "2";
+         description "All info needed is provided by media-interface";
+       }
+       enum IR {
+         value "3";
+         description "IR";
+       }
+       enum LR {
+         value "4";
+         description "LR";
+       }
+       enum 1490NM {
+         value "5";
+         description "1490nanometer wavelength";
+       }
+       enum 30M {
+         value "6";
+         description "30meter reach";
+       }
+       enum UP {
+         value "7";
+         description "UP";
+       }
+       enum DOWN {
+         value "8";
+         description "DOWN";
+       }
+       enum ACC {
+         value "9";
+         description "Active copper cable";
+       }
+       enum NOF {
+         value "10";
+         description "No FEC";
+       }
+       enum TUNABLE {
+         value "11";
+         description "Tunable";
+       }
+       enum LITE {
+         value "12";
+         description "Lite";
+       }
+       enum FIXED {
+         value "13";
+         description "Fixed type media";
+       }
+       enum AOC {
+         value "14";
+         description "Active optical cable";
+       }
+    }
   }
 
   typedef port-type {
@@ -1165,6 +1565,70 @@ module dell-base-platform-common {
               description "Pluggable optics QSFP28-DD_200GBASE_PSM4_IR";
           }
 
+          enum QSFP28_4X25GBASE_SR_AOC_XXM {
+              value 200;
+              description "Pluggable 4x breakout optics with any length";
+          }
+
+          enum QSFP28_100GBASE_BIDI {
+              value 201;
+              description "Pluggable optics QSFP28_100GBASE_BIDI";
+          }
+
+          enum QSFP28_100GBASE_ESR4 {
+              value 202;
+              description "Pluggable optics QSFP28_100GBASE_ESR4";
+          }
+
+          enum QSFP28_100GBASE_SR4_NOF {
+              value 203;
+              description "Pluggable optics QSFP28_100GBASE_SR4_NOF (No FEC)";
+          }
+
+          enum SFP_PLUS_10GBASE_BX10_UP {
+              value 204;
+              description "Pluggable optics SFP_PLUS_10GBASE_BX10_UP";
+          }
+
+          enum SFP_PLUS_10GBASE_BX10_DOWN {
+              value 205;
+              description "Pluggable optics SFP_PLUS_10GBASE_BX10_DOWN";
+          }
+
+          enum SFP_PLUS_10GBASE_BX40_UP {
+              value 206;
+              description "Pluggable optics SFP_PLUS_10GBASE_BX40_DOWN";
+          }
+
+          enum SFP_PLUS_10GBASE_BX40_DOWN {
+              value 207;
+              description "Pluggable optics SFP_PLUS_10GBASE_BX40_DOWN";
+          }
+
+          enum QSFPPLUS_40GBASE_BIDI {
+              value 208;
+              description "Pluggable optics QSFPPLUS_40GBASE_BIDI";
+          }
+
+          enum QSFP28_100GBASE_DWDM2 {
+              value 209;
+              description "Pluggable optics QSFP28_100GBASE_DWDM2";
+          }
+
+          enum QSFP28_100GBASE_ER4_LITE {
+              value 210;
+              description "Pluggable optics QSFP28_100GBASE_ER4_LITE";
+          }
+
+          enum QSFPPLUS_40GBASE_SR4_AOC1M {
+              value 211;
+              description "Pluggable optics QSFPPLUS_40GBASE_SR4_AOC1M";
+          }
+
+          enum SFP28_25GBASE_CR1_5M {
+              value 212;
+              description "Pluggable optics SFP28_25GBASE_CR1_5M";
+          }
       }
   }
 
@@ -1438,6 +1902,15 @@ module dell-base-platform-common {
       // Qualifiers: observed, realtime, target
       // Dependencies: Valid only if card is present
       // Persistent: N/A
+      // Notification: no
+    }
+    leaf reboot-reason {
+      description "Applications should use this attribute to provide a reboot reason.";
+      type string;
+      default "Reboot reason not provided.";
+      config true;
+      // Qualifiers: observed, target
+      // Persistent: yes
       // Notification: no
     }
   }
@@ -2133,6 +2606,164 @@ module dell-base-platform-common {
       // Notification: No
     }
 
+    leaf max-port-power-milliwatts {
+      description "This is the maximum power (in milliwats) that the port can provide";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf max-media-power-milliwatts {
+      description "This is the maximum power (in milliwats) that the inserted media can draw";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf power-limit-flag {
+      description "This flag states if the connected device can draw more power than the port can provide. Flag is set if max-port-power-milliwatts < max-media-power-milliwatts";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf qsa-adapter {
+      description "QSA adapter tpe connected, if any";
+      type qsa-adapter;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf connector-separable {
+      description "Is the media connector separable";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf cable-length-cm {
+      description "Cable length in cm";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf ext-spec-compliance-code {
+      description "Extended specification compliance code. Used for 25G NRZ based DAC.";
+      type ext_spec_compliance_code;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf media-interface-lane-count {
+      description "Number of transmission lanes";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf media-interface {
+      description "Media interface specifier";
+      type media-interface;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf media-interface-qualifier {
+      description "Media interface qualifier specifier";
+      type media-interface-qualifier;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf cable-type {
+      description "Media cable type";
+      type media-cable-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf connector-type {
+      description "Media connector type";
+      type media-connector-type;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf initial-polling-delay-ms {
+      description "Time delay (in ms) before media EEPROM is polled";
+      type uint32;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf device-ready {
+      description "Specifies if the media is ready for probing and use";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
+    leaf display-string {
+      description "String to be used to display media name";
+      type string;
+      config false;
+    }
+
+    leaf media-name {
+      description "This name is used to refer to the media type. It can differ from display string since display string has additional info";
+      type string;
+      config false;
+    }
+
+    leaf category-string {
+      description "This string is used to refer to the media category (SFP, SFP+, QSFP+ etc). This string is used for display purposes";
+      type string;
+      config false;
+    }
+
     leaf lockdown-state {
       description "This is whether or not the media is locked";
       type boolean;
@@ -2174,6 +2805,18 @@ module dell-base-platform-common {
     leaf default-phy-mode {
       description "The default PHY mode";
       type base-if:phy-mode-type;
+      config false;
+    }
+
+    leaf default-autoneg {
+      description "The default autonegotiation value";
+      type base-if:supported-autoneg;
+      config false;
+    }
+
+    leaf default-fec {
+      description "The default FEC value";
+      type base-cmn:fec-type;
       config false;
     }
 

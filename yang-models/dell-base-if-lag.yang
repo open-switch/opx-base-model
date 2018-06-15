@@ -19,21 +19,32 @@ module dell-base-if-lag {
     contact "http://www.dell.com/support";
 
     description "This model augments the standard interface and adds Dell EMC specific
-    				lag extensions.";
+                 There is no separate object registered for this model.
+                 All the LAG specific attributes are referenced through the dell-base-if-cmn object.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-04-12" {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2016-01-01" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 	
-	augment "/if:interfaces-state/if:interface" {
+    augment "/if:interfaces-state/if:interface" {
+	when "if:type = 'ianaift:ieee8023adLag'";
         leaf num-ports {
             type uint32;
-            description "number of members in the lag interface";
+            description "number of members in the LAG interface";
         }	
-	}
+        description "Extending the state attributes of LAG interface";
+    }
 	
-	augment "/if:interfaces/if:interface" {
-		description "This extension is focused on LAG attributes.";
+    augment "/if:interfaces/if:interface" {
+	when "if:type = 'ianaift:ieee8023adLag'";
         leaf id {
             type uint32;
             description "Lag id from Applications";
@@ -41,19 +52,19 @@ module dell-base-if-lag {
 
 
         leaf lag-opaque-data {
-            config false;
             type base-cmn:lag-opaque-data;
+            config false;
             description
-                "NPU LAG opaque data associated with the NOGS base LAG module";
+                "NPU LAG opaque data associated with the LAG module";
         }
 
         leaf lag-port-state {
-            description "state of member port in lag to hash traffic
-                disable or enable";
             type enumeration {
                 enum DISABLE;
                 enum ENABLE;
             }
+            description "state of member port in LAG to hash traffic
+                disable or enable";
         }
 
         leaf-list block-port-list {
@@ -70,5 +81,6 @@ module dell-base-if-lag {
             type base-if-phy:mac-learn-mode;
             description "Mode in which mac adresses are learned on this interface";
         }
-	}
+	description "Extend the interface object with LAG attributes.";
+    }
 }

@@ -22,6 +22,18 @@ module dell-base-if-common {
     description "This model augments the standard interface and adds Dell EMC specific
                     extensions.  This model contains the entry point for the
                     interface object extensions.";
+
+    revision "2018-05-08" {
+        description "Added support for VLAN filtering object. This object helps to
+                     get or set VLAN filtering feature on an interface";
+        reference "IEEE 802.1Q";
+    }
+
+    revision "2018-01-22" {
+        description "Augmented if/interfaces model from dell-interface to handle the
+                     attributes augmented in dell-interface.yang";
+    }
+
     revision "2017-10-10" {
         description "Add typedef for update type to use it for leaf list attribute type.
                      Add member-op attribute for rpc set-interface to handle leaf-list update";
@@ -40,10 +52,18 @@ module dell-base-if-common {
             description "Can be used as an alternate to the name key field.  The if-index is the linux representation for the interface.";
         }
 
+        leaf vlan-filter {
+            type base-cmn:filter-type;
+            default "INGRESS_ENABLE";
+            description "Used to enable or disable VLAN filtering flag on an interface. By default, Ingress VLAN Filter is enabled";
+        }
     }
 
     augment "/if:interfaces-state/if:interface" {
-
+        leaf vlan-filter {
+            type base-cmn:filter-type;
+            description "Used to get the status of Interface VLAN filtering flag";
+        }
     }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
@@ -92,6 +112,46 @@ module dell-base-if-common {
                 Currently there is only one input argument which specified operation type, user should
                 use attributes of the model of corresponding interface type as extra input.
                 if:interface model is used as input for interface configuration.";
+
+        // QUALIFIER  :  target
+        // ========
+        //
+        // OBJ PATH : dell-base-if-cmn/set-interface
+        // ========
+        //
+        // INPUT  :
+        // =====
+        // a) Explicit:
+        //    --------
+        //              dell-base-if-cmn/set-interface/input/operation (1=create, 2=delete, 3=update),
+        //              dell-base-if-cmn/set-interface/input/member-op (1=add, 2=remove),
+        // b) Implicit:
+        //    --------
+        //    Users could use additional attributes from other models (eg. if, base-if-phy etc.)
+        //    Eg.
+        //            	if/interfaces/interface/name,
+        //             	if/interfaces/interface/type,
+        //             	if/interfaces/interface/enabled,
+        //             	if/interfaces/interface/mtu,
+        //             	if/interfaces/interface/learn-mode,
+        //             	if/interfaces/interface/tagging-mode(For Phy Interface Only),
+        //             	if/interfaces/interface/speed(For Phy Interface Only),
+        //             	if/interfaces/interface/auto-negotiation(For Phy Interface Only),
+        //             	if/interfaces/interface/duplex(For Phy Interface Only),
+        //             	if/interfaces/interface/eee(For Phy Interface Only),
+        //             	if/interfaces/interface/fec(For Phy Interface Only),
+        //             	if/interfaces/interface/oui(For Phy Interface Only),
+        //             	if/interfaces/interface/type(For Phy Interface Only),
+        //              Etc.
+        // OUTPUT :
+        // ======
+        // a) Explicit:
+        //    --------
+        //	        None.
+        // b) Implicit:
+        //    -------
+        //              dell-base-if-cmn/if/interfaces/interface/if-index.
+
         input {
             leaf operation {
                 description "Specify operation type to configure interface.";
@@ -116,6 +176,10 @@ module dell-base-if-common {
     }
 
     augment "dell-if:clear-eee-counters/dell-if:input" {
+
+    }
+
+    augment "/if:interfaces"{
 
     }
 }

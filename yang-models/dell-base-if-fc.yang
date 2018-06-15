@@ -15,33 +15,43 @@ module dell-base-if-fc {
         "http://www.dell.com/support";
 
     description
-        "This module contains a collection of YANG definitions for creating fcoe
-        map";
+        "Fibre Channel over Ethernet (FCoE) encapsulates Fibre channel frames over Ethernet networks.
+         FC-MAP identifies which fabric the FCoE switch belongs to.
+
+         This model contains a collection of YANG definitions for fcoe-map configurations.
+
+         Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-04-12 {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2016-11-21 {
         description "Initial version";
+        reference "Network Platform Abstraction";
     }
 
     typedef fcmac-mode {
         type enumeration {
             enum "FPMA_MODE" {
-                description
-                  "24 bit FC DID will be prefixed with 24 bit address
-                         configured on fcoe-map for generating mac address";
                 value 1;
+                description "In this mode, the 48 Bits MAC address is built by appending the FC_ID to a
+			     24-bit the FCoE MAC address prefix (FC-MAP).";
             }
             enum "NULL_MODE" {
-                description "The mac address will be zero";
                 value 2;
+                description "In this mode, The MAC address will be set to zero";
             }
             enum "USER_MODE" {
-                description "The mac address will be configured by the user";
                 value 3;
+                description "In this mode, The MAC address will be specified by the user";
             }
          }
+        description "Enumeration of all values for the FC MAC address modes";
     }
 
-	augment "/if:interfaces/if:interface" {
+    augment "/if:interfaces/if:interface" {
         when "if:type = 'ianaift:fibreChannel'";
 
         leaf bb-credit {
@@ -122,12 +132,14 @@ module dell-base-if-fc {
              "Flow control mode";
         }
 
+        description "Attributes of a FCoE interface";
     }
     augment "/if:interfaces-state/if:interface" {
         leaf bb-credit-receive {
             type uint32;
             description " Buffer-to-Buffer Credit Receive";
         }
+        description "Attributes of a FCoE interface state";
     }
 }
 
