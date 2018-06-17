@@ -25,6 +25,11 @@ module dell-base-neighbor {
         "This module contains a collection of YANG definitions for
         managing configuration and operational data for Neighbor Object";
 
+
+    revision 2018-01-31 {
+        description
+            "This revision adds the IP prefix in the neighbor flush RPC.";
+    }
     revision 2017-10-16 {
         description
             "This revision adds the auto neighbor refresh configuration.";
@@ -64,7 +69,7 @@ module dell-base-neighbor {
 
     /* For clear arp/neighbor support */
     rpc flush {
-     description "Flush all the Neighbor entries per Interface or AF";
+     description "Flush the Neighbor entries for given input per Interface or AF or neighbor address/prefix";
      input {
 
        leaf vrf-id {
@@ -91,6 +96,17 @@ module dell-base-neighbor {
        leaf ifname {
             type string;
             description "Flush the Neighbor entries configured/learnt on this interface";
+       }
+
+       leaf ip {
+            type base-cmn:ip-address;
+            description "Neighbor address/prefix to be flushed.
+               Prefix & prefix-len are specified to flush all neighbors in that subnet.";
+       }
+
+       leaf prefix-len {
+            type uint32;
+            description "Prefix length of neighbors in the subnet to be flushed.";
        }
      }
     }

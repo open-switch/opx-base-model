@@ -1,0 +1,166 @@
+module tunnel {
+
+    namespace "http://www.dellemc.com/networking/os10/tunnel";
+    prefix "tunnel";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+    import dell-base-interface-common {
+        prefix "base-if-cmn";
+    }
+
+    description "This module defines the configuration data and operational
+                 state data for managing tunnels in the system.";
+
+     revision "2018-03-22" {
+        description "Added a remote procedure call clear-tunnel-stats to clear the
+                     statistics for a tunnel configured in the system. ";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-03-007" {
+        description "Initial version.";
+        reference "Network Platform Abstraction";
+    }
+
+    typedef tunnel-type {
+
+        description
+        "Indicate the type of the tunnel";
+
+        type enumeration {
+            enum ip-in-ip {
+                description
+                "IPv4-in-IPv4 tunnel interface.";
+            }
+
+            enum ip-in-ip-gre {
+                description
+                "IPv4-in-IPv4 with GRE tunnel interface.";
+            }
+
+            enum vxlan {
+                description
+                 "VxLAN tunnel interface.";
+            }
+
+            enum mpls{
+                description
+                "Mutli-Protocol Label Switching tunnel interface";
+            }
+
+        }
+    }
+
+
+    grouping tunnel-entry {
+
+        description
+        "Specify the tunnel entry attributes";
+
+        leaf name {
+            type string;
+            description
+            "Name of the tunnel.";
+        }
+
+        leaf type {
+            type tunnel-type;
+            description
+            "Type of the tunnel";
+        }
+
+        container local-ip{
+            uses base-cmn:ip;
+            description
+            "IP address of the local tunnel end";
+        }
+
+        container remote-ip{
+            uses base-cmn:ip;
+            description
+            "IP address of the remote tunnel end";
+        }
+
+    }
+
+    container tunnel-state{
+        config false;
+        description
+            "Contains the information about currently configured tunnels";
+
+        list tunnels{
+            key "local-ip remote-ip";
+            description
+            "Operational state data of configured tunnel";
+
+            uses tunnel-entry;
+
+        }
+    }
+
+    container tunnel-stats {
+        config false;
+        description
+            "Contains the information about currently configured tunnels";
+
+        list tunnels{
+            key "local-ip remote-ip";
+            description
+            "Operational state data of configured tunnel";
+
+            uses tunnel-entry;
+
+            uses base-if-cmn:stats;
+        }
+    }
+
+    rpc clear-tunnel-stats{
+        description
+            "Remote Procedure Call to clear the statistics for a tunnel,
+             which is a combination of source and destination IP address.
+             This procedure will clear the statistics from the switch so it
+             should be used carefully. If a tunnel does not exsist it will
+             have no impact.";
+
+             // qualifier  : target
+             //
+             // key        : TUNNEL_CLEAR_TUNNEL_STATS_OBJ
+             //              tunnel/clear-tunnel-stats
+
+        input {
+
+            container local-ip{
+                uses base-cmn:ip;
+                description
+                "IP address of the local tunnel end. This can be IPv4/IPv6 address
+                 with the address family";
+
+                  // C literal   : TUNNEL_CLEAR_TUNNEL_STATS_INPUT_LOCAL_IP_ADDR_FAMILY
+                  // Python path : tunnel/clear-tunnel-stats/input/local-ip/addr-family
+
+                  // C literal   : TUNNEL_CLEAR_TUNNEL_STATS_INPUT_LOCAL_IP_ADDR
+                  // Python path : tunnel/clear-tunnel-stats/input/local-ip/addr
+            }
+
+            container remote-ip{
+                uses base-cmn:ip;
+                description
+                "IP address of the remote tunnel end. This can be IPv4/IPv6 address
+                 with the address family";
+
+                  // C literal   : TUNNEL_CLEAR_TUNNEL_STATS_INPUT_REMOTE_IP_ADDR_FAMILY
+                  // Python path : tunnel/clear-tunnel-stats/input/remote-ip/addr-family
+
+                  // C literal   : TUNNEL_CLEAR_TUNNEL_STATS_INPUT_REMOTE_IP_ADDR
+                  // Python path : tunnel/clear-tunnel-stats/input/remote-ip/addr
+            }
+        }
+     }
+ }

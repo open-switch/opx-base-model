@@ -24,6 +24,12 @@ module dell-base-qos {
          Copyright (c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
+    revision 2018-01-30 {
+        description
+            "Add ECN color-blind threshold;
+             Allow separate handling of ECT and non-ECT traffic";
+    }
+
     revision 2017-12-01 {
         description
             "Add range to Meter, WRED-profile, Scheduler-profile, Map,
@@ -516,7 +522,31 @@ module dell-base-qos {
         leaf ecn-mark {
             type ecn-mark-mode;
             description "Flag to indicate what type of packets will be ECN-marked
-                         during congestion";
+                during congestion.
+                When Global ECN ECT flag is disabled, both ECT and non-ECT traffic
+                are subject to WRED thresholds.
+                When Global ECN ECT is enabled, non-ECT traffic will be subject to
+                WRED thresholds, while ECT traffic is subject to ECN-thresholds.";
+        }
+
+        container ecn-green {
+            description "Separate threshold for ECT-traffic";
+            uses thresholds;
+        }
+
+        container ecn-yellow {
+            description "Separate threshold for ECT-traffic";
+            uses thresholds;
+        }
+
+        container ecn-red {
+            description "Separate threshold for ECT-traffic";
+            uses thresholds;
+        }
+
+        container ecn-color-unaware {
+            description "Separate threshold for ECT-traffic";
+            uses thresholds;
         }
 
         leaf-list npu-id-list {
@@ -2176,5 +2206,28 @@ module dell-base-qos {
             type yang:counter64;
             description "shared buffer occupancy watermark in bytes";
         }
+    }
+    
+    grouping thresholds {
+
+        leaf min-threshold {
+            type uint32;
+            description "Minimum threshold in bytes after which packets will
+                be dropped based on the drop probability";
+        }
+
+        leaf max-threshold {
+            type uint32;
+            description "Maximum threshold in bytes after which packets will be
+                tail dropped";
+        }
+
+        leaf probability {
+            type uint32 {range "0..100";}
+            default 100;
+            description "Percentage probability with which packets will be
+                dropped or ecn-marked when minimum threshold is reached";
+        }
+
     }
 }

@@ -10,96 +10,140 @@ module dell-base-hash {
         "http://www.dell.com/support";
 
     description
-        "This module contains a collection of YANG definitions for managing
-        hashing on NPUs";
+        "When several routing paths exist between two nodes,
+         and are equally good (in terms of capacity and
+         latency), it is desirable to share the traffic among them.
+         Two of the common techniques to use this mechanism Equal Cost Multipath (ECMP) routing and
+         Link aggregation (LAG).
+
+         In order to determine what is the desirable next-hop NPUs use applies various hashing techniques
+         on the incoming traffic.The hashing technique to be applied is determined based on the
+         incoming traffic type and the associated hashing-fields.
+
+         This YANG model contains a collection of YANG definitions for managing
+         these LAG/ECMP specific hashing techniques used in the NPUs.
+
+         Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-04-12 {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2016-04-27 {
         description "Initial version";
+        reference "Network Platform Abstraction";
     }
 
     typedef traffic {
         type enumeration {
     	    enum "ECMP_NON_IP" {
     	    	value 1;
+		description "ECMP routing: flow of non-IP ethernet frames";
     	    }
     	    enum "LAG_NON_IP" {
     	    	value 2;
+		description "LAG routing: flow of non-IP ethernet frames";
     	    }
     	    enum "ECMP_IPV4" {
     	    	value 3;
+		description "ECMP routing: flow of IPv4 packets";
     	    }
     	    enum "ECMP_IPV4_IN_IPV4" {
     	    	value 4;
+		description "ECMP routing: flow of IPv4 packets with
+                             IPv4 packets tunnelled inside them";
     	    }
     	    enum "ECMP_IPV6" {
     	    	value 5;
+		description "ECMP routing: flow of IPv6 packets";
     	    }
     	    enum "LAG_IPV4" {
     	    	value 6;
+		description "LAG routing: flow of IPv4 packets";
     	    }
     	    enum "LAG_IPV4_IN_IPV4" {
     	    	value 7;
+		description "ECMP routing: flow of IPv4 packets with
+                             IPv4 packets tunnelled inside them";
     	    }
     	    enum "LAG_IPV6" {
     	    	value 8;
+		description "LAG routing: traffic flow is identified as IPv6 packets";
     	    }
         }
+        description "Enumeration of different types of traffic routing categories";
     }
 
     typedef field {
         type enumeration {
     	    enum "src-ip" {
     	      value 1;
+              description "Traffic flow is identified by the source IP";
     	    }
     	    enum "dest-ip" {
     	      value 2;
+              description "Traffic flow is identified by the destination IP";
     	    }
             enum "inner-src-ip" {
               value 3;
+              description "Traffic flow is identified by the source IP of the tunnelled packet";
             }
             enum "inner-dst-ip" {
               value 4;
+              description "Traffic flow is identified by the destination IP of the tunnelled packet";
             }
     	    enum "vlan-id" {
     	      value 5;
+              description "Traffic flow is identified by the VLAN ID in the packet";
     	    }
     	    enum "ip-protocol" {
     	      value 6;
+              description "Traffic flow is identified by the IP protocol type(v4/v6)";
     	    }
     	    enum "ethertype" {
     	      value 7;
+              description "Traffic flow is identified by the IP protocol ether-type";
     	    }
     	    enum "l4-src-port" {
     	      value 8;
+              description "Traffic flow is identified by the source port in the packet";
     	    }
     	    enum "l4-dest-port" {
     	      value 9;
+              description "Traffic flow is identified by the destination port in the packet";
     	    }
     	    enum "src-mac" {
     	      value 10;
+              description "Traffic flow is identified by the source MAC address";
     	    }
     	    enum "dest-mac" {
     	      value 11;
+              description "Traffic flow is identified by the destination MAC address";
     	    }
     	    enum "in-port" {
     	      value 12;
+              description "Traffic flow is identified by the front-panel port the packet is received at";
     	    }
         }
+        description "Enumeration of different types of packet fields to check for routing";
     }
 
     list entry {
         key "obj-type";
-        description "Specifies the kind of traffic";
+
+        // QUALIFIER : Target
 
         leaf obj-type {
             type traffic;
-            description "Type of traffic for which these has fields are used";
+            description "Type of the incoming traffic";
         }
 
         leaf-list std-hash-field {
             type field;
-            description "Packet header fields used for hashing various traffic types";
+            description "A list of packet header fields used for hashing the incoming traffic";
         }
+        description "Specifies the type of the incoming traffic and the associated hash-fields.";
     }
 }
 

@@ -17,6 +17,11 @@ description
 "This module contains a collection of YANG definitions for
 managing configuration and operational data for Dell EMC Switch Element";
 
+revision 2018-02-20 {
+description
+"Add global ECN ECT control flag.";
+}
+
 revision 2014-08-06 {
 description
 "Initial revision.";
@@ -494,6 +499,11 @@ container switching-entities {
             description "Unified Forwarding Table (UFT) mode";
         }
         uses mode-info;
+    }
+
+    leaf ecn-ect-threshold-enable {
+        type boolean;
+        description "Globally enable/disable ECN ECT thresholds";
     }
 
   }

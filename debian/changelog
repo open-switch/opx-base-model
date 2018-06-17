@@ -1,3 +1,24 @@
+opx-base-model (3.142.0) unstable; urgency=medium
+
+  * Feature: Routing VRF
+  * Feature: MAC flush
+  * Feature: Support for source IP configuration
+  * Feature: Support for ether-like interface
+  * Feature: Support for port groups
+  * Update: Add 10G, 40G, 100G media
+  * Update: Add IP interface stats attribute (ipifstats)
+  * Update: Add default VLAN filter settings
+  * Update: Add support for flushing remote IP and VLAN subports
+  * Update: Add VLAN filter for interface-state
+  * Update: Add attribute and changed object key to support VTY ACL
+  * Update: Media power mode enhancement
+  * Update: Add new leaf (configured-fec) to if/interface-state/interface object
+  * Update: Add bridge attribute and tunnel stats model
+  * Bugfix: VLAN-globals container gets created automatically even when it's removed from
+            startup.xml in OpenFlow-only mode.
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Wed, 23 May 2018 16:00:00 -0800
+ 
 opx-base-model (3.112.0) unstable; urgency=medium
 
   * Update: Adding ip-mtu to interface state attribute

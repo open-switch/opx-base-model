@@ -1,7 +1,20 @@
 module acl-config {
-    namespace "http://www.dellemc.com/networking/os10/dell-base-acl";
+    namespace "http://www.dellemc.com/networking/os10/dell-base-acl-config";
     prefix "acl-config";
 
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "File-based IPTables service provides a mechanism to configure
+                 ACL using a yaml file. This yaml file contains set of user-defined ACL entries.
+                 This model implements these ACL entries and the associated operations.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";	
+
+    revision 2018-04-12{
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";	
+    }
 
     list entry {
         key "name";
@@ -9,13 +22,16 @@ module acl-config {
         description "This element contains all of the created ACLs entry";
 
         leaf name {
-            description "A user created field to identify the entry - if none provided one will be generated. ";
             type string;
+            description "A user created field to identify the entry - if none provided one will be generated. ";
         }
 
-	    leaf rule {
-            description "This holds the Access Control List (ACL) entry.  This field attempts to mimmic the standard
+	leaf rule {
+            type string;
+            description "This holds the Access Control List (ACL) entry.  This field attempts to mimic the standard
                 IP tables rules supporting the following switches:
+                -prio, --priority value
+                    The rule priority
                 -i, --in-interface name
                     Input interface name - at this time must be a valid front panel port
                 -o, --out-interface name
@@ -33,6 +49,8 @@ module acl-config {
                     The destination port
                 --sport port
                     The source port
+                --tcp-flags
+                    Specify the TCP flags like SYNC,RST,ACK,FIN,SYN
                 -p, --protocol protocol
                     Filter based on a port or protocol.  The protocols that are supported are included in
                     the /etc/protocols in addition to tcp, udp, icmp or all
@@ -50,10 +68,9 @@ module acl-config {
                         ethernet packet
                  Examples:
                      -A INPUT -p tcp --dport 80 -j ACCEPT
-                     -A INPUT -p tcp -m mac --mac-source 00:00:00:00:00:001 --dport 80 -j DROP
-                     -A INPUT -p tcp -m mac --mac-source 00:00:00:00:00:001 --dport 22 -j DROP
+                     -A INPUT -p tcp -m mac --mac-source 00:00:00:00:11:01 --dport 80 -j DROP
+                     -A INPUT -p tcp -m mac --mac-source 00:00:00:00:12:02 --dport 22 -j DROP
                      ";
-            type string;
         }
 
 
@@ -61,6 +78,16 @@ module acl-config {
     rpc reload {
         description "This triggers a reload of the ACL configuration subsystem.  The filename specified will be loaded
             and the differences applied";
+
+        // ATTRIBUTE PATH  : acl-config/reload
+        // ==============
+        //
+        // INPUT           : acl-config/reload/input/filename (yaml file name containing the ACL rules.
+        // =====                                               If not specified, the default ACL file is considered)
+        //
+        // OUTPUT          : acl-config/reload/output/result (info about operation status)
+        // ======
+
         input {
             leaf filename {
                 type string;

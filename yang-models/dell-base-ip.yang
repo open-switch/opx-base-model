@@ -12,9 +12,16 @@ module dell-base-ip {
 
     contact "http://www.dell.com/support";
 
-    description "This model will support the configruation of IP address.
+    description "This model will support the configruation of IP address.";
 
-    	";
+    revision 2018-05-02 {
+        description
+            "This revision updates the IPv6 address list with the flag to indicate whether the IPv6
+            address is auto-configured from router advertisement message.";
+        reference
+            "Network Platform Abstraction";
+    }
+
     revision 2017-09-27 {
         description "This revision adds the IPv6 DAD (Duplicate Address Detection)
                      configurations. DAD operation helps the node to check whether an address
@@ -142,6 +149,12 @@ module dell-base-ip {
 		    	type uint32;
 		    }
 		     			
+            leaf autoconf-addr {
+                type boolean;
+                config false;
+                description "Set to true to indicate that IPv6 address is created dynamically using
+                    prefix information in Router advertisements and false otherwise.";
+            }		
 		}		
 	}
 	

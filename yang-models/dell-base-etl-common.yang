@@ -13,8 +13,14 @@ module dell-base-etl-common {
     description
         "This module contains a collection of common YANG definitions for ETL logging and event notification objects.";
 
+    revision 2018-03-30 {
+        description "Revised Version: IETF Compliance";
+        reference "Dell Proprietary";
+    }
+
     revision 2015-04-21 {
         description "Initial revision.";
+        reference "Dell Proprietary";
     }
 
     typedef severity-level-type {
@@ -53,6 +59,7 @@ module dell-base-etl-common {
                 description "Debug level";
             }
         }
+        description "Enumeration of all possible values for log level";
     }
 
     typedef log-output-type {
@@ -70,6 +77,7 @@ module dell-base-etl-common {
                 description "History output";
             }
         }
+        description "Enumeration of all possible types of log output mechanisms";
     }
 
     typedef log-config-type {
@@ -95,5 +103,6 @@ module dell-base-etl-common {
                 description "All logging enable configuration";
             }
         }
+        description "Enumeration of possible locations where log output can be directed to";
     }
 }

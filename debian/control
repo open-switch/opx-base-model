@@ -10,10 +10,10 @@ Vcs-Git: https://github.com/open-switch/opx-base-model.git
 
 Package: libopx-base-model1
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Openswitch base model - object models for all services
 
 Package: libopx-base-model-dev
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libopx-base-model1 (>= 3.109.0), libopx-cps-dev (>= 3.6.2)
+Depends: ${misc:Depends}, libopx-base-model1 (>= 3.109.0), libopx-cps-dev (>= 3.6.2)
 Description: Openswitch base model - provides APIs prototype and IDs to access objects

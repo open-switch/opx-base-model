@@ -16,6 +16,19 @@ module dell-port-group {
 
     description "This model contains Dell EMC specific port-group defintion and its attributes.";
 
+	revision "2018-04-10" {
+        description "Adding supported-profiles to hybrid-group state object to 
+                     publish list of profile modes supported on hybrid-group.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-03-15" {
+        description "Added hybrid port groups to the config and state objects.
+                     A hybrid port-group permits individual member ports to be
+                     independently programmed with different breakout modes.";
+        reference "Network Platform Abstraction";
+    }
+
     revision "2016-11-22" {
         description "Initial version.";
     }
@@ -48,6 +61,58 @@ module dell-port-group {
                 individual ports will operate post breakout";
             }
         }
+
+        list hybrid-group {
+            key "id";
+            description
+                "This is a list of hybrid port groups on the system with configurable attributes. Hybrid group consist
+                 group of ports that can be configured with different breakout mode using profiles";
+
+            leaf id {
+                type string;
+                description
+                    "ID of the hybrid port group.";
+            }
+
+	    	leaf profile {
+				type string;
+				description
+		    		"Name of the profile configured on the hybrid port-group";
+            }
+
+            list port {
+                key "port-id";
+                description
+                    "List of ports that are members of the hybrid port group.";
+
+                leaf port-id {
+                    type string;
+                    description
+                        "ID of the hybrid group member port.";
+                }
+
+                leaf phy-mode {
+                    type base-if:phy-mode-type;
+                    description
+                        "Configured Port PHY mode, Ethernet or FC.";
+                }
+
+                leaf breakout-mode {
+                    type base-cmn:breakout-type;
+                    description
+                        "Configured breakout mode on the port.";
+                }
+
+                leaf port-speed {
+                    type base-if:speed;
+                    description
+                        "Configured max line speed of the breakout port. This
+                         indicates the max line rate at which individual ports
+                         will operate post breakout.";
+                }
+            }
+        }
+
     }
 
     container port-groups-state {
@@ -80,6 +145,72 @@ module dell-port-group {
                 description "Default breakout speed of the port-gorup";
             }
             
+        }
+
+        list hybrid-group-state {
+            key "id";
+            description
+                "This is a list of hybrid port groups on the system with
+                 state information.";
+
+            leaf id {
+                type string;
+                description
+                    "ID of the hybrid port group.";
+            }
+
+            leaf default-profile {
+                type string;
+                description
+                    "Name of the default profile on the hybrid port group.";
+            }
+
+            uses base-if:supported-profiles;
+
+            list port {
+                key "port-id";
+                description
+                    "List of ports in the hybrid port group.";
+
+                leaf port-id {
+                    type string;
+                    description
+                        "ID of the hybrid group member port.";
+                }
+
+                list profile {
+                    key "name";
+                    description
+                        "List of profiles in the hybrid port group. Includes
+                         port capabilities and defaults per profile.";
+
+                    leaf name {
+                        type string;
+                        description
+                            "Name of the profile.";
+                    }
+
+                    uses base-if:breakout-capabilities;
+
+                    leaf default-phy-mode {
+                        type base-if:phy-mode-type;
+                        description
+                            "Default Port PHY mode, Ethernet or FC in this profile.";
+                    }
+
+                    leaf default-breakout-mode {
+                        type base-cmn:breakout-type;
+                        description
+                            "Default breakout mode on the port in this profile.";
+                    }
+
+                    leaf default-port-speed {
+                        type base-if:speed;
+                        description
+                            "Default max line speed of the breakout port in this profile.";
+                    }
+                }
+            }
         }
     }
 }

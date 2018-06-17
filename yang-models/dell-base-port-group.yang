@@ -9,11 +9,20 @@ module dell-base-port-group {
 
     description "This model contains Dell EMC specific port-group defintion and its attributes.";
 
+    revision "2018-04-05" {
+        description "Augmenting hybrid group config and state object.";
+        reference "Network Platform Abstraction";
+    }
+
     revision "2016-11-22" {
         description "Initial version.";
     }
 
     augment "/dell-pg:port-groups/dell-pg:port-group" {
+
+    }
+
+    augment "/dell-pg:port-groups/dell-pg:hybrid-group" {
 
     }
 
@@ -26,6 +35,19 @@ module dell-base-port-group {
         leaf-list front-panel-port {
             type uint32;
             description "list of the front panel port Ids associated with this port-group.";
+        }
+    }
+
+
+    augment "/dell-pg:port-groups-state/dell-pg:hybrid-group-state" {
+        leaf-list hwport-list {
+            type uint32;
+            description "List of hardware ports belonging to this port-group";
+        }
+
+        leaf-list front-panel-port {
+            type uint32;
+            description "list of the front panel port id's associated with this port-group.";
         }
     }
 

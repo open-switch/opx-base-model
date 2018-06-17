@@ -8,21 +8,165 @@ module vrf-mgmt {
     import ietf-interfaces {
         prefix if;
     }
+    import ietf-yang-types {
+        prefix yang;
+    }
+    import dell-base-common {
+        prefix "base-cmn";
+    }
 
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the ietf-network-instance YANG model for VRF mangement in the OS";
+    description "This model augments the ietf-network-instance YANG model for VRF operations.";
+
+    revision 2018-04-02 {
+        description
+            "This revision adds the router interface in VRF context to parent interface mapping for Apps.";
+        reference
+            "Network Platform Abstraction";
+    }
+
+    revision 2018-03-12 {
+        description
+            "This revision adds the RPC to enable/disable VRF information.";
+        reference
+            "Update since last revision.";
+    }
+
+    revision 2018-02-27 {
+        description
+            "This revision adds the RPC to bind the interface with the network instance (VRF)
+             in the OS and responds with router interface information specific to VRF context,
+             also, adds the VRF-id to map with VRF-name for faster lookup.";
+        reference
+            "Update since last revision.";
+    }
 
     revision "2017-09-19" {
         description "Initial version.";
+        reference
+            "July 3, 2017 draft-ietf-rtgwg-ni-model-03";
     }
 
     // This augmentation is used for network instance create/delete operation in the OS.
     augment "/ni:network-instances/ni:network-instance" {
+        leaf vrf-id {
+            type uint32;
+            description "VRF ID";
+        }
     }
-    // This augmentation is used for interface mapping create/delete with network instance in the OS.
+    // This augmentation is used for mapping parent interface with router interface in VRF context.
     augment "/ni:if/ni:interfaces/ni:interface" {
+        leaf vrf-id {
+            type uint32;
+            description "VRF ID";
+        }
+        leaf mac-addr {
+            type yang:mac-address;
+            description "MAC address of the router interface which is present in the VRF context.";
+        }
+
+        leaf ifindex {
+            type base-cmn:logical-ifindex;
+            description "Interface index of the router interface which is present in the VRF context.";
+        }
+
+        leaf ifname {
+            type string;
+            description "Interface name of the router interface which is present in the VRF context.";
+        }
+    }
+
+    // This list is used by App for getting the router interface in VRF context to parent interface mapping.
+    list router-intf-entry {
+        key "name";
+
+        leaf name {
+            type leafref {
+                path "/if:interfaces/if:interface/if:name";
+            }
+            description "Router interface.";
+        }
+
+        leaf ifindex {
+            type base-cmn:logical-ifindex;
+            description "Interface index of the parent interface.";
+        }
+
+        leaf ifname {
+            type string;
+            description "Interface name of the parent interface.";
+        }
+    }
+
+    // This RPC should be used by App to associate router interface to VRF and
+    // the output of this RPC returns the router interface information specific to VRF context.
+    rpc intf-bind-ni {
+        description "Bind an interface with network instance (VRF).";
+        input {
+            leaf operation {
+                type base-cmn:operation-type;
+                mandatory true;
+                description "This indicates the operation type (create or delete).";
+            }
+            leaf ni-name {
+                type leafref {
+                    path "/ni:network-instances/ni:network-instance/ni:name";
+                }
+                description "Network instance (VRF) name.";
+            }
+            leaf interface {
+                type leafref {
+                    path "/if:interfaces/if:interface/if:name";
+                }
+                description "Router interface.";
+            }
+        }
+        output {
+            leaf result {
+                type string;
+                description "The result of the request which may be successful or a failure response.";
+            }
+
+            leaf ifindex {
+                type base-cmn:logical-ifindex;
+                description "Interface index of the router interface which is present in the VRF context.";
+            }
+
+            leaf ifname {
+                type string;
+                description "Interface name of the router interface which is present in the VRF context.";
+            }
+
+            leaf mac-addr {
+                type yang:mac-address;
+                description "MAC address of the router interface which is present in the VRF context.";
+            }
+        }
+    }
+
+    // This RPC is used only for internal purpose, should not be used by App.
+    rpc vrf-config {
+        description "This RPC creates/deletes the VRF in the NPU.";
+        input {
+            leaf operation {
+                type base-cmn:operation-type;
+                mandatory true;
+                description "This indicates the operation type (create or delete).";
+            }
+            leaf vrf-id {
+                type uint32;
+                description "VRF ID";
+            }
+
+            leaf ni-name {
+                type leafref {
+                    path "/ni:network-instances/ni:network-instance/ni:name";
+                }
+                description "Network instance (VRF) name.";
+            }
+        }
     }
 }
 

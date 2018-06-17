@@ -2,26 +2,51 @@ module bridge-domain {
     namespace "http://www.dellemc.com/networking/os10/bridge";
     prefix "bridge-domain";
 
-
     import ietf-interfaces { prefix "if"; }
     import dell-base-interface-common { prefix "base-if-cmn";}
-
+    import ietf-yang-types { prefix yang; }
 
     import ietf-yang-schema-mount {
         prefix yangmnt;
     }
 
-    description "This module contains a collection of YANG definitions to configure the
-                 bridge doamin";
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "A bridge is a logical entity that bundles up one/more interfaces into a single broadcast/flooding domain.
+                 This model defines a bridge-domain and the associated operations.
+                 It has attributes including MAC address, MTU, list of member-interfaces, mode (vlan aware/unaware) etc.
+                 It also stores a set of statistics.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-04-12{
+        description "Fixing pyang IETF errors and adding documentation to the model";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-03-22" {
+        description "Added a remote procedure call clear-bridge-stats to clear the
+                     statistics for a bridge configured in the system. ";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-01-02" {
+        description "Add MTU , MAC address and MAC learn mode in the Bridge Attributes";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2017-10-10" {
         description "Initial revision";
+        reference "Network Platform Abstraction";
     }
 
     list bridge {
         key "name";
 
-        description "a bridge domain ";
+        description "A table of bridge-domain entries with name as the unique key";
+
+        // QUALIFIER : Target
 
         leaf name {
             type string;
@@ -30,29 +55,68 @@ module bridge-domain {
         leaf-list member-interface {
             type if:interface-ref;
             description " List of Members of the Bridge sharing the same broadcast and flooding domain.
-                          Member could be Vlan sub-interface, physical interface, LAG or VXLAN type interface";
+                          Member-interface could be of the following types:
+                          VLAN sub-interface(base-if:vlansubinterface),
+                          physical interface(ianaift:ethernetcsmacd),
+                          LAG(ianaift:ieee8023adLag) or
+                          VxLAN(base-if:vxlan).";
         }
 
         leaf mode{
             type base-if-cmn:bridge-mode;
-            description "Mode of the bridge 1D if bridge is VLAN unaware, 1Q if bridge is VLAN aware";
+            description "A bridge-domain can have two modes:
+                         1D = VLAN unaware.
+                              A bridge accepts any packets,
+                         1Q = VLAN aware.
+                              A bridge accepts only those packets which are tagged with that port's VLAN ID.";
+        }
+        leaf enabled {
+            type boolean;
+            default "true";
+            description "The admin state of the bridge. This could be set to true/false,
+                         indicating whether the bridge is up/down.";
+        }
+        leaf phys-address {
+            type yang:phys-address;
+            description "The bridge's address at its protocol sub-layer.
+                         For example, for an 802.x interface, this object normally
+                         contains a Media Access Control (MAC) address.";
+        }
+        leaf mtu {
+           type uint32;
+           default "1532";
+           description "The MTU of the Bridge Domain.
+                        It should not exceed the MTU of the member-interface with the smallest MTU";
+        }
+        leaf mac-learn {
+            type boolean;
+            default "true";
+            description "Indicates whether MAC address learning is turned on/off in the bridge.";
+
+        }
+
+        container stats{
+            config false;
+            uses base-if-cmn:stats;
+            description
+                "To query the statistics of the bridge domain. This is a read only object.";
         }
     }
 
     typedef operation-type {
-        description " Operation type on the bridge";
         type enumeration {
             enum CREATE {
                 value 1;
-                description "Operation to create interface";
+                description "Operation to create the bridge";
             }
             enum DELETE {
                 value 2;
-                description "Operation to delete interface";
+                description "Operation to delete the bridge.
+                             Existing members would be auto-deleted.";
             }
             enum UPDATE {
                 value 3;
-                description "Operation to update interface attributes";
+                description "Operation to update the bridge attributes";
             }
             enum ADD-MEMBER {
                 value 4;
@@ -64,13 +128,28 @@ module bridge-domain {
             }
 
         }
+        description "Types of actions that can be performed on a bridge object";
     }
 
     rpc set-bridge {
-        description "This method is used to created/delete and set properties of the bridge.
-                     It also support addition of new members and deletion of existing members.
-                     For create and delete, it expects bridge name as mandatory parameter.
-                     For member addition/deletion, It expects the same attribute ID as defined under bridge object";
+        description "This method is used to create/delete and set properties of the bridge.
+                     It also supports addition of new members and deletion of existing members.
+                     It also allows change of mode from 1Q to 1D, but not the vice versa.";
+
+        // QUALIFIER       :  Target
+        // =========
+        //
+        // ATTRIBUTE PATH  :  bridge-domain/set-bridge
+        // ==============
+        //
+        // INPUT           :  bridge-domain/set-bridge/input/operation,
+        // =====              bridge-domain/bridge/name (Bridge name. For creation and deletion of the bridge, this is a mandatory parameter.),
+        //                    bridge-domain/bridge/member-interface/if/interfaces/interface/name (Member interface name),
+        //                    Other attributes of bridge-domain/bridge as needed.
+        //
+        // OUTPUT          :  None
+        // ======
+
         input {
 
             // Mounts the bridge container defined above here to used its attributes
@@ -83,10 +162,11 @@ module bridge-domain {
                 description "Specify operation type for the RPC request.";
             }
         }
+
     }
 
     rpc bridge-vlan-update{
-
+        // To be deprecated
         description
             "RPC to add/remove VLANs from Bridge.
              Bridge has to be in 1D mode if trying to add more than one VLAN.";
@@ -107,5 +187,37 @@ module bridge-domain {
                 description "Name of the VLAN to be associated to bridge";
             }
         }
+
     }
+
+    rpc clear-bridge-stats{
+        description
+            "Remote Procedure Call to clear the statistics for a bridge.
+             Input for this procedure is bridge name. This procedure will
+             clear the statistics from the switch so it should be used carefully.
+             If a bridge does not exist it will have no impact.";
+
+        // QUALIFIER       : Target
+        // =========
+        //
+        // ATTRIBUTE PATH  : bridge-domain/clear-bridge-stats
+        // =============
+        //
+        // INPUT           : bridge-domain/clear-bridge-stats/input/name (name of the bridge)
+        // =====
+        //
+        // OUTPUT          : None
+        // ======
+
+        input {
+            leaf name{
+                type string;
+                description
+                    "Bridge name whose statistics needs to be cleared. This could
+                     be any bridge in the system.";
+
+             }
+        }
+     }
+
 }

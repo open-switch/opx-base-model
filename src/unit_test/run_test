@@ -1,0 +1,9 @@
+#!/bin/bash -e
+
+# Script to run unit test
+#
+sudo pip install pyang
+
+pyang -f tree yang-models/*.yang -p ./ -Wnone
+
+pyang --ietf yang-models/*.yang -p ./ -Wnone

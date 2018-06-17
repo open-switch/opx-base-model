@@ -7,33 +7,58 @@ module dell-base-common {
     "http://www.dell.com/support";
   description
     "This module contains a collection of common YANG derived types used
-     in other Base Yang modules.";
+     in other Base Yang modules.
+
+     Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+  revision "2018-05-08" {
+    description "Added support for VLAN filtering feature which enables applications
+                 to enable or disable VLAN filtering on an interface";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-04-12" {
+    description "Fixing pyang IETF errors and adding documentiation to the model.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision 2018-03-12 {
+    description
+      "Added Enum for vlan sub interface type";
+      reference "Network Platform Abstraction";
+  }
 
   revision "2017-10-10" {
     description "Add grouping for ip address.
                  Add typedef vni for VxLAN.
                  Add enumeration for bridge and vxlan for interface type";
+    reference "Network Platform Abstraction";
   }
 
   revision 2015-09-24 {
     description
       "Added Enum values to breakout-mode";
+    reference "Network Platform Abstraction";
   }
   revision 2015-05-27 {
     description
       "Phase 2 of clean-up work";
+    reference "Network Platform Abstraction";
   }
   revision 2015-05-21 {
     description
       "Phase 1 of clean-up work";
+    reference "Network Platform Abstraction";
   }
   revision 2015-04-03 {
     description
       "Added the opaque data types";
+    reference "Network Platform Abstraction";
   }
   revision 2015-03-12 {
     description
       "Initial revision";
+    reference "Network Platform Abstraction";
   }
 
   typedef logical-ifindex {
@@ -79,7 +104,7 @@ module dell-base-common {
     }
     description
       "This type denotes a VXLAN Network Identifier.
-       It is 24 bit long so can provide 16 million unique ID's";
+       It is 24 bits long. Hence 16 million such unique ID's are possible";
   }
   typedef mac-address {
     type binary {
@@ -153,43 +178,57 @@ module dell-base-common {
       }
     }
     default "ingress-egress";
+    description "Different packet forwarding pipeline stages
+                 (ingress or egress or both) where traffic could be sampled.
+                 By default both the ingress and egress packets are sampled.";
   }
 
   typedef fec-type {
     type enumeration {
       enum "auto" {
         value 1;
+        description "FEC type is set based on the transceiver type.";
       }
       enum "off" {
         value 2;
+        description "FEC is supported but disabled.";
       }
       enum "cl91-rs" {
         value 3;
+        description "Enables clause 91 RS";
       }
       enum "cl74-fc" {
         value 4;
+        description "Enables clause 74 Fire Code";
       }
       enum "cl108-rs" {
         value 5;
+        description "Enables clause 108 RS";
       }
       enum "not-supported" {
         value 6;
+        description "FEC is not supported";
       }
     }
+    description "Enumeration of all supported Forward-Error-Correction codes";
   }
 
   typedef admin-status-type {
     type enumeration {
       enum "up" {
         value 1;
+        description "administratively up.";
       }
       enum "down" {
         value 2;
+        description "shutdown mode.";
       }
       enum "testing" {
         value 3;
+        description "Testing mode.";
       }
     }
+    description "Enumeration of all possible values for admin status";
   }
 
   typedef oper-status-type {
@@ -236,6 +275,7 @@ module dell-base-common {
           "The interface has an internal failure.";
       }
     }
+    description "Enumeration of all possible values for operational status";
   }
 
   typedef stat-type {
@@ -311,26 +351,34 @@ module dell-base-common {
       enum "bridge" {
         value 15;
       }
+      enum "vlan_subintf" {
+        value 16;
+      }
 
     }
     description
-      "Enumeration of the various support interface types";
+      "Enumeration of the various supported interface types";
   }
 
   typedef encap-type {
     type enumeration {
       enum "tagged" {
         value 1;
+        description "Ethernet frame includes a VLAN tag.";
       }
       enum "untagged" {
         value 2;
+        description "Ethernet frame does not include a VLAN tag.";
       }
       enum "prio-tagged" {
         value 3;
+        description "Ethernet frame includes VLAN tag set to zero.
+                     These packet(s) is(are) processed as per the priority configured in the 802.1P bits
+	             of the 802.1Q Ethernet frame header.";
       }
     }
     description
-      "Encapsulation types: need to add more types";
+      "Supported encapsulation types.";
   }
 
   // @TODO : Check if needed.
@@ -350,7 +398,7 @@ module dell-base-common {
       }
     }
     description
-      "lag hashing info types: Need to add more hash types";
+      "lag hashing info types";
   }
 
   // @TODO : To be deprecated. Use IETF iana type
@@ -445,12 +493,15 @@ module dell-base-common {
     type enumeration {
       enum "none" {
         value 1;
+	description "no loopback.";
       }
       enum "phy" {
         value 2;
+	description "layer 1 loopback.";
       }
       enum "mac" {
         value 3;
+	description "layer 2 loopback.";
       }
     }
     description "Physical port's loopback modes";
@@ -459,52 +510,69 @@ module dell-base-common {
     type enumeration {
       enum "full" {
         value 1;
+	description "bi-directional mode.";
       }
       enum "half" {
         value 2;
+	description "uni-directional mode.";
       }
       enum "auto" {
         value 3;
+	description "The mode is set as full/half depending on environmental factors
+		     such as the type of the media, transmisson speed of the next-hop etc.";
       }
     }
+    description "Enumeration of all possible values for duplex mode";
   }
   typedef breakout-type {
     /* Breakout NxM implies N logical interfaces derived from M front panel ports */
     type enumeration {
       enum DISABLED {
         value 1;
+	description "breakout is not allowed on the given port(s).";
       }
       enum BREAKOUT_4x1 {
         value 2;
+	description "1 physical port mapping to 4 logical interfaces.";
       }
       enum BREAKOUT_2x1 {
         value 3;
+	description "1 physical port mapping to 2 logical interfaces.";
       }
       enum BREAKOUT_1x1 {
         value 4;
+	description "1 physical port mapping to 1 logical interface.";
       }
       enum BREAKOUT_8x2 {
         value 5; /* 8 logical interfaces derived from 2 front panel ports */
+	description "2 physical ports mapping to 8 logical interface.";
       }
       enum BREAKOUT_2x2 {
         value 6; /* 2 logical interfaces derived from 2 front panel ports */
+	description "2 physical ports mapping to 2 logical interface.";
       }
       enum BREAKOUT_4x4 {
         value 7; /* 4 logical interfaces derived from 4 front panel ports */
+	description "4 physical ports mapping to 4 logical interface.";
       }
       enum BREAKOUT_2x4 {
         value 8; /* 2 logical interfaces derived from 4 front panel ports */
+	description "4 physical ports mapping to 2 logical interface.";
       }
       enum BREAKOUT_4x2 {
         value 9; /* 4 logical interfaces derived from 2 front panel ports */
+	description "2 physical ports mapping to 4 logical interface.";
       }
       enum BREAKOUT_UNKNOWN {
         value 10; /* The breakout mode cannot be determined */
+	description "breakout is not identified due to unknown reason(s).";
       }
       enum NO_BREAKOUT {
         value 11; /* Device does not breakout  */
+	description "breakout is not supported on the given port(s).";
       }
     }
+    description "Enumeration of all possible breakout modes";
   }
 
   grouping ip {
@@ -520,7 +588,6 @@ module dell-base-common {
   }
 
   typedef operation-type {
-      description "Generic operation types.";
       type enumeration {
           enum CREATE {
               value 1;
@@ -533,6 +600,27 @@ module dell-base-common {
           enum UPDATE {
               value 3;
               description "Update operation.";
+          }
+      }
+      description "Generic operation types.";
+  }
+  typedef filter-type {
+      type enumeration {
+          enum DISABLE {
+              value 1;
+              description "Operation to disable both ingress and egress filtering";
+          }
+          enum ENABLE {
+              value 2;
+              description "Operation to enable both ingress and egress filtering";
+          }
+          enum INGRESS_ENABLE {
+              value 3;
+              description "Operation to enable only ingress filtering";
+          }
+          enum EGRESS_ENABLE {
+              value 4;
+              description "Operation to enable only egress filtering";
           }
       }
   }

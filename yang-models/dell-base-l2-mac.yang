@@ -23,6 +23,17 @@ module dell-base-l2-mac {
          Copyright(c) 2015-2016 by Dell EMC,
          All rights reserved.";
 
+    revision "2018-05-01"{
+        description "Add enums to support MAC address flush for peer IP for all bridges and
+                     port VLAN subport";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-01-09" {
+        description "Added endpoint-event container to publish an event when endpoint is
+                     being added or deleted";
+    }
+
     revision "2017-10-10" {
         description "Add forwarding table object. Add endpoint-ip, br-name attributes
                      to support MAC addresses learned from remote endpoint";
@@ -131,6 +142,7 @@ module dell-base-l2-mac {
         }
     }
 
+
     typedef mac-flush-type {
 
         type enumeration {
@@ -142,7 +154,8 @@ module dell-base-l2-mac {
             enum vlan-port {
                 value 2;
                 description
-                    "MAC address flush on the given vlan port combination";
+                    "MAC address flush on the given vlan port combination.
+                     This flush type is for port which is part of 1q VLAN";
             }
             enum vlan {
                 value 3;
@@ -164,8 +177,25 @@ module dell-base-l2-mac {
             enum bridge-endpoint-ip {
                 value 6;
                 description
-                    "MAC address flush on the give bridge and
+                    "MAC address flush on the given bridge and
                      endpoint ip address combination";
+            }
+
+            enum endpoint-ip {
+                value 7;
+                description
+                    "MAC address flush on the given
+                     endpoint ip address from all bridge where
+                     given ip is an overlay endpoint for the bridge";
+            }
+
+            enum vlan-port-subport {
+                value 8;
+                description
+                    "MAC address flush on the given subport which
+                     is a combination of VLAN id and port. This
+                     flush type is for port-vlan combination which is
+                     a subport of VLAN unaware(1d) bridge";
             }
         }
     }
@@ -374,7 +404,7 @@ module dell-base-l2-mac {
         leaf flush-type{
         	description
         		"Type of the mac flush";
-    		type mac-event-type;
+    		type mac-flush-type;
 		}
     }
 		
@@ -405,5 +435,30 @@ module dell-base-l2-mac {
         	uses flush;	
             }
         }
+    }
+
+    container tunnel-endpoint-event{
+        description "Event to be published when a new tunnel endpoint is being added or existing is
+                     being deleted.";
+
+        container ip{
+            uses base-cmn:ip;
+            description
+                "IP address of the endpoint tunnel being added or deleted.";
+        }
+
+        leaf interface-name{
+            type string;
+            description
+                "Interface name of tunnel endpoint.";
+        }
+
+        leaf flooding-enable{
+            type boolean;
+            default false;
+            description
+                "Enable flooding to this tunnel endpoint.";
+        }
+
     }
 }

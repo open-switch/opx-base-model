@@ -17,8 +17,14 @@ module dell-base-etl {
     description
         "This module contains a collection of YANG definitions for ETL objects";
 
+    revision 2018-03-30 {
+        description "Revised Version: IETF Compliance";
+        reference "Dell Proprietary";
+    }
+
     revision 2015-04-21 {
         description "Initial revision.";
+        reference "Dell Proprietary";
     }
 
     typedef notification-type {
@@ -44,11 +50,11 @@ module dell-base-etl {
                 description "Event notification for external usage";
             }
         }
+        description "Enumeration of all possible event notifications";
     }
 
     list log-event-object {
         key "event-notification-type";
-        description "ETL Event Object Attributes";
 
         leaf event-notification-type {
             type notification-type;
@@ -108,11 +114,11 @@ module dell-base-etl {
             type uint32;
             description "Event device id";
         }
+        description "ETL Event Object Attributes";
     }
 
     list  log-output-object {
         key "output-type";
-        description "ETL Output Object Attributes";
 
         leaf output-type {
             type base-etl-common:log-output-type;
@@ -122,11 +128,11 @@ module dell-base-etl {
             type string;
             description "Log messages";
         }
+        description "ETL Output Object Attributes";
     }
 
     list  log-config-object {
         key "config-type";
-        description "ETL Config Object Attributes";
 
         leaf config-type {
             type base-etl-common:log-config-type;
@@ -182,11 +188,10 @@ module dell-base-etl {
             type boolean;
             description "History logging is enable or disable";
         }
+        description "ETL Config Object Attributes";
     }
 
     container dn-event-table {
-        description "Provide attribute id to use this when event source publish predefined
-            event";
         leaf event-id {
             type uint64;
             description "System wide unique event id.";
@@ -215,5 +220,7 @@ module dell-base-etl {
             type uint32;
             description "Device id.";
         }
+        description "Provide attribute id to use this when event source publishes a predefined
+            event";
     }
 }

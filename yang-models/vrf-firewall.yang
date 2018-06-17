@@ -14,9 +14,15 @@ module vrf-firewall {
 
     description "This model adds the configurations for incoming and outgoing management services.";
 
+    revision "2018-03-20" {
+        description "Changed ns-incoming-service list key and added attributes to suport VTY ACL";
+        reference "Network Platform Abstraction";
+    }
+
     revision "2017-09-29" {
         description "Initial version.";
     }
+
     typedef ip-protocols {
         type enumeration {
             enum tcp {
@@ -57,7 +63,14 @@ module vrf-firewall {
 
     list ns-incoming-service {
         description "Provide list of incoming management services.";
-        key "ni-name af protocol dst-port";
+        key "id";
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ID that was generated if not given upon Create
+                         request. Subsequent Modify or Delete requests required
+                         the ID to be passed in.";
+        }
 
         leaf ni-name {
             type leafref {
@@ -69,17 +82,37 @@ module vrf-firewall {
 
         leaf af {
             type base-cmn:af-type;
-            description "Address Family";
+            description "Address Family.";
+        }
+
+        leaf src-ip {
+            type base-cmn:ip-address;
+            description "Source IPv4 or IPv6 address prefix to specify matched
+                         host or subnet.";
+        }
+
+        leaf src-prefix-len {
+            type uint32;
+            description "Source IP address prefix length to specify matched subnet.";
         }
 
         leaf protocol {
             type ip-protocols;
             description "IP protocols.";
         }
+
         leaf dst-port {
+            when "../protocol = 'tcp' or ../protocol = 'udp'";
             type uint32;
             description "Destination port.";
         }
+
+        leaf seq-num {
+            type uint32;
+            description "Unique sequence number to order the rules in list. Rule
+                         with the lower number will have the higher preference order.";
+        }
+
         leaf action {
             type protocol-action;
             description "Allow/Deny the protocol packets.";
@@ -88,11 +121,23 @@ module vrf-firewall {
 
     list ns-outgoing-service {
         description "Provide list of outgoing management services.
-            also, mapping for public IP, public port with
-            the private IP and private port to handle multiple different public IP destinations
-            with same/different destination port for applications like rsyslog, SNMP traps..etc
-            in the default namespace to remote destinations through management namespace.";
-        key "ni-name af public-ip protocol public-port";
+            It is used for following services:
+            - IP service binding between management namespace and default namespace,
+              by mapping for public destination IP, public destination port with the
+              private IP and private port to handle multiple different public IP destinations
+              with same/different destination port for applications like rsyslog, SNMP traps..etc
+              in the default namespace to remote destinations through management namespace.
+            - Source address translation for outgoing services across different services,
+              like tacacs, rsyslog, SNMP traps..etc.";
+
+        key "id";
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ID that was generated if not given upon Create
+                         request. Subsequent Modify or Delete requests require
+                         the ID to be passed in.";
+        }
 
         leaf ni-name {
             type leafref {
@@ -133,6 +178,14 @@ module vrf-firewall {
             config false;
             description "Private destination port, this will be replaced
                 with the actual public port in the management namespace.";
+        }
+
+        leaf outgoing-source-ip {
+            type base-cmn:ip-address;
+            description "Translated Source IP address to be used for the outgoing connections.
+                Outgoing connections for a given name-space and address family can be
+                identified using one or more of the attributes like
+                public-ip or protocol and public-port.";
         }
     }
 }
