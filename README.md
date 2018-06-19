@@ -85,7 +85,7 @@ Using the `cps_get_oid.py` script you would use:   
 - `dell-base-acl.yang`  
 
 ### Networking interfaces
-The following set of models provides the networking access-related models/classes:
+The following set of models provide the networking access-related models/classes:
 
 - `dell-base-if.yang`          
 - `dell-base-if-lag.yang`       
@@ -107,4 +107,4 @@ The following set of models provides the networking access-related models/classe
 - `dell-base-packet.yang`            
 - `dell-interface.yang`
 
-(c) 2017 Dell
+(c) 2018 Dell Inc. or its subsidiaries. All Rights Reserved.
