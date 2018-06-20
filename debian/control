@@ -3,7 +3,7 @@ Section: net
 Priority: optional
 Maintainer: Dell EMC <ops-dev@lists.openswitch.net>
 Build-Depends:
- debhelper (>=9), dh-autoreconf, libopx-cps-dev (>= 3.6.2), opx-yang-utils-dev (>= 3.6.2), python-lxml
+ debhelper (>=9), dh-autoreconf, libopx-cps-dev (>= 3.6.2), opx-yang-utils-dev (>= 3.6.2), python-lxml, python-pkg-resources
 Standards-Version: 3.9.3
 Vcs-Browser: https://github.com/open-switch/opx-base-model
 Vcs-Git: https://github.com/open-switch/opx-base-model.git
