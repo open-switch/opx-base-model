@@ -30,6 +30,12 @@ module dell-base-platform-common {
 
   All rights reserved.";
 
+  revision 2018-05-31 {
+    description "Added media attribute for qsa28-expected. This flag is used to note when QSA (which is optimized for SFP/SFP+) is used with SFP28. This is because SFP28 expects QSA28
+                    and not QSA. ";
+    reference "Networking Platform Abstraction";
+ }
+
   revision 2018-05-18 {
     description "Added media attribute for media name. This name is used to refer to the particular media type
                  Added media attribute for category display string, which is used in 'show' commands";
@@ -2645,6 +2651,17 @@ module dell-base-platform-common {
       // Persistent: N/A
       // Notification: No
     }
+
+    leaf qsa28-expected {
+      description "QSA adapter type connected is QSA when QSA28 is expected";
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+    }
+
 
     leaf connector-separable {
       description "Is the media connector separable";

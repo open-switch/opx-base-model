@@ -845,7 +845,7 @@ module dell-base-acl {
         }
 
         leaf-list OUT_PORTS_VALUE {
-            when "../type = OUT_PORTS";
+            when "../type = 'OUT_PORTS'";
             type base-cmn:logical-ifindex;
             status obsolete;
             description
@@ -857,7 +857,7 @@ module dell-base-acl {
         }
 
         leaf IN_PORT_VALUE {
-            when "../type = IN_PORT";
+            when "../type = 'IN_PORT'";
             type base-cmn:logical-ifindex;
             status obsolete;
             description
