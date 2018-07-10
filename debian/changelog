@@ -1,3 +1,11 @@
+opx-base-model (3.146.0) unstable; urgency=medium
+
+  * Bugfix: Add proper error message for LAG member mode mismatch
+  * Feature: CoPP ACL interface support
+  * Feature: Added media leaf to flag when qsa is used unstead of qsa28
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Thu, 28 Jun 2018 16:00:00 -0800
+
 opx-base-model (3.142.0) unstable; urgency=medium
 
   * Feature: Routing VRF

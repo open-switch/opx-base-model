@@ -57,6 +57,7 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/rfc/ietf-packet-fields.yang \
     $(top_srcdir)/rfc/ietf-routing-types.yang \
     $(top_srcdir)/rfc/ietf-routing.yang \
+    $(top_srcdir)/rfc/ietf-inet-address.yang \
     $(top_srcdir)/yang-models/bridge-model.yang \
     $(top_srcdir)/yang-models/l2-multicast.yang \
     $(top_srcdir)/yang-models/spd.yang \
@@ -127,6 +128,7 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/ietf-packet-fields.cpp \
     @YANG_OUTPUT@/ietf-routing-types.cpp \
     @YANG_OUTPUT@/ietf-routing.cpp \
+    @YANG_OUTPUT@/ietf-inet-address.cpp \
     @YANG_OUTPUT@/bridge-model.cpp \
     @YANG_OUTPUT@/l2-multicast.cpp \
     @YANG_OUTPUT@/spd.cpp \
@@ -192,6 +194,7 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/ietf-packet-fields.h \
     @YANG_OUTPUT@/ietf-routing-types.h \
     @YANG_OUTPUT@/ietf-routing.h \
+    @YANG_OUTPUT@/ietf-inet-address.h \
     @YANG_OUTPUT@/bridge-model.h \
     @YANG_OUTPUT@/l2-multicast.h \
     @YANG_OUTPUT@/spd.h \
@@ -261,6 +264,7 @@ lib_LTLIBRARIES = \
     libcpsclass_ietf-packet-fields.la \
     libcpsclass_ietf-routing-types.la \
     libcpsclass_ietf-routing.la \
+    libcpsclass_ietf-inet-address.la \
     libcpsclass_bridge-model.la \
     libcpsclass_l2-multicast.la \
     libcpsclass_spd.la \
@@ -443,6 +447,9 @@ libcpsclass_ietf_routing_types_la_LIBADD =   -lopx_cps_api_common
 
 libcpsclass_ietf_routing_la_SOURCES = @YANG_OUTPUT@/ietf-routing.cpp
 libcpsclass_ietf_routing_la_LIBADD =   -lopx_cps_api_common
+
+libcpsclass_ietf_inet_address_la_SOURCES = @YANG_OUTPUT@/ietf-inet-address.cpp
+libcpsclass_ietf_inet_address_la_LIBADD =   -lopx_cps_api_common
 
 libcpsclass_bridge_model_la_SOURCES = @YANG_OUTPUT@/bridge-model.cpp
 libcpsclass_bridge_model_la_LIBADD =   -lopx_cps_api_common

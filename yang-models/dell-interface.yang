@@ -16,6 +16,11 @@ module dell-interface {
     extensions. This model contains the entry point for the interface
     object extensions.";
 
+  revision "2018-05-31" {
+    description "This revision adds error-message for LAG mode constrain";
+    reference "Network Platform Abstraction";
+  }
+
   revision "2018-05-07" {
     description "This revision adds ethernet ip/ipv6 interface statistics";
     reference "Network Platform Abstraction";
@@ -330,6 +335,8 @@ module dell-interface {
             must "../../dell-if:lag-mode = 'DYNAMIC'"  {
             description
                     "lacp mode";
+            error-message
+                "the mode is not compatible with the existing member(s)";
             }
           }
         }
