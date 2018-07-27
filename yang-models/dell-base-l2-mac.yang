@@ -18,10 +18,16 @@ module dell-base-l2-mac {
 
     description
         "This module contains a collection of YANG definitions provided
-         by OS10 base for managing MAC objects
+         by OS10 base for managing MAC objects.This model is used to implement
+         show/clear MAC address-table.
 
-         Copyright(c) 2015-2016 by Dell EMC,
+         Copyright(c) 2015-2018 by Dell EMC,
          All rights reserved.";
+
+    revision "2018-05-20" {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-05-01"{
         description "Add enums to support MAC address flush for peer IP for all bridges and
@@ -32,26 +38,31 @@ module dell-base-l2-mac {
     revision "2018-01-09" {
         description "Added endpoint-event container to publish an event when endpoint is
                      being added or deleted";
+        reference "Network Platform Abstraction";
     }
 
     revision "2017-10-10" {
         description "Add forwarding table object. Add endpoint-ip, br-name attributes
                      to support MAC addresses learned from remote endpoint";
+        reference "Network Platform Abstraction";
     }
 
     revision 2015-10-30 {
         description
             "Removed switch-id from key, updated some description";
+        reference "Network Platform Abstraction";
     }
 
     revision 2015-05-13 {
         description
             "Updated key, added command request type, added source drop packet action";
+        reference "Network Platform Abstraction";
     }
 
     revision 2014-12-31 {
         description
             "Initial revision";
+        reference "Network Platform Abstraction";
     }
     typedef packet-action {
 
@@ -83,6 +94,7 @@ module dell-base-l2-mac {
                     "Discard the packet if incoming source matches this entry";
             }
         }
+        description "Enumeration of all possible actions to be performed on the matched packets";
     }
 
     typedef command-request-type {
@@ -114,6 +126,7 @@ module dell-base-l2-mac {
                     "command request for all details";
             }
         }
+        description "Enumeration of all possible request-type(s) to be used for 'show mac address-table'";
     }
 
      typedef mac-event-type {
@@ -140,6 +153,7 @@ module dell-base-l2-mac {
             		"MAC address entry was moved";
     		}
         }
+        description "Enumeration of all possible states of an entry in the MAC address-table";
     }
 
 
@@ -198,10 +212,10 @@ module dell-base-l2-mac {
                      a subport of VLAN unaware(1d) bridge";
             }
         }
+        description "Enumeration of all possible ways to clear MAC address-table";
     }
 
     grouping entry {
-        description "This list defines MAC entry";
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
@@ -296,34 +310,34 @@ module dell-base-l2-mac {
             description
                 "Bridge name where MAC address entry belongs.";
          }
+        description "This list defines MAC entry";
 
     }
 
     list table {
+            // QUALIFIER : Target
+            key "vlan mac-address";
+
+            uses entry;
             description
                 "MAC address table list for VLAN aware flooding domain.
                  Each entry is uniquely identified by VLAN/MAC address combination within
                  a switch domain";
-            key "vlan mac-address";
-
-            uses entry;
     }
 
     list forwarding-table {
+            // QUALIFIER : Target
+            key "br-name mac-address";
+
+            uses entry;
             description
                 "MAC address table for VLAN unaware flooding domain.
                  Each entry is uniquely identified by Bridge name/MAC address
                  combination within a switch domain";
-
-            key "br-name mac-address";
-
-            uses entry;
     }
 
     list query {
-            description
-                "MAC entry specific query list";
-
+            // QUALIFIER : Target
             key "vlan mac-address";
 
             uses entry;
@@ -339,10 +353,12 @@ module dell-base-l2-mac {
                 description
                     "Count based on command request type";
             }
+            description
+                "MAC entry specific query list";
     }
 
     container flush-management{
-        description "To manage mac flush when interface status changes";
+        // QUALIFIER : Target
 
         leaf enable{
             type boolean;
@@ -350,29 +366,31 @@ module dell-base-l2-mac {
             description "To enable/disable auto flush of mac entries when
             interface state changes";
         }
+        description "To manage mac flush when interface status changes";
     }
 
-    list list{
-    	description "List of mac entries to be pusblished when event occurs in npu. This will be published as
-    				embedded list";
-    	list entries{
-    		uses entry;
-		}
-	}
+    container list{
+        // QUALIFIER : Target
+        list entries{
+                key "br-name mac-address";
+                uses entry;
+                description "List of MAC entries to be published when event occurs in NPU.
+                             This will be published as a list.";
+        }
+        description "This container holds the entries list.";
+    }
 	
-	grouping flush{
-		description "This grouping is to define the mac flush attributes";
-		leaf vlan {
-			type base-cmn:vlan-id;
-			description
-			"Vlan ID where mac flush is to be done";
+    grouping flush{
+        leaf vlan {
+            type base-cmn:vlan-id;
+            description "Vlan ID where mac flush is to be done";
         }
 
-		leaf ifindex {
-			type base-cmn:logical-ifindex;
-			description
-			    "System wide unique identifier of the interface
-				 where MAC flush is to be done.";
+        leaf ifindex {
+            type base-cmn:logical-ifindex;
+            description
+                  "System wide unique identifier of the interface
+                       where MAC flush is to be done.";
         }
 
         leaf ifname {
@@ -402,34 +420,49 @@ module dell-base-l2-mac {
         }
 
         leaf flush-type{
+    		type mac-flush-type;
         	description
         		"Type of the mac flush";
-    		type mac-flush-type;
 		}
+        description "This grouping is to define the mac flush attributes";
     }
 		
 		
     container flush-event{
-        description "MAC flush events to be published. This object is used only for publishing
-                     events.";
      	config false;
         list filter{
         	uses flush;
         	
         	leaf-list member-ifindex{
-        		description "leaf list of member interface indexes which were affected by the flush";
-    		    type base-cmn:logical-ifindex;
-    		}	
+                    type base-cmn:logical-ifindex;
+                    description "leaf list of member interface indexes which were affected by the flush";
+                }	
+                description "List of MAC address-table flush events";
     	}
+        description "MAC flush events to be published. This object is used only for publishing
+                     events.";
         	
     }
 
     rpc flush {
     description "Flush the MAC addresses learned on flooding domain,interface,
                  flooding domain/interface, interface/remote ip ";
+
+    // ATTRIBUTE PATH  : base-mac/flush
+    // ==============
+    //
+    // QUALIFIER       : Target
+    // =========
+    //
+    // INPUT           : base-mac/flush/input/fliter (filter parameters chosen from the group 'flush')
+    // =====
+    //
+    // OUTPUT          : None
+    // ======
+
     input {
         list filter {
-            description "Flush input parameters which may include flooding domain name,
+                description "Flush input parameters which may include flooding domain name,
                          interface name, flooding domain/interface name,
                          interface/remote ip";
         	uses flush;	
@@ -438,8 +471,7 @@ module dell-base-l2-mac {
     }
 
     container tunnel-endpoint-event{
-        description "Event to be published when a new tunnel endpoint is being added or existing is
-                     being deleted.";
+        // QUALIFIER : Target
 
         container ip{
             uses base-cmn:ip;
@@ -459,6 +491,8 @@ module dell-base-l2-mac {
             description
                 "Enable flooding to this tunnel endpoint.";
         }
+        description "Event to be published when a new tunnel endpoint is being added or existing is
+                     being deleted.";
 
     }
 }

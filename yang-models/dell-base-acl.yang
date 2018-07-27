@@ -32,6 +32,11 @@ module dell-base-acl {
 
          Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
 
+    revision 2018-06-15 {
+        description "Fixing IETF error for enum value type.";
+        reference "Network Platform Abstraction";	
+    }
+
     revision 2018-04-12 {
         description "Fixing pyang IETF errors and adding documentiation to the model.";
         reference "Network Platform Abstraction";	
@@ -518,6 +523,7 @@ module dell-base-acl {
               value 30;
                 description "Set user defined trap id";
             }
+
             enum SET_PACKET_COLOR {
               value 31;
                 description "Set packet color";
@@ -639,15 +645,15 @@ module dell-base-acl {
     typedef packet-color {
         type enumeration {
             enum GREEN {
-                value "1";
+                value 1;
                 description "Green";
             }
             enum YELLOW {
-                value "2";
+                value 2;
                 description "Yellow";
             }
             enum RED {
-                value "3";
+                value 3;
                 description "Red";
             }
         }
@@ -845,7 +851,7 @@ module dell-base-acl {
         }
 
         leaf-list OUT_PORTS_VALUE {
-            when "../type = OUT_PORTS";
+            when "../type = 'OUT_PORTS'";
             type base-cmn:logical-ifindex;
             status obsolete;
             description
@@ -857,7 +863,7 @@ module dell-base-acl {
         }
 
         leaf IN_PORT_VALUE {
-            when "../type = IN_PORT";
+            when "../type = 'IN_PORT'";
             type base-cmn:logical-ifindex;
             status obsolete;
             description
@@ -884,7 +890,7 @@ module dell-base-acl {
             description
                 "This field should be matched against the 12 LSB
                  bits of the IEEE 802.1Q Vlan tag in the packet.
-                 Valid range: 1-4095 inclusive";
+                 Valid range: 0-4095 inclusive";
         }
         container OUTER_VLAN_PRI_VALUE {
             when "../type = 'OUTER_VLAN_PRI'";
@@ -909,7 +915,7 @@ module dell-base-acl {
                 "This field should be matched against the 12 LSB
                  bits of the inner IEEE 802.1Q Vlan tag in a
                  double tagged packet.
-                 Valid range: 1-4095 inclusive";
+                 Valid range: 0-4095 inclusive";
         }
         container INNER_VLAN_PRI_VALUE {
             when "../type = 'INNER_VLAN_PRI'";
@@ -963,40 +969,40 @@ module dell-base-acl {
         }
 
         container TTL_VALUE {
-             when "../type = 'TTL'";
-             uses uint8-match;
+            when "../type = 'TTL'";
+            uses uint8-match;
             description "Value for Ip Ttl";
         }
 
         container TOS_VALUE {
-             when "../type = 'TOS'";
-             uses uint8-match;
-             description "Value for Ip Tos";
+            when "../type = 'TOS'";
+            uses uint8-match;
+            description "Value for Ip Tos";
         }
 
         container IP_FLAGS_VALUE {
-             when "../type = 'IP_FLAGS'";
-             uses uint8-match;
-             description "Value for Ip Flags.
-                          Valid range: 0-63 inclusive";
+            when "../type = 'IP_FLAGS'";
+            uses uint8-match;
+            description "Value for Ip Flags.
+                         Valid range: 0-63 inclusive";
         }
 
         container TCP_FLAGS_VALUE {
-             when "../type = 'TCP_FLAGS'";
-             uses uint8-match;
-             description "Value for Tcp Flags";
+            when "../type = 'TCP_FLAGS'";
+            uses uint8-match;
+            description "Value for Tcp Flags";
         }
 
         leaf IP_TYPE_VALUE {
-             when "../type = 'IP_TYPE'";
-             type match-ip-type;
-             description "Value for IP types";
+            when "../type = 'IP_TYPE'";
+            type match-ip-type;
+            description "Value for IP types";
         }
 
         leaf IP_FRAG_VALUE {
-             when "../type = 'IP_FRAG'";
-             type match-ip-frag;
-             description "Value for Fragment position in the IP packet";
+            when "../type = 'IP_FRAG'";
+            type match-ip-frag;
+            description "Value for Fragment position in the IP packet";
         }
 
         container IPV6_FLOW_LABEL_VALUE {
@@ -1041,8 +1047,6 @@ module dell-base-acl {
                 Its presence means that this Acl-Entry should
                 ONLY be applied to packets that are received
                 from the port specified.";
-            type base-cmn:logical-ifindex;
-            status obsolete;
         }
 
         leaf DST_PORT_VALUE {
@@ -1054,8 +1058,6 @@ module dell-base-acl {
                 Its presence means that this Acl-Entry should
                 ONLY be applied to packets that will be
                 transmitted out on the port specified.";
-            type base-cmn:logical-ifindex;
-            status obsolete;
         }
 
         leaf-list IN_INTFS_VALUE {
@@ -1126,6 +1128,7 @@ module dell-base-acl {
             type base-cmn:base-obj-id-type;
             description "List of ACL range checker IDs.";
         }
+
         leaf NEIGHBOR_DST_HIT_VALUE {
             when "../type = 'NEIGHBOR_DST_HIT'";
             type boolean;
@@ -1524,6 +1527,7 @@ module dell-base-acl {
                 platforms. If it's not specified, by default all actions are
                 allowed";
         }
+
         leaf-list udf-group-list {
             type base-cmn:base-obj-id-type;
             description "List of UDF Group ID associated with this table";
@@ -1647,6 +1651,7 @@ module dell-base-acl {
                  sub-object including the top level action attribute.";
 
         }
+
         leaf table-name {
             type string {
                 length 32;

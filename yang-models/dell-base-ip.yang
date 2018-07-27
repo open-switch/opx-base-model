@@ -89,10 +89,6 @@ module dell-base-ip {
 			type string;
 			description "The VRF name.";
 		}
-		leaf vrf-name {
-			type string;
-			description "The VRF name.";
-		}
 	}
 
 	list ipv4 {
@@ -127,8 +123,8 @@ module dell-base-ip {
             description "Set to true to enable IPv6 address auto-configuration
                 using prefix information in Router advertisements.
                 IPv6 autoconfiguration is enabled by default if forwarding is disabled.";
-		}
-		
+        }
+
         leaf accept-dad {
             type dad-config;
             description "Controls whether to accept DAD operation.";

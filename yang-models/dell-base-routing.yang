@@ -25,6 +25,13 @@ description
 "This module contains a collection of YANG definitions for
 managing configuration and operational data for Routing Object";
 
+revision 2018-07-05 {
+    description
+        "This revision adds the VRF name in the IP unreachable configuration.";
+    reference
+        "Network Platform Abstraction";
+}
+
 revision 2018-04-05 {
     description
         "This revision adds the NH VRF name in the existing RPC to append or
@@ -261,6 +268,8 @@ typedef nh-type {
       }
     }
   }
+
+
 /*
 * Configuration of the core elements of the Switch
 */
@@ -423,6 +432,7 @@ typedef nh-type {
      }
 
      uses special-next-hop-entry;
+
    }
 
 grouping l3-neighbor-entry {
@@ -559,6 +569,7 @@ grouping nexthop-tracking-object {
       type string;
       description "VRF device name";
     }
+
     leaf af {
       type base-cmn:af-type;
       description "Address Family";
@@ -591,7 +602,7 @@ grouping nexthop-tracking-object {
   list nh-track {
     key "vrf-id af dest-addr";
     description "Route/Nexthop Tracking Service";
-                 uses nexthop-tracking-object;
+    uses nexthop-tracking-object;
   }
 
 
@@ -768,6 +779,7 @@ grouping nexthop-tracking-object {
       type string;
       description "VRF device name";
     }
+
     leaf ifname {
       type string;
       description "Physical/Logical L3 interface";
@@ -870,9 +882,14 @@ grouping nexthop-tracking-object {
       }
     }
   }
+
   list ip-unreachables-config {
      description "Provide list of network interfaces that can initiate ICMP unreachable messages for non-routable traffic.";
-     key "af ifname";
+     key "vrf-name af ifname";
+    leaf vrf-name {
+        type string;
+        description "VRF device name";
+    }
 
     leaf af {
       type base-cmn:af-type;

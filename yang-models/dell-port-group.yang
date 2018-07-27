@@ -144,7 +144,7 @@ module dell-port-group {
                 type base-if:speed;
                 description "Default breakout speed of the port-gorup";
             }
-            
+
         }
 
         list hybrid-group-state {

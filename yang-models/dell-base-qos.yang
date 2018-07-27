@@ -21,29 +21,38 @@ module dell-base-qos {
     description
         "This module contains a collection of YANG definitions for QoS objects
 
-         Copyright (c) 2015-2016 by Dell EMC,
+         Copyright (c) 2015-2018 by Dell EMC,
          All rights reserved.";
+
+    revision 2018-06-15 {
+        description "Fixing IETF error for enum value type.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2018-01-30 {
         description
             "Add ECN color-blind threshold;
              Allow separate handling of ECT and non-ECT traffic";
+        reference "Network Platform Abstraction";
     }
 
     revision 2017-12-01 {
         description
             "Add range to Meter, WRED-profile, Scheduler-profile, Map,
              Buffer Pool and Buffer Profile Id.";
+        reference "Network Platform Abstraction";
     }
 
     revision 2016-03-31 {
         description
             "Add Buffer Management.";
+        reference "Network Platform Abstraction";
     }
 
     revision 2015-02-03 {
         description
             "Initial revision.";
+        reference "Network Platform Abstraction";
     }
 
     typedef meter-type {
@@ -55,6 +64,7 @@ module dell-base-qos {
               value 2;
             }
         }
+        description "Enumeration of all types of meter-units";
     }
 
     typedef policer-action {
@@ -66,6 +76,7 @@ module dell-base-qos {
                 value 2;
             }
         }
+        description "Enumeration of all types of actions that the policer performs on a matched packet";
     }
 
     typedef queue-type {
@@ -83,40 +94,43 @@ module dell-base-qos {
                 description "hardware multicast queue";
             }
         }
+        description "Types of hardware traffic-queues";
     }
 
     typedef scheduling-type {
         type enumeration {
             enum SP {
-                value "1";
+                value 1;
                 description "Strict Priority";
             }
             enum WRR {
-                value "2";
+                value 2;
                 description "Weighted Round-Robin";
             }
             enum WDRR {
-                value "3";
+                value 3;
                 description "Weighted Deficit RR";
             }
         }
+        description "Types of packet scheduling policies";
     }
 
     typedef packet-color {
         type enumeration {
             enum GREEN {
-                value "1";
+                value 1;
                 description "Green";
             }
             enum YELLOW {
-                value "2";
+                value 2;
                 description "Yellow";
             }
             enum RED {
-                value "3";
+                value 3;
                 description "Red";
             }
         }
+        description "Enumeration of packet color types based on RFC 2697";
     }
 
     typedef meter-mode {
@@ -140,6 +154,7 @@ module dell-base-qos {
                 description "Storm Control Meter [Single Rate Two Color mode]";
             }
         }
+        description "Enumeration of various type of meters-modes";
     }
 
     typedef meter-color-source {
@@ -152,6 +167,8 @@ module dell-base-qos {
                 value 2;
             }
         }
+        description "Enumeration of type of color awareness.
+                     Color-blind mode is equivalent to color-aware mode with all incoming packets colored as green. ";
     }
 
     typedef flow-control {
@@ -172,6 +189,7 @@ module dell-base-qos {
                 value 4;
             }
         }
+        description "Types of flow-control state";
     }
 
     typedef policer-stat-type {
@@ -208,6 +226,7 @@ module dell-base-qos {
                 value 8;
             }
         }
+        description "Types of statisctics that policer maintains";
     }
 
     typedef buffer-pool-type {
@@ -219,6 +238,7 @@ module dell-base-qos {
                 value 2;
             }
         }
+        description "Types of buffer-pools";
     }
 
     typedef buffer-threshold-mode {
@@ -230,6 +250,7 @@ module dell-base-qos {
                 value 2;
             }
         }
+        description "Denotes whether the buffer-threshold is fixed or dynamic";
     }
 
     typedef ecn-mark-mode {
@@ -259,19 +280,20 @@ module dell-base-qos {
                 value 7;
             }
         }
+        description "Types of ECN marking methods";
     }
 
     list meter{
         key "id";
 
-        description "This defines a QoS Ingress Meter.";
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this Meter belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -282,14 +304,14 @@ module dell-base-qos {
         }
 
         leaf type {
-            mandatory true;
             type meter-type;
+            mandatory true;
             description "meter based on packets or bytes";
         }
 
         leaf mode {
-            mandatory true;
             type meter-mode;
+            mandatory true;
             description "Single-Rate/Two-Rate Two-Color/Tri-Color Meter";
         }
 
@@ -400,20 +422,20 @@ module dell-base-qos {
                  If this attribute is not specified then the Meter is installed
                  on all NPUs in the Logical switch to which the Meter belongs.";
         }
+        description "This defines a QoS Ingress Meter.";
     }
 
     list wred-profile {
         key "id";
 
-        description "This defines the WRED profile. The wred profile can be attached
-                     to a port, queue or buffer. Storm control also uses this profile";
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this Profile belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -513,9 +535,9 @@ module dell-base-qos {
         }
 
         leaf ecn-enable {
-            status deprecated;
-            default false;
             type boolean;
+            default false;
+            status deprecated;
             description "Flag to indicate if ECN generation is enabled on congestion";
         }
 
@@ -530,23 +552,23 @@ module dell-base-qos {
         }
 
         container ecn-green {
-            description "Separate threshold for ECT-traffic";
             uses thresholds;
+            description "Separate threshold for ECT-traffic";
         }
 
         container ecn-yellow {
-            description "Separate threshold for ECT-traffic";
             uses thresholds;
+            description "Separate threshold for ECT-traffic";
         }
 
         container ecn-red {
-            description "Separate threshold for ECT-traffic";
             uses thresholds;
+            description "Separate threshold for ECT-traffic";
         }
 
         container ecn-color-unaware {
-            description "Separate threshold for ECT-traffic";
             uses thresholds;
+            description "Separate threshold for ECT-traffic";
         }
 
         leaf-list npu-id-list {
@@ -556,38 +578,38 @@ module dell-base-qos {
                  If this attribute is not specified then the Profile is created
                  on all NPUs in the Logical switch to which the Profile belongs.";
         }
+        description "This defines the WRED profile. The wred profile can be attached
+                     to a port, queue or buffer. Storm control also uses this profile";
     }
 
     list queue {
         key "port-id queue-number type";
 
-        description "This defines attributes of a QoS queue.
-                     QoS queues are initialized by SAI automatically.
-                     User can reprogram other queue attributes.";
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this queue id belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf port-id {
-            mandatory true;
             type base-cmn:logical-ifindex;
+            mandatory true;
             description "Physical port to which this queue belongs.";
         }
 
         leaf type {
-            mandatory true;
             type queue-type;
+            mandatory true;
             description "Queue type";
         }
 
         leaf queue-number {
-            mandatory true;
             type uint32;
+            mandatory true;
             description "locally unique id within a port and a specific queue type";
         }
 
@@ -598,8 +620,8 @@ module dell-base-qos {
         }
 
         leaf parent {
-            mandatory true;
             type base-cmn:base-obj-id-type;
+            mandatory true;
             description "parent scheduler group node in case of Hierarchical QoS support";
         }
 
@@ -625,24 +647,27 @@ module dell-base-qos {
         }
 
         leaf-list mmu-index-list {
-            config false;
             type uint32;
+            config false;
             description "In multi-MMU (Memory Management Unit) system,
                          1-based indexes of the MMUs where the queue is present.";
         }
+        description "This defines attributes of a QoS queue.
+                     QoS queues are initialized by SAI automatically.
+                     User can reprogram other queue attributes.";
     }
 
     list queue-stat {
         key "port-id type queue-number mmu-index";
 
-        description "This defines QoS queue counter statistics.";
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this queue id belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf port-id {
@@ -752,6 +777,7 @@ module dell-base-qos {
         uses wred-ecn-stat;
 
         uses buffer-stat;
+        description "This defines QoS queue counter statistics.";
 
     }
 
@@ -760,16 +786,14 @@ module dell-base-qos {
     list scheduler-profile {
         key "id";
 
-        description "This defines attributes of a QoS scheduler profile.
-                     QoS scheduler profile can be attached to a queue or
-                     a queue group.";
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this scheduler profile id belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -828,22 +852,22 @@ module dell-base-qos {
             }
             description "Optional user-provided name for the scheduler profile";
         }
+        description "This defines attributes of a QoS scheduler profile.
+                     QoS scheduler profile can be attached to a queue or
+                     a queue group.";
     }
 
     list scheduler-group {
         key "id";
 
-        description "This defines attributes of a QoS scheduler group.
-                     QoS scheduler group consists of a number of queues or
-                     child scheduler groups. When a scheduler-group is created,
-                     port-id and level must be specified at creation.";
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this scheduler group id belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -864,14 +888,14 @@ module dell-base-qos {
         }
 
         leaf port-id {
-            mandatory true;
             type  base-cmn:logical-ifindex;
+            mandatory true;
             description "port id to which the scheduler group belongs";
         }
 
         leaf level {
-            mandatory true;
             type uint32;
+            mandatory true;
             description "scheduler group level.
                          Level 0 scheduler group is the Port-level scheduler group;
                          Level (MAX_NUMBER_OF_SCHEDULER_GROUP_HIERACHY_LEVELS - 1) scheduler group
@@ -880,36 +904,39 @@ module dell-base-qos {
         }
 
         leaf max-child {
-            mandatory true;
             type uint32;
+            mandatory true;
             description "Maximum number of child on group";
         }
 
         leaf scheduler-profile-id {
-            mandatory true;
             type base-cmn:base-obj-id-type;
+            mandatory true;
             description "scheduler profile id associated to this scheduler group";
         }
 
         leaf parent {
-            mandatory true;
             type base-cmn:base-obj-id-type;
+            mandatory true;
             description "Scheduler group parent node. If the level is 0, the parent-node is the port.";
         }
+        description "This defines attributes of a QoS scheduler group.
+                     QoS scheduler group consists of a number of queues or
+                     child scheduler groups. When a scheduler-group is created,
+                     port-id and level must be specified at creation.";
     }
 
     list dot1p-to-tc-map {
         key "id";
-        description "This defines a map which maps the incoming dot1p values
-               to traffic-classes. A valid dot1p-to-tc-map id can then be
-               applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
 
@@ -938,21 +965,24 @@ module dell-base-qos {
                 type base-cmn:traffic-class;
                 description "Traffic class that given dot1p is mapped to";
             }
+            description "Key-value pair, where each 'dot1p' value corresponds to a 'tc' value";
         }
+        description "This defines a map which maps the incoming dot1p values
+               to traffic-classes. A valid dot1p-to-tc-map id can then be
+               applied to a port.";
     }
 
     list dscp-to-tc-map {
         key "id";
-        description "This defines a map which maps the incoming dscp values
-                     to traffic-classes. A valid dscp-to-tc-map id can then be
-                     applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -981,21 +1011,24 @@ module dell-base-qos {
                 type base-cmn:traffic-class;
                 description "Traffic class that given dscp is mapped to";
             }
+            description "Key-value Pair, where each 'dscp' value corresponds to a 'tc' value";
         }
+        description "This defines a map which maps the incoming dscp values
+                     to traffic-classes. A valid dscp-to-tc-map id can then be
+                     applied to a port.";
     }
 
     list dot1p-to-color-map {
         key "id";
-        description "This defines a map which marks a packet with a different color
-                     by its incoming dot1p value.
-                     A valid dot1p-to-color-map id can then be applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1023,24 +1056,27 @@ module dell-base-qos {
                 type packet-color;
                 description "Packet color that given dot1p is mapped to";
             }
+            description "";
         }
+        description "This defines a map which marks a packet with a different color
+                     by its incoming dot1p value.
+                     A valid dot1p-to-color-map id can then be applied to a port.";
     }
 
     list dot1p-to-tc-color-map {
-        status deprecated;
 
         key "id";
-        description "This defines a map which maps the incoming dot1p values
-                     to traffic-classes and marks a packet with a different color
-                     by its incoming dot1p value.
-                     A valid dot1p-to-tc-color-map id can then be applied to a port.";
+
+        //QUALIFIER : Target
+
+        status deprecated;
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1073,21 +1109,25 @@ module dell-base-qos {
                 type packet-color;
                 description "Packet color that given dot1p is mapped to";
             }
+            description "Key-value pair, where each 'dot1p' value corresponds to a 'tc, color' value-pair";
         }
+        description "This defines a map which maps the incoming dot1p values
+                     to traffic-classes and marks a packet with a different color
+                     by its incoming dot1p value.
+                     A valid dot1p-to-tc-color-map id can then be applied to a port.";
     }
 
     list dscp-to-color-map {
         key "id";
-        description "This defines a map which marks a packet with a different color
-                     by its incoming dscp value.
-                     A valid dscp-to-color-map id can then be applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1115,24 +1155,27 @@ module dell-base-qos {
                 type packet-color;
                 description "Packet color that given dscp is mapped to";
             }
+            description "Key-value pair, where each 'dscp' value corresponds to a 'color' value";
         }
+        description "This defines a map which marks a packet with a different color
+                     by its incoming dscp value.
+                     A valid dscp-to-color-map id can then be applied to a port.";
     }
 
     list dscp-to-tc-color-map {
-        status deprecated;
 
         key "id";
-        description "This defines a map which maps the incoming dscp values
-                     to traffic-classes and  marks a packet with a different color
-                     by its incoming dscp value.
-                     A valid dscp-to-tc-color-map id can then be applied to a port.";
+
+        //QUALIFIER : Target
+
+        status deprecated;
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1165,21 +1208,25 @@ module dell-base-qos {
                 type packet-color;
                 description "Packet color that given dscp is mapped to";
             }
+            description "Key-value pair, where each 'dscp' value corresponds to a 'tc, color' value-pair";
         }
+        description "This defines a map which maps the incoming dscp values
+                     to traffic-classes and  marks a packet with a different color
+                     by its incoming dscp value.
+                     A valid dscp-to-tc-color-map id can then be applied to a port.";
     }
 
     list tc-to-queue-map {
         key "id";
-        description "This defines a map which maps the packet traffic class
-                     to a queue id.
-                     A valid tc-to-queue-map id can then be applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf name {
@@ -1212,23 +1259,27 @@ module dell-base-qos {
                 type uint32;
                 description "local queue id within a port and a queue type. ";
             }
+            description "Key-value pair, where each 'tc, type' value-pair corresponds to a 'queue-number' value";
         }
+        description "This defines a map which maps the packet traffic class
+                     to a queue id.
+                     A valid tc-to-queue-map id can then be applied to a port.";
     }
 
     list tc-to-dot1p-map {
-        status deprecated;
 
         key "id";
-        description "This defines a map which maps the traffic class to
-                     egress dot1p values.
-                     A valid tc-to-dot1p-map id can be applied to a port.";
+
+        //QUALIFIER : Target
+
+        status deprecated;
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1256,23 +1307,27 @@ module dell-base-qos {
                 type base-cmn:dot1p;
                 description "egress dot1p value for this traffic class";
             }
+            description "Key-value pair, where each 'tc' value corresponds to a 'dot1p' value";
         }
+        description "This defines a map which maps the traffic class to
+                     egress dot1p values.
+                     A valid tc-to-dot1p-map id can be applied to a port.";
     }
 
     list tc-to-dscp-map {
-        status deprecated;
 
         key "id";
-        description "This defines a map which maps the traffic class to
-                     egress dscp values.
-                     A valid tc-to-dscp-map id can be applied to a port.";
+
+        //QUALIFIER : Target
+
+        status deprecated;
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1301,21 +1356,24 @@ module dell-base-qos {
                 type inet:dscp;
                 description "egress dscp value for this traffic class";
             }
+            description "Key-value pair, where each 'tc' value corresponds to a 'dscp' value";
         }
+        description "This defines a map which maps the traffic class to
+                     egress dscp values.
+                     A valid tc-to-dscp-map id can be applied to a port.";
     }
 
     list tc-color-to-dot1p-map {
         key "id";
-        description "This defines a map which maps the traffic class and color to
-                     egress dot1p values.
-                     A valid tc-color-to-dot1p-map id can be applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1348,21 +1406,24 @@ module dell-base-qos {
                 type base-cmn:dot1p;
                 description "egress dot1p value for this traffic class and color";
             }
+            description "Key-value pair, where each 'tc, color' value corresponds to a 'dot1p' value";
         }
+        description "This defines a map which maps the traffic class and color to
+                     egress dot1p values.
+                     A valid tc-color-to-dot1p-map id can be applied to a port.";
     }
 
     list tc-color-to-dscp-map {
         key "id";
-        description "This defines a map which maps the traffic class and color to
-                     egress dscp values.
-                     A valid tc-color-to-dscp-map id can be applied to a port.";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf id {
@@ -1396,13 +1457,17 @@ module dell-base-qos {
                 type inet:dscp;
                 description "egress dscp value for this traffic class and color";
             }
+            description "Key-value pair, where each 'tc, color' value corresponds to a 'dscp' value";
         }
+        description "This defines a map which maps the traffic class and color to
+                     egress dscp values.
+                     A valid tc-color-to-dscp-map id can be applied to a port.";
     }
 
     list tc-to-priority-group-map {
         key "id";
-        description "This map defines how a traffic class is mapped to a priority group,
-                     which defines how to enforce flow control on an ingress packet";
+
+        //QUALIFIER : Target
 
         leaf id {
             type base-cmn:base-obj-id-type {
@@ -1429,13 +1494,16 @@ module dell-base-qos {
                 type uint8;
                 description "local Priority group id";
             }
+            description "Key-value pair, where each 'tc' value corresponds to a 'priority-group' value";
         }
+        description "This map defines how a traffic class is mapped to a priority group,
+                     which defines how to enforce flow control on an ingress packet";
     }
 
     list priority-group-to-pfc-priority-map {
         key "id";
-        description "This map defines how a priority group is mapped to one or multiple
-                     pfc-priorities";
+
+        //QUALIFIER : Target
 
         leaf id {
             type base-cmn:base-obj-id-type {
@@ -1462,15 +1530,17 @@ module dell-base-qos {
                 type base-cmn:dot1p;
                 description "PFC priority for outgoing PAUSE frame";
             }
+            description "A value pair associating a 'priority-group' with one or more 'pfc-priority'";
         }
+        description "This map defines how a priority group is mapped to one or multiple
+                     pfc-priorities";
     }
 
     list pfc-priority-to-queue-map {
         key "id";
-        description "This map defines how PFC priority from a received PAUSE frame
-                     is mapped to an egress queue.
-                     When applied on a port, it tells which egress queue should
-                     honor a peer node's PFC request.";
+
+        //QUALIFIER : Target
+
         leaf id {
             type base-cmn:base-obj-id-type {
 	            range "1..127";
@@ -1501,12 +1571,18 @@ module dell-base-qos {
                 type uint32;
                 description "local queue id within a port and a queue type. ";
             }
+            description "Key-value pair, where each 'pfc-priority, type' value-pair corresponds to a 'queue-number' value";
         }
+        description "This map defines how PFC priority from a received PAUSE frame
+                     is mapped to an egress queue.
+                     When applied on a port, it tells which egress queue should
+                     honor a peer node's PFC request.";
     }
 
     list buffer-pool {
         key "id mmu-index";
-        description "buffer pool";
+
+        //QUALIFIER : Target
 
         leaf id {
             type base-cmn:base-obj-id-type {
@@ -1533,14 +1609,14 @@ module dell-base-qos {
         }
 
         leaf pool-type {
-            mandatory true;
             type buffer-pool-type;
+            mandatory true;
             description "buffer pool type: Ingress or Egress buffer pool";
         }
 
         leaf size {
-            mandatory true;
             type uint32;
+            mandatory true;
             description "the total size of this buffer pool in bytes";
         }
 
@@ -1551,6 +1627,7 @@ module dell-base-qos {
                          DYNAMIC means the threshold is defined in relative size
                          of the shared buffer.";
         }
+
         leaf xoff-size {
             type uint32;
             description "Shared headroom pool size in bytes for lossless traffic.";
@@ -1563,12 +1640,14 @@ module dell-base-qos {
                     only when at least one of the queues refers to this buffer pool
                     and the queue is configured to enable WRED.";
         }
-    }
+
+        description "buffer pool";
+   }
 
     list buffer-pool-stat {
         key "id mmu-index";
 
-        description "This defines QoS buffer pool statistics.";
+        //QUALIFIER : Target
 
         leaf id {
             type base-cmn:base-obj-id-type;
@@ -1607,6 +1686,7 @@ module dell-base-qos {
         uses wred-stat;
 
         uses wred-ecn-stat;
+        description "This defines QoS buffer pool statistics.";
     }
 
     list buffer-profile {
@@ -1621,16 +1701,16 @@ module dell-base-qos {
         }
 
         leaf pool-id {
-            mandatory true;
             type base-cmn:base-obj-id-type;
+            mandatory true;
             description "buffer pool to be occupied.
                          Zero means no buffer pool is specified;
                          instead global port buffer will be used.";
         }
 
         leaf buffer-size {
-            mandatory true;
             type uint32;
+            mandatory true;
             description "buffer size to be reserved";
         }
 
@@ -1704,6 +1784,9 @@ module dell-base-qos {
 
     list priority-group {
         key "port-id local-id";
+
+        //QUALIFIER : Target
+
         description "Ingress priority group";
 
         leaf port-id {
@@ -1729,8 +1812,8 @@ module dell-base-qos {
         }
 
         leaf-list mmu-index-list {
-            config false;
             type uint32;
+            config false;
             description "In multi-MMU (Memory Management Unit) architecture,
                          1-based indexes of the MMUs where the priority group
                          is present.";
@@ -1740,7 +1823,7 @@ module dell-base-qos {
     list priority-group-stat {
         key "port-id local-id mmu-index";
 
-        description "This defines QoS priority group counter statistics.";
+        //QUALIFIER : Target
 
         leaf port-id {
             type base-cmn:logical-ifindex;
@@ -1802,19 +1885,23 @@ module dell-base-qos {
             description "priority group xoff room occupancy watermark in bytes";
         }
 
+        description "This defines QoS priority group counter statistics.";
     }
 
     list port-ingress {
         key "port-id";
+
+        //QUALIFIER : Target
+
         description
             "Ingress QoS parameters associated with an interface";
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf port-id {
@@ -1825,8 +1912,8 @@ module dell-base-qos {
 
         leaf default-traffic-class {
             type uint32;
-            description "Default traffic class assigned to packets on non-trusted ports";
             default 0;
+            description "Default traffic class assigned to packets on non-trusted ports";
         }
 
         leaf dot1p-to-tc-map {
@@ -1842,8 +1929,8 @@ module dell-base-qos {
         }
 
         leaf dot1p-to-tc-color-map {
-            status deprecated;
             type base-cmn:base-obj-id-type;
+            status deprecated;
             description "A valid dot1p-to-tc-color-map id will enable trust-dot1p on the port,
                          (assigning traffic class) and color the incoming packet
                          on the port according to the dot1p value of the packet.";
@@ -1862,8 +1949,8 @@ module dell-base-qos {
         }
 
         leaf dscp-to-tc-color-map {
-            status deprecated;
             type base-cmn:base-obj-id-type;
+            status deprecated;
             description "A valid dscp-to-color-map id will enable trust-dscp on the port,
                          (assigning traffic class) and color the incoming packet
                          on the port according to the dscp value of the packet.";
@@ -1903,14 +1990,14 @@ module dell-base-qos {
         }
 
         leaf priority_group_number {
-            config false;
             type uint32;
+            config false;
             description "Number of priority groups on this port";
         }
 
         leaf-list priority_group_id_list {
-            config false;
             type base-cmn:base-obj-id-type;
+            config false;
             description "list of priority group ids associated to the port";
         }
 
@@ -1942,15 +2029,15 @@ module dell-base-qos {
 
     list port-egress {
         key "port-id";
-        description
-            "Egress QoS parameters associated with an interface";
+
+        //QUALIFIER : Target
 
         leaf switch-id {
             type base-cmn:logical-switch-id;
+            status obsolete;
             description "Logical Switch to which this interface belongs.
                          The concept of logical switch is obsolete and this
                          attribute is ignored.";
-            status obsolete;
         }
 
         leaf port-id {
@@ -1966,8 +2053,8 @@ module dell-base-qos {
 
         leaf wred-profile-id {
             type base-cmn:base-obj-id-type;
-            description "WRED profile associated with the port";
             status obsolete;
+            description "WRED profile associated with the port";
         }
 
         leaf scheduler-profile-id {
@@ -1977,27 +2064,27 @@ module dell-base-qos {
         }
 
         leaf num-unicast-queue {
-            config false;
             type uint8;
+            config false;
             description "Number of egress unicast queues associated per port";
         }
 
         leaf num-multicast-queue {
-            config false;
             type uint8;
+            config false;
             description "Number of egress multicast queues associated per port";
         }
 
         leaf num-queue {
-            config false;
             type uint8;
+            config false;
             description "Number of egress queues associated per port
                          for both unicast and multicast traffic";
         }
 
         leaf-list queue-id-list {
-            config false;
             type base-cmn:base-obj-id-type;
+            config false;
             description "List of all queue ids associated to the port";
         }
 
@@ -2010,8 +2097,8 @@ module dell-base-qos {
         }
 
         leaf tc-to-dot1p-map {
-            status deprecated;
             type base-cmn:base-obj-id-type;
+            status deprecated;
             description "A valid tc-to-dot1p-map id defines what dot1p value is set
                          for a packet egressing this destination port;
                          a Null tc-to-dot1p-map id (0) disable the use of map to
@@ -2019,8 +2106,8 @@ module dell-base-qos {
         }
 
         leaf tc-to-dscp-map {
-            status deprecated;
             type base-cmn:base-obj-id-type;
+            status deprecated;
             description "A valid tc-to-dscp-map id defines what dscp value is set
                          for a packet egressing this destination port;
                          a Null tc-to-dscp-map id (0) disable the use of map to
@@ -2054,34 +2141,40 @@ module dell-base-qos {
             type base-cmn:base-obj-id-type;
             description "egress buffer profile id list";
         }
+        description
+            "Egress QoS parameters associated with an interface";
     }
+
     list port-pool {
         key "port-id buffer-pool-id";
-        description "This list defines per interface per buffer pool characteristics";
-        	
+
+        //QUALIFIER : Target
+	
         leaf port-id {
             type base-cmn:logical-ifindex;
+            mandatory true;
             description "Physical port on which QoS egress params are configured.
                          Logical ports like LAG interfaces are not allowed.";
-            mandatory true;
         }
 
         leaf buffer-pool-id {
             type base-cmn:base-obj-id-type;
-            description "Buffer pool id of the interface.";
             mandatory true;
+            description "Buffer pool id of the interface.";
         }
        	
         leaf wred-profile-id {
     	    type base-cmn:base-obj-id-type;
             description "WRED profile to be applied";
         }
+        description "This list defines per interface per buffer pool characteristics";
     }
 
     list port-pool-stat {
         key "port-id buffer-pool-id";
-        description "This list defines per interface per buffer pool counter statistics";
         	
+        //QUALIFIER : Target
+
         leaf port-id {
             type base-cmn:logical-ifindex;
             description "Physical port on which QoS egress params are configured.
@@ -2098,6 +2191,7 @@ module dell-base-qos {
         uses wred-ecn-stat;
 
         uses buffer-stat;
+        description "This list defines per interface per buffer pool counter statistics";
     }
 
     grouping wred-stat {
@@ -2140,6 +2234,7 @@ module dell-base-qos {
             type yang:counter64;
             description "WRED dropped bytes";
         }
+        description "Statistics generated using WRED queuing strategy";
     }
 
     grouping wred-ecn-stat {
@@ -2182,6 +2277,7 @@ module dell-base-qos {
             type yang:counter64;
             description "WRED ECN marked bytes";
         }
+        description "Statistics generated using WRED-ECN queuing strategy";
     }
 
 
@@ -2206,8 +2302,9 @@ module dell-base-qos {
             type yang:counter64;
             description "shared buffer occupancy watermark in bytes";
         }
+        description "Different statistics related to buffering";
     }
-    
+
     grouping thresholds {
 
         leaf min-threshold {
@@ -2228,6 +2325,7 @@ module dell-base-qos {
             description "Percentage probability with which packets will be
                 dropped or ecn-marked when minimum threshold is reached";
         }
+        description "Different statistics related to thresolds";
 
     }
 }

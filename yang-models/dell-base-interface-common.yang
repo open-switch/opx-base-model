@@ -16,6 +16,14 @@ module dell-base-interface-common {
         "This module contains the collection of YANG definitions for
         managing interfaces";
 
+    revision 2018-07-03 {
+        description
+            "Adding unicast, multicast and broadcast flooding enabled attribute to
+             remote endpoint to have fine grain control over the type of flooding to
+             be enabled on remote endpoint.";
+        reference "Network Platform Abstraction";
+    }
+
     revision 2018-05-03 {
         description
             "Adding support to configure MAC learning mode for remote endpoint for VxLAN.";
@@ -532,11 +540,37 @@ module dell-base-interface-common {
                config false;
                description "Tunnel Id of the corresponding remote endpoint.";
            }
+
            leaf flooding-enabled {
                type boolean;
+               status deprecated;
                config false;
-               description "The remote endpoint address is part of flooding domain if this flag is set.";
+               description "The remote endpoint address is part of flooding domain if this flag is set.This
+               attribute is deprecated, instead individual flooding attribute for unicast, multicast and
+               broadcast.";
            }
+
+           leaf unicast-flooding-enabled {
+               type boolean;
+               default true;
+               description "The remote endpoint address is part of unicast flooding domain
+               if this flag is set to true.";
+           }
+
+           leaf multicast-flooding-enabled {
+               type boolean;
+               default true;
+               description "The remote endpoint address is part of multicast flooding domain
+               if this flag is set to true.";
+           }
+
+           leaf broadcast-flooding-enabled {
+               type boolean;
+               default true;
+               description "The remote endpoint address is part of broadcast flooding domain
+               if this flag is set to true.";
+           }
+
            leaf mac-learning-mode {
                type mac-learn-mode;
                description "MAC-learning mode for remote endpoint.";

@@ -14,6 +14,29 @@ module vrf-firewall {
 
     description "This model adds the configurations for incoming and outgoing management services.";
 
+    revision "2018-07-09" {
+        description "Added packet and byte counter attributes to ns-incoming-service
+                     model to retrieve counters on number of packets, bytes that matched the rule.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-06-18" {
+        description "Added destination IP address and prefix length attributes to ns-incoming-service
+                     configuration to support destination host or subnet match.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-05-23" {
+        description "Added interface name attribute to ns-incoming-service configuration
+                     to support rule configuration on a specific port.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-05-17" {
+        description "Added attributes to ns-incoming-service configuration to support L4 destination port range.";
+        reference "Network Platform Abstraction";
+    }
+
     revision "2018-03-20" {
         description "Changed ns-incoming-service list key and added attributes to suport VTY ACL";
         reference "Network Platform Abstraction";
@@ -40,6 +63,11 @@ module vrf-firewall {
                 description
                     "Internet Control Message Protocol (ICMP) Transport "+
                     "Protocol";
+            }
+            enum all {
+                value 4;
+                description
+                    "All Internet Protocols";
             }
         }
         description
@@ -96,7 +124,18 @@ module vrf-firewall {
             description "Source IP address prefix length to specify matched subnet.";
         }
 
-        leaf protocol {
+        leaf dst-ip {
+            type base-cmn:ip-address;
+            description "Destination IPv4 or IPv6 address prefix to specify matched
+                         host or subnet.";
+        }
+
+        leaf dst-prefix-len {
+            type uint32;
+            description "Destination IP address prefix length to specify matched subnet.";
+        }
+
+       leaf protocol {
             type ip-protocols;
             description "IP protocols.";
         }
@@ -105,6 +144,32 @@ module vrf-firewall {
             when "../protocol = 'tcp' or ../protocol = 'udp'";
             type uint32;
             description "Destination port.";
+        }
+
+        leaf lower-dst-port {
+            when "../protocol = 'tcp' or ../protocol = 'udp'";
+            type uint32;
+            description "Lower destination port number in the range of destination ports (inclusive).
+                         This should be configured with upper-dst-port.
+                         When the destination ports are not contiguous, use dst-port attribute to
+                         configure individual rules.";
+        }
+
+        leaf upper-dst-port {
+            when "../protocol = 'tcp' or ../protocol = 'udp'";
+            type uint32;
+            description "Upper destination port number in the range of destination ports (inclusive).
+                         This should be configured with lower-dst-port.";
+        }
+        must "(number(upper-dst-port) > number(lower-dst-port))" {
+            error-message
+                "upper destination port should be greater than the lower destination port.";
+        }
+
+        leaf ifname {
+            type string;
+            description "Its presence means that this rule should ONLY be
+                         applied on the specified interface.";
         }
 
         leaf seq-num {
@@ -116,6 +181,18 @@ module vrf-firewall {
         leaf action {
             type protocol-action;
             description "Allow/Deny the protocol packets.";
+        }
+
+        leaf matched-packets {
+            type yang:counter64;
+            config false;
+            description "Number of packets that have matched this rule.";
+        }
+
+        leaf matched-bytes {
+            type yang:counter64;
+            config false;
+            description "Number of bytes that have matched this rule.";
         }
     }
 

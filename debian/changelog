@@ -1,3 +1,24 @@
+opx-base-model (3.142.0+vxlan1) unstable; urgency=medium
+
+  * Feature: VxLAN Support
+  * Update: Add support for packet, byte counters to CoPP ACL management rule vrf-firewall incoming service model
+  * Update: Replace the interface name with leaf-list of interface names in the neighbor flush object
+  * Update: Add unicast, multicast and broadcast flooding enabled options for remote endpoints
+  * Update: Add attributes to ns-incoming-service configuration to support destination host or subnet match
+  * Update: Add more descriptions to dell-base-qos.yang
+  * Update: Add media leaf to flag when qsa is used unstead of qsa28
+  * Update: Add proper err message for LAG member mode mismatch
+  * Update: Add ietf-inet-address.yang file for BGP4v2 MIB Implementation
+  * Bugfix: Fix pyang IETF errors
+  * Update: Add parameter to configure mac-lean-mode in remote-endpoint groupin
+  * Update: Support flush for remote IP and vlan port subport
+  * Update: Add outgoing source ip attribute to support source ip config for outgoing connections
+  * Update: Add leaves for ESR media interface, separable connector flag, and cbale length in centimeters
+  * Update: Add parent bridge info for vlan interface
+
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Fri, 20 Jul 2018 12:30:00 -0800
+
 opx-base-model (3.142.0) unstable; urgency=medium
 
   * Feature: Routing VRF

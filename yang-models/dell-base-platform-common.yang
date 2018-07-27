@@ -26,9 +26,25 @@ module dell-base-platform-common {
 
   description "Common definitions for platform hardware
 
-  Copyright (c) 2015-2016 by Dell EMC,
+  Copyright (c) 2015-2018 by Dell EMC,
 
   All rights reserved.";
+
+  revision 2018-06-26 {
+    description "Adding back media attribute QSA28-expected.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision 2018-06-15 {
+    description "Fixing IETF error for enum value type.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision 2018-05-31 {
+    description "Added media attribute for qsa28-expected. This flag is used to note when QSA (which is optimized for SFP/SFP+) is used with SFP28. This is because SFP28 expects QSA28
+                    and not QSA. ";
+    reference "Networking Platform Abstraction";
+  }
 
   revision 2018-05-18 {
     description "Added media attribute for media name. This name is used to refer to the particular media type
@@ -39,6 +55,7 @@ module dell-base-platform-common {
   revision 2018-05-11 {
     description
       "Added 25G 5M DAC to list of supported media";
+    reference "Network Platform Abstraction";
   }
 
   revision 2018-05-08 {
@@ -89,97 +106,104 @@ module dell-base-platform-common {
                  Added media connector type info which specifies the type of connector of the media inserted
                  Added media cable type for specifying the type of cable ";
 
-
-    reference "Dell Proprietary";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2017-12-04 {
     description "Added platform fault grouping.";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2017-11-21 {
     description "Added leaf fabric id for hostsystem object";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2017-11-08 {
     description "Added power-monitor grouping for input power monitoring";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2017-10-06 {
     description "Added leaf for media channel count.";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2017-10-05 {
     description "Added leaf for media lockdown state.";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2017-10-02 {
     description "Added more QSFP28-DD media.";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2015-11-04 {
     description
       "Updated based on new guidelines for Yang Model update";
+    reference "Networking Platform Abstraction";
   }
 
   revision 2015-05-20 {
     description
       "Added temperature control fault-value type";
+    reference "Networking Platform Abstraction";
   }
   revision 2015-04-03 {
     description "Initial revision.";
+    reference "Networking Platform Abstraction";
   }
 
   // An entity is any FRU within a chassis
 
   typedef entity-type {
-    description "Entity type";
     type enumeration {
       enum PSU {
+        value 1;
         description "PSU (power supply unit)";
-        value "1";
       }
       enum FAN_TRAY {
-        value "2";
+        value 2;
         description "Fan tray";
       }
       enum CARD {
-        value "3";
+        value 3;
         description "Card (Linecard, RPM)";
       }
     }
+    description "Entity type";
   }
 
   typedef card-type-type {
-    description "Encoded value for type of card";
     type uint32;
+    description "Encoded value for type of card";
   }
 
   typedef fault-type {
-    description "Code describing cause of fault";
     type enumeration {
       enum OK {
+        value 1;
         description "No fault";
-        value "1";
       }
       enum UNKNOWN {
-        value "2";
+        value 2;
         description "Unknown error";
       }
       enum ECOMM {
-        value "3";
+        value 3;
         description "Communication error";
       }
       enum ECFG {
-        value "4";
+        value 4;
         description "Configuration error";
       }
       enum ECOMPAT {
-        value "5";
+        value 5;
         description "Compatibility error";
       }
       enum EHW {
-        value "6";
+        value 6;
         description "Hardware error";
       }
       enum EPOWER {
@@ -189,73 +213,73 @@ module dell-base-platform-common {
         description "lpc bus error";
       }
     }
+    description "Code describing cause of fault";
   }
 
   typedef fault-value {
     type uint32;
+    description "Failt value.";
   }
 
   typedef input-power-type {
-    description "Input current";
     type enumeration {
       enum UNKNOWN {
+        value 1;
         description "Unknown";
-        value "1";
       }
       enum AC {
-        value "2";
+        value 2;
         description "Alternating current";
       }
       enum DC {
-        value "3";
+        value 3;
         description "Direct current";
       }
     }
+    description "Input current";
   }
 
   typedef fan-airflow-type {
-    description "Fan airflow type";
     type enumeration {
       enum UNKNOWN {
+        value 1;
         description "Unknown";
-        value "1";
       }
       enum NORMAL {
-        value "2";
+        value 2;
         description "Normal airflow";
       }
       enum REVERSE {
-        value "3";
+        value 3;
         description "Reverse airflow";
       }
       enum NOT-APPLICABLE {
-          value "4";
-          description "airflow type not applicable";
+        value 4;
+        description "airflow type not applicable";
       }
     }
+    description "Fan airflow type";
   }
 
   typedef fan-speed-type {
-    description "Fan speed, in RPM";
     type uint16;
     units "RPM";
+    description "Fan speed, in RPM";
   }
 
   typedef temperature-type {
-    description "Temperature, in degrees C";
     type int16;
     units "C";
+    description "Temperature, in degrees C";
   }
 
   typedef power-usage-type {
-    description "Power consumption, in mW";
     type uint32;
     units "mW";
+    description "Power consumption, in mW";
   }
 
   typedef fault-severity {
-    description
-      "ITU defined severity values.";
     type enumeration {
       enum "cleared" {
         value 1;
@@ -276,473 +300,474 @@ module dell-base-platform-common {
         value 6;
       }
     }
+    description
+      "ITU defined severity values.";
   }
 
   typedef power-measurement-type {
-    description "Power measurement type";
 
     type enumeration {
       enum OMA {
+        value 1;
         description "Optical Modulation Amplitude";
-        value "1";
       }
       enum average {
+        value 2;
         description "Average Power";
-        value "2";
       }
     }
+    description "Power measurement type";
   }
 
   typedef media-status {
 
-    description "Media monitor status";
-
     type enumeration {
       enum normal-status {
+        value 1;
         description "Normal state, not crossed any threshold values";
-        value "1";
       }
 
       enum high-alarm {
+        value 2;
         description "High alarm state";
-        value "2";
       }
 
       enum low-alarm {
+        value 3;
         description "Low alarm state";
-        value "3";
       }
 
       enum high-warning {
+        value 4;
         description "High warning state";
-        value "4";
       }
 
       enum low-warning {
+        value 5;
         description "Low warning state";
-        value "5";
       }
     }
+    description "Media monitor status";
   }
 
   typedef media-support-status {
-     description "Front panel port Media type support status.";
 
      type enumeration {
        enum not-supported {
+         value 1;
          description "Media type is not supported in front panel port.";
-         value "1";
        }
 
        enum not-supported-disabled {
+         value 2;
          description "Media type is not supported in front panel port and its not enabled.";
-         value "2";
        }
      }
+     description "Front panel port Media type support status.";
   }
 
   typedef qsa-adapter {
-    description "Type of QSA adapter connected";
     type enumeration {
       enum UNKNOWN {
-        value "1";
+        value 1;
         description "QSA type/status is unknown";
       }
       enum NO-QSA {
-        value "2";
+        value 2;
         description "No QSA is connected";
       }
       enum QSA {
-        value "3";
+        value 3;
         description "QSA is connected";
       }
       enum QSA28 {
-        value "4";
+        value 4;
         description "QSA28 is connected";
       }
     }
+    description "Type of QSA adapter connected";
   }
 
   typedef ext_spec_compliance_code {
-    description "Used to specify certain special fields based on SFF-8024: 4.4";
     type enumeration {
       enum UNKNOWN {
-        value "1";
+        value 1;
         description "Unkown";
       }
       enum 25GBASE-CR-CA-S {
-        value "2";
+        value 2;
         description "CA-S type for 25G";
       }
       enum 25GBASE-CR-CA-N {
-        value "3";
+        value 3;
         description "CA-N type for 25G";
       }
       enum 25GBASE-CR-CA-L {
-        value "4";
+        value 4;
         description "CA-L type for 25G";
       }
       enum NOT-APPLICABLE {
-        value "5";
+        value 5;
         description "This type is not applicable for given media";
       }
     }
+    description "Used to specify certain special fields based on SFF-8024: 4.4";
   }
 
   typedef media-cable-type {
-    description "High level type of cable of the inserted media";
     type enumeration {
       enum UNKNOWN {
-        value "1";
+        value 1;
         description "Cable type is unknown";
       }
       enum FIBER {
-        value "2";
+        value 2;
         description "Cable is fiber cable";
       }
       enum DAC {
-        value "3";
+        value 3;
         description "Directly attached copper";
       }
       enum AOC {
-        value "4";
+        value 4;
         description "Active optical cable";
       }
       enum ACC {
-        value "5";
+        value 5;
         description "Active copper cable";
       }
       enum RJ45 {
-        value "6";
+        value 6;
         description "RJ45 cable";
       }
     }
+    description "High level type of cable of the inserted media";
   }
 
   typedef media-connector-type {
-    description "The connector type of the inserted media";
     type enumeration {
       enum UNKNOWN {
-        value "1";
+        value 1;
         description "Connector type is unknown";
       }
       enum LC {
-        value "2";
+        value 2;
         description "LC: Lucent connector. Commonly used for optics";
       }
       enum MU {
-        value "3";
+        value 3;
         description "MU connector type";
       }
       enum OPTICAL-PIGTAIL {
-        value "4";
+        value 4;
         description "Optical pigtail type";
       }
       enum MPO-1X12 {
-        value "5";
+        value 5;
         description "MPO connector 1x12";
       }
       enum MPO-2X16 {
-        value "6";
+        value 6;
         description "MPO connector 2x16";
       }
       enum COPPER-PIGTAIL {
-        value "7";
+        value 7;
         description "Copper pigtail. Commonly used for DACs";
       }
       enum RJ45 {
-        value "8";
+        value 8;
         description "RJ45 connector";
       }
       enum NON-SEPARABLE {
-        value "9";
+        value 9;
         description "Cable is fixed to transceiver. Used for AOCs and DACs";
       }
       enum MXC-2X16 {
-        value "10";
+        value 10;
         description "MXC 2x16 connector";
       }
       enum CS {
-        value "11";
+        value 11;
         description "CS connector";
       }
       enum BACKPLANE {
-        value "12";
+        value 12;
         description "Backplane connector";
       }
 
     }
+    description "The connector type of the inserted media";
   }
 
   typedef media-interface {
-     description "Interface type of the lineside of the media ";
 
      type enumeration {
 
        enum UNKNOWN {
-         value "1";
+         value 1;
          description "Unknown media interface type";
        }
        enum BASE-T {
-         value "2";
+         value 2;
          description "BASE-T; commonly used for RJ45";
        }
        enum FX {
-         value "3";
+         value 3;
          description "FX";
        }
        enum BIDI {
-         value "4";
+         value 4;
          description "BIDI; bidirectional";
        }
        enum BX10 {
-         value "5";
+         value 5;
          description "BX10; BX with 10km distance";
        }
        enum BX40 {
-         value "6";
+         value 6;
          description "BX40; BX with 40km distance";
        }
        enum BX80 {
-         value "7";
+         value 7;
          description "BX80; BX with 80km distance";
        }
        enum CR {
-         value "8";
+         value 8;
          description "CR; copper reach. Used for DAC (directlt attached copper). Protocol is purely electrical";
        }
        enum SR {
-         value "9";
+         value 9;
          description "SR; short reach optics";
        }
        enum LR {
-         value "10";
+         value 10;
          description "LR; long reach optics";
        }
        enum ER {
-         value "11";
+         value 11;
          description "ER";
        }
        enum ZR {
-         value "12";
+         value 12;
          description "ZR";
        }
        enum USR {
-         value "13";
+         value 13;
          description "USR; ultra short reach optics";
        }
        enum CWDM {
-         value "14";
+         value 14;
          description "CWDM; coarse wavelength division multiplexing optics";
        }
        enum DWDM {
-         value "15";
+         value 15;
          description "CWDM; dense wavelength division multiplexing optics";
        }
        enum SWDM {
-         value "16";
+         value 16;
          description "SWDM; short wavelength division multiplexing optics";
        }
        enum SX {
-         value "17";
+         value 17;
          description "SX; short reach optics";
        }
        enum LX {
-         value "18";
+         value 18;
          description "LX; long reach optics";
        }
        enum ZX {
-         value "19";
+         value 19;
          description "ZR; extended reach optics";
        }
        enum LM {
-         value "20";
+         value 20;
          description "LM";
        }
        enum LRM {
-         value "21";
+         value 21;
          description "LRM";
        }
        enum PSM {
-         value "22";
+         value 22;
          description "PSM";
        }
        enum PLR {
-         value "23";
+         value 23;
          description "PLR";
        }
        enum SM {
-         value "24";
+         value 24;
          description "SM";
        }
        enum SW {
-         value "25";
+         value 25;
          description "Sw";
        }
        enum LW {
-         value "26";
+         value 26;
          description "LW";
        }
        enum RJ45 {
-         value "27";
+         value 27;
          description "RJ45";
        }
        enum ELECTRICAL-LOOPBACK {
-         value "28";
+         value 28;
          description "Electrical loopback";
        }
        enum BACKPLANE {
-         value "29";
+         value 29;
          description "Backplane type";
        }
        enum CX {
-         value "30";
+         value 30;
          description "CX";
        }
        enum PX {
-         value "31";
+         value 31;
          description "PX";
        }
        enum ESR {
-         value "32";
+         value 32;
          description "ESR";
        }
     }
+    description "Interface type of the lineside of the media ";
   }
 
   typedef media-interface-qualifier {
-     description "Interface qualifier type of the lineside of the media. This provides additional info about the media interface ";
 
      type enumeration {
 
        enum UNKNOWN {
-         value "1";
+         value 1;
          description "Unknown media interface qualifier";
        }
        enum NO-QUALIFIER {
-         value "2";
+         value 2;
          description "All info needed is provided by media-interface";
        }
        enum IR {
-         value "3";
+         value 3;
          description "IR";
        }
        enum LR {
-         value "4";
+         value 4;
          description "LR";
        }
        enum 1490NM {
-         value "5";
+         value 5;
          description "1490nanometer wavelength";
        }
        enum 30M {
-         value "6";
+         value 6;
          description "30meter reach";
        }
        enum UP {
-         value "7";
+         value 7;
          description "UP";
        }
        enum DOWN {
-         value "8";
+         value 8;
          description "DOWN";
        }
        enum ACC {
-         value "9";
+         value 9;
          description "Active copper cable";
        }
        enum NOF {
-         value "10";
+         value 10;
          description "No FEC";
        }
        enum TUNABLE {
-         value "11";
+         value 11;
          description "Tunable";
        }
        enum LITE {
-         value "12";
+         value 12;
          description "Lite";
        }
        enum FIXED {
-         value "13";
+         value 13;
          description "Fixed type media";
        }
        enum AOC {
-         value "14";
+         value 14;
          description "Active optical cable";
        }
     }
+    description "Interface qualifier type of the lineside of the media. This provides additional info about the media interface ";
   }
 
   typedef port-type {
-    description "Port Type";
     type enumeration {
       enum PLUGGABLE {
+        value 1;
         description "Pluggable port type";
-        value "1";
       }
       enum FIXED {
+        value 2;
         description "Fixed port type";
-        value "2";
       }
       enum BACKPLANE {
+        value 3;
         description "Backplane port type";
-        value "3";
       }
     }
+    description "Port Type";
   }
+
   typedef media-category {
-    description "Media category";
     type enumeration {
       enum SFP {
+        value 1;
         description "SFP media category";
-        value "1";
       }
       enum SFP-PLUS {
-        value "2";
+        value 2;
         description "SFP+ media category";
       }
       enum QSFP {
-        value "3";
+        value 3;
         description "QSFP media category";
       }
       enum QSFP-PLUS {
-        value "4";
+        value 4;
         description "QSFP+ media category";
       }
       enum QSFP28 {
-        value "5";
+        value 5;
         description "QSFP28 media category";
       }
       enum SFP28 {
-        value "6";
+        value 6;
         description "SFP28 media category";
       }
       enum CXP {
-        value "7";
+        value 7;
         description "CXP media category";
       }
       enum CXP28 {
-        value "8";
+        value 8;
         description "CXP28 media category";
       }
       enum QSFP-DD {
-        value "9";
+        value 9;
         description "QSFP-DD media category";
       }
       enum DEPOP-QSFP28 {
-        value "10";
+        value 10;
         description "Depopulated QSFP28 media category";
       }
       enum FIXED {
-        value "11";
+        value 11;
         description "Fixed media category";
       }
     }
+    description "Media category";
   }
 
   typedef media-type {
-      description "Media type";
       type enumeration {
           enum AR_POPTICS_NOTPRESENT {
               value 1;
@@ -1630,25 +1655,24 @@ module dell-base-platform-common {
               description "Pluggable optics SFP28_25GBASE_CR1_5M";
           }
       }
+      description "Media type";
   }
 
   typedef reboot-type {
-    description "define reboot type";
     type enumeration {
       enum WARM {
+        value 1;
         description "Warm reboot";
-        value "1";
       }
       enum COLD {
+        value 2;
         description "Cold reboot";
-        value "2";
       }
     }
+    description "define reboot type";
   }
 
   typedef unit-down-reason {
-    description
-      "Indicates reason for unit down.";
     type enumeration {
       enum "version-mismatch" {
         value 1;
@@ -1675,32 +1699,32 @@ module dell-base-platform-common {
         value 8;
       }
     }
+    description
+      "Indicates reason for unit down.";
   }
 
   // PAS notify grouping
 
   grouping pas_notify {
 
-    description "Attributes of pas notify";
-
     leaf status {
-      description "PAS status";
       type boolean;
       config false;
+      description "PAS status";
     }
+    description "Attributes of pas notify";
   }
 
   // Platform fault grouping
 
   grouping pas_fault {
 
-    description "Attributes of PAS fault notify";
-
     leaf fault-type {
-      description " platform fault";
       type fault-type;
       config false;
+      description " platform fault";
     }
+    description "Attributes of PAS fault notify";
   }
 
 
@@ -1708,87 +1732,87 @@ module dell-base-platform-common {
   //                   chassis' or entity's EEPROM
 
   grouping eeprom {
-    description "Attributes of a chassis' or entity's EEPROM";
 
     leaf vendor-name {
-      description "Entity vendor name";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity vendor name";
     }
 
     leaf product-name {
-      description "Entity product name";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity product name";
     }
 
     leaf hw-version {
-      description "Entity hardware version";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity hardware version";
     }
 
     leaf platform-name {
-      description "Entity platform name";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity platform name";
     }
 
     leaf ppid {
-      description "Entity PPID";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity PPID";
     }
 
     leaf part-number {
-      description "Entity Part Number";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity Part Number";
     }
 
     leaf service-tag {
-      description "Entity service tag";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity service tag";
     }
 
     leaf service-code {
-      description "Entity service code";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Entity service code";
     }
+    description "Attributes of a chassis' or entity's EEPROM";
   }
 
 
@@ -1799,12 +1823,10 @@ module dell-base-platform-common {
   // (or not) configuration.
 
   grouping chassis {
-    description "Attributes of a chassis";
 
     uses eeprom;  //ude EEPROM attributes
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -1821,40 +1843,40 @@ module dell-base-platform-common {
       //        the power usage is reflected as returning -1 for the
       //        power-usage attribute.  If there were no errors for the
       //        last CPS request, this attribute will be set to "up".
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
 
     leaf num_mac_addresses {
-      description "Number of MAC addresses assigned to chassis";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: no
+      description "Number of MAC addresses assigned to chassis";
     }
 
     leaf base_mac_addresses {
-      description "Base MAC addresses assigned to chassis";
       type base-cmn:mac-address;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: no
+      description "Base MAC addresses assigned to chassis";
     }
 
     leaf power-usage {
-      description "Total power consumed by chassis";
       type power-usage-type;
       config false;
       // Qualifiers: observed, realtime
@@ -1863,10 +1885,10 @@ module dell-base-platform-common {
       // Persistent: N/A
       // Notification: No
       // Notes: A negative value indicates an error.
+      description "Total power consumed by chassis";
     }
 
     leaf power-off {
-      description "Kill power to chassis";
       type boolean;
       config true;
       // Qualifiers: target
@@ -1875,10 +1897,10 @@ module dell-base-platform-common {
       //               no effect.
       // Persistent: N/A
       // Notification: No
+      description "Kill power to chassis";
     }
 
     leaf active-rpm-slot {
-      description "Slot of active RPM";
       type uint8;
       config true;
       // Qualifiers: observed, realtime, target
@@ -1893,26 +1915,28 @@ module dell-base-platform-common {
       // Notes: Writing a value different from the current observed/
       //        realtime value to the target qualifiers initiates an
       //        RPM switchover.
+      description "Slot of active RPM";
     }
 
     leaf reboot {
-      description "reboot type";
       type reboot-type;
       config true;
       // Qualifiers: observed, realtime, target
       // Dependencies: Valid only if card is present
       // Persistent: N/A
       // Notification: no
+      description "reboot type";
     }
     leaf reboot-reason {
-      description "Applications should use this attribute to provide a reboot reason.";
       type string;
       default "Reboot reason not provided.";
       config true;
       // Qualifiers: observed, target
       // Persistent: yes
       // Notification: no
+      description "Applications should use this attribute to provide a reboot reason.";
     }
+    description "Attributes of a chassis";
   }
 
 
@@ -1927,32 +1951,30 @@ module dell-base-platform-common {
   // (virtual) card entity, one that is always present.
 
   grouping entity {
-    description "Attributes of an entity (FRU)";
 
     uses eeprom;        //ude EEPROM attributes
 
     leaf name {
-      description "Printable name of entity";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Printable name of entity";
     }
 
     leaf present {
-      description "Entity present flag";
       type boolean;  // true <=> Entity present in slot
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: Yes; parameters (present)
+      description "Entity present flag";
     }
 
     leaf insertion-cnt {
-      description "Number of times entity inserted";
       type yang:gauge64;
       config true;
       // Qualifiers: observed, realtime, target
@@ -1963,10 +1985,10 @@ module dell-base-platform-common {
       // Notification: No
       // Notes: Writing any value for this attribute to the target space
       //        has the effect of resetting this counter to 0.
+      description "Number of times entity inserted";
     }
 
     leaf insertion-timestamp {
-      description "Timestamp of last entity insertion";
       type yang:timestamp;
       config false;
       // Qualifiers: observed, realtime
@@ -1975,10 +1997,10 @@ module dell-base-platform-common {
       //             Across kernel restart:  yes
       //             Across power cycle:     yes
       // Notification: No
+      description "Timestamp of last entity insertion";
     }
 
     leaf admin-status {
-      description "Administrative status";
       type base-cmn:admin-status-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -1994,10 +2016,10 @@ module dell-base-platform-common {
       //                 rejected
       //        Testing <=> As with down, but also includes others in
       //                    same diag class
+      description "Administrative status";
     }
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2005,16 +2027,17 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
 
     // The following attributes apply only to entities of type card
@@ -2022,7 +2045,6 @@ module dell-base-platform-common {
     choice entity-type-choice {
       case card {
         leaf power-on {
-          description "Power control for entity";
           type boolean;  // true <=> Power to entity enabled
           config true;
           // Qualifiers: observed, realtime, target
@@ -2032,19 +2054,22 @@ module dell-base-platform-common {
           //             Across kernel restart:  yes
           //             Across power cycle:     no
           // Notification: No
+          description "Power control for entity";
         }
 
         leaf reboot {
-          description "reboot type";
           type reboot-type;
           config true;
           // Qualifiers: observed, realtime, target
           // Dependencies: Valid only if card is present
           // Persistent: N/A
           // Notification: no
+          description "reboot type";
         }
       }
+      description "Type of an entity";
     }
+    description "Attributes of an entity (FRU)";
   }
 
 
@@ -2054,27 +2079,27 @@ module dell-base-platform-common {
   // for PSUs.
 
   grouping psu {
-    description "Attributes of a power supply";
 
     leaf input-type {
-      description "Input current type";
       type input-power-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Input current type";
     }
 
     leaf fan-airflow-type {
-      description "Direction of airflow for PSU fan(s)";
       type fan-airflow-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Direction of airflow for PSU fan(s)";
     }
+    description "Attributes of a power supply";
   }
 
 
@@ -2084,17 +2109,17 @@ module dell-base-platform-common {
   // fan trays.
 
   grouping fan-tray {
-    description "Attributes of a fan tray";
 
     leaf fan-airflow-type {
-      description "Direction of airflow for fans";
       type fan-airflow-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Direction of airflow for fans";
     }
+    description "Attributes of a fan tray";
   }
 
 
@@ -2107,27 +2132,25 @@ module dell-base-platform-common {
   // never be removed (i.e. will always show as present).
 
   grouping card {
-    description "Attributes of a card";
 
     leaf card-type {
-      description "Type of card";
       type card-type-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity is present
       // Persistent: N/A
       // Notification: no
+      description "Type of card";
     }
+    description "Attributes of a card";
   }
 
 
   // Fan grouping - Everything there is to know about a fan
 
   grouping fan {
-    description "Attributes of a (PSU or fan tray) fan";
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2135,10 +2158,10 @@ module dell-base-platform-common {
       //               admin-status(entity) == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2146,10 +2169,10 @@ module dell-base-platform-common {
       //               if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
 
     leaf speed {
-      description "Fan speed, in RPM";
       type fan-speed-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2159,10 +2182,10 @@ module dell-base-platform-common {
       // Notification: No
       // Notes: A fault is indicated (see above) if a fan's current speed
       //        is not what the target speed specified
+      description "Fan speed, in RPM";
     }
 
     leaf speed_pct {
-      description "Fan speed, as % of maximum";
       type uint8;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2172,27 +2195,27 @@ module dell-base-platform-common {
       // Notification: No
       // Notes: A fault is indicated (see above) if a fan's current speed
       //        is not what the target speed specified
+      description "Fan speed, as % of maximum";
     }
 
     leaf max_speed {
-      description "Maximum speed of fan, in RPM";
       type fan-speed-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity present
       // Persistent: N/A
       // Notification: No
+      description "Maximum speed of fan, in RPM";
     }
+    description "Attributes of a (PSU or fan tray) fan";
   }
 
 
   // LED grouping - Everything there is to know about an LED
 
   grouping led {
-    description "Attributes of an LED";
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2200,10 +2223,10 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2211,10 +2234,10 @@ module dell-base-platform-common {
       //               if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
 
     leaf req_on {
-      description "Illumination state of LED requested by application";
       type boolean;  // true <=> LED on
       config true;
       // Qualifiers: observed, realtime, target
@@ -2226,10 +2249,10 @@ module dell-base-platform-common {
       //             Across kernel restarts:  No
       //             Across power cycles:     No
       // Notification: No
+      description "Illumination state of LED requested by application";
     }
 
     leaf on {
-      description "Illumination state of physical LED";
       type boolean;  // true <=> LED on
       config true;
       // Qualifiers: observed, realtime, target
@@ -2241,7 +2264,9 @@ module dell-base-platform-common {
       //             Across kernel restarts:  No
       //             Across power cycles:     No
       // Notification: No
+      description "Illumination state of physical LED";
     }
+    description "Attributes of an LED";
   }
 
 
@@ -2249,10 +2274,8 @@ module dell-base-platform-common {
   //                    display
 
   grouping display {
-    description "Attributes of a text message display";
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2260,10 +2283,10 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf on {
-      description "Power state of physical Digit Display LED";
       type boolean;  // true <=> Digit Display LED on
       config true;
       // Qualifiers: observed, realtime, target
@@ -2275,10 +2298,10 @@ module dell-base-platform-common {
       //             Across kernel restarts:  No
       //             Across power cycles:     No
       // Notification: No
+      description "Power state of physical Digit Display LED";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2286,10 +2309,10 @@ module dell-base-platform-common {
       //               if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
 
     leaf message {
-      description "Message to display in text display";
       type string;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2301,7 +2324,9 @@ module dell-base-platform-common {
       //             Across kernel restarts:  No
       //             Across power cycles:     No
       // Notification: No
+      description "Message to display in text display";
     }
+    description "Attributes of a text message display";
   }
 
 
@@ -2309,10 +2334,8 @@ module dell-base-platform-common {
   //                               temperature sensor
 
   grouping temperature {
-    description "Attributes of a temperature sensor";
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2320,10 +2343,10 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2331,20 +2354,20 @@ module dell-base-platform-common {
       //               if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
 
     leaf temperature {
-      description "Current temperature";
       type temperature-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity present
       // Persistent: N/A
       // Notification: No
+      description "Current temperature";
     }
 
     leaf shutdown_threshold {
-      description "Threshold for hardware-based shutdown";
       type temperature-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2352,10 +2375,10 @@ module dell-base-platform-common {
       // Default: Not set
       // Persistent: No
       // Notification: No
+      description "Threshold for hardware-based shutdown";
     }
 
     leaf thresh-enable {
-      description "Enable threshold detection";
       type boolean;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2363,10 +2386,10 @@ module dell-base-platform-common {
       // Default: False
       // Persistent: No
       // Notification: No
+      description "Enable threshold detection";
     }
 
     leaf last-thresh {
-      description "Last threshold temperature crossed";
       type temperature-type;
       config false;
       // Qualifiers: observed, realtime, target
@@ -2374,7 +2397,9 @@ module dell-base-platform-common {
       // Default: Not set
       // Persistent: No
       // Notification: Yes
+      description "Last threshold temperature crossed";
     }
+    description "Attributes of a temperature sensor";
   }
 
 
@@ -2383,10 +2408,8 @@ module dell-base-platform-common {
   //                                               temperature ranges
 
   grouping temp_threshold {
-    description "Attributes of a temperature sensor threshold";
 
     leaf hi {
-      description "Threshold for increasing temperature";
       type temperature-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2394,10 +2417,10 @@ module dell-base-platform-common {
       // Default: Not set
       // Persistent: No
       // Notification: No
+      description "Threshold for increasing temperature";
     }
 
     leaf lo {
-      description "Threshold for decreasing temperature";
       type temperature-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2405,7 +2428,9 @@ module dell-base-platform-common {
       // Default: Not set
       // Persistent: No
       // Notification: No
+      description "Threshold for decreasing temperature";
     }
+    description "Attributes of a temperature sensor threshold";
   }
 
   /* Power Monitor grouping
@@ -2414,57 +2439,57 @@ module dell-base-platform-common {
    */
 
   grouping power-monitor {
-    description "Attributes of an input power monitor";
 
     leaf voltage {
-      description "Input Voltage value";
       type common:xfloat;
-      config false;
       units "Volts";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity present.
       // Persistent: No
       // Notification: No
+      description "Input Voltage value";
     }
 
     leaf current {
-      description "Input Current value";
       type common:xfloat;
-      config false;
       units "Amps";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity present.
       // Persistent: No
       // Notification: No
+      description "Input Current value";
     }
 
     leaf power {
-      description "Input Power value";
       type common:xfloat;
-      config false;
       units "Watts";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity present.
       // Persistent: No
       // Notification: No
+      description "Input Power value";
     }
+    description "Attributes of an input power monitor";
   }
 
   // PLD grouping - Everything there is to know about programmable logic
   //                devices (PLDs)
 
   grouping pld {
-    description "Attributes of a programmable logic device (PLD)";
 
     leaf version {
-      description "PLD firmware version";
       type string;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if entity present
       // Persistent: N/A
       // Notification: No
+      description "PLD firmware version";
     }
+    description "Attributes of a programmable logic device (PLD)";
   }
 
 
@@ -2472,20 +2497,18 @@ module dell-base-platform-common {
   //                        port modules
 
   grouping port-module {
-    description "Attributes of a linecard port module";
 
     leaf present {
-      description "Module present flag";
       type boolean;  // true <=> Module present in module slot
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: Yes; parameters (present)
+      description "Module present flag";
     }
 
     leaf insertion-cnt {
-      description "Number of times module inserted";
       type yang:gauge64;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2496,10 +2519,10 @@ module dell-base-platform-common {
       // Notification: No
       // Notes: Writing any value for this attribute to the target space
       //        has the effect of resetting this counter to 0.
+      description "Number of times module inserted";
     }
 
     leaf insertion-timestamp {
-      description "Timestamp of last module insertion";
       type yang:timestamp;
       config false;
       // Qualifiers: observed, realtime
@@ -2508,10 +2531,10 @@ module dell-base-platform-common {
       //             Across kernel restart:  yes
       //             Across power cycle:     yes
       // Notification: No
+      description "Timestamp of last module insertion";
     }
 
     leaf admin-status {
-      description "Administrative status";
       type base-cmn:admin-status-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2527,10 +2550,10 @@ module dell-base-platform-common {
       //                 rejected
       //        Testing <=> As with down, but also includes others in
       //                    same diag class
+      description "Administrative status";
     }
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2538,17 +2561,19 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
+    description "Attributes of a linecard port module";
 
     // TBD
   }
@@ -2556,27 +2581,28 @@ module dell-base-platform-common {
   /* PAS Media releated configuration grouping */
 
   grouping pas-media-config {
-    description "Attributes of PAS media configuration.";
 
     leaf lock-down-status {
-      description "Lock down feature status.";
 
       type boolean;
       config true;
+      description "Lock down feature status.";
     }
 
     leaf led-control {
-      description "LED control flag";
 
       type boolean;
       config false;
+      description "LED control flag";
     }
+
     leaf identification-led-control {
-      description "Identification LED control flag, PAS owns front panel port identification
-                   led control if this attribute value is True";
       type boolean;
       config false;
+      description "Identification LED control flag, PAS owns front panel port identification
+                   led control if this attribute value is True";
     }
+    description "Attributes of PAS media configuration.";
   }
 
 
@@ -2584,258 +2610,266 @@ module dell-base-platform-common {
   //                                  optical media adapters
 
   grouping media {
-    description "Attributes of an optical media adapter";
 
     leaf present {
-      description "Adapter present flag";
       type boolean;  // true <=> Module present in port slot
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: Yes; parameters (present)
+      description "Adapter present flag";
     }
 
     leaf port-type {
-      description "Media type is pluggable or fixed or backplane or ...";
       type port-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Media type is pluggable or fixed or backplane or ...";
     }
 
     leaf max-port-power-milliwatts {
-      description "This is the maximum power (in milliwats) that the port can provide";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "This is the maximum power (in milliwats) that the port can provide";
     }
 
     leaf max-media-power-milliwatts {
-      description "This is the maximum power (in milliwats) that the inserted media can draw";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "This is the maximum power (in milliwats) that the inserted media can draw";
     }
 
     leaf power-limit-flag {
-      description "This flag states if the connected device can draw more power than the port can provide. Flag is set if max-port-power-milliwatts < max-media-power-milliwatts";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "This flag states if the connected device can draw more power than the port can provide. Flag is set if max-port-power-milliwatts < max-media-power-milliwatts";
     }
 
     leaf qsa-adapter {
-      description "QSA adapter tpe connected, if any";
       type qsa-adapter;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "QSA adapter tpe connected, if any";
     }
 
-    leaf connector-separable {
-      description "Is the media connector separable";
+    leaf qsa28-expected {
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "QSA adapter type connected is QSA when QSA28 is expected";
+    }
+
+    leaf connector-separable {
+      type boolean;
+      config false;
+      // Qualifiers: observed, realtime
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: No
+      description "Is the media connector separable";
     }
 
     leaf cable-length-cm {
-      description "Cable length in cm";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Cable length in cm";
     }
 
     leaf ext-spec-compliance-code {
-      description "Extended specification compliance code. Used for 25G NRZ based DAC.";
       type ext_spec_compliance_code;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Extended specification compliance code. Used for 25G NRZ based DAC.";
     }
 
     leaf media-interface-lane-count {
-      description "Number of transmission lanes";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Number of transmission lanes";
     }
 
     leaf media-interface {
-      description "Media interface specifier";
       type media-interface;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Media interface specifier";
     }
 
     leaf media-interface-qualifier {
-      description "Media interface qualifier specifier";
       type media-interface-qualifier;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Media interface qualifier specifier";
     }
 
     leaf cable-type {
-      description "Media cable type";
       type media-cable-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Media cable type";
     }
 
     leaf connector-type {
-      description "Media connector type";
       type media-connector-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Media connector type";
     }
 
     leaf initial-polling-delay-ms {
-      description "Time delay (in ms) before media EEPROM is polled";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Time delay (in ms) before media EEPROM is polled";
     }
 
     leaf device-ready {
-      description "Specifies if the media is ready for probing and use";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "Specifies if the media is ready for probing and use";
     }
 
     leaf display-string {
-      description "String to be used to display media name";
       type string;
       config false;
+      description "String to be used to display media name";
     }
 
     leaf media-name {
-      description "This name is used to refer to the media type. It can differ from display string since display string has additional info";
       type string;
       config false;
+      description "This name is used to refer to the media type. It can differ from display string since display string has additional info";
     }
 
     leaf category-string {
-      description "This string is used to refer to the media category (SFP, SFP+, QSFP+ etc). This string is used for display purposes";
       type string;
       config false;
+      description "This string is used to refer to the media category (SFP, SFP+, QSFP+ etc). This string is used for display purposes";
     }
 
     leaf lockdown-state {
-      description "This is whether or not the media is locked";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "This is whether or not the media is locked";
     }
 
     leaf channel-count {
-      description "This is the number of channels in the device";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: No
+      description "This is the number of channels in the device";
     }
 
     leaf default-media-speed {
-      description "The default speed of the device inserted";
       type base-if:speed;
       config false;
+      description "The default speed of the device inserted";
     }
 
     leaf default-breakout-mode {
-      description "This is the physical (hence default) breakout property of the media type";
       type base-cmn:breakout-type;
       config false;
+      description "This is the physical (hence default) breakout property of the media type";
     }
 
     leaf default-breakout-speed {
-      description "The default speed of the individual breakouts";
       type base-if:speed;
       config false;
+      description "The default speed of the individual breakouts";
     }
 
     leaf default-phy-mode {
-      description "The default PHY mode";
       type base-if:phy-mode-type;
       config false;
+      description "The default PHY mode";
     }
 
     leaf default-autoneg {
-      description "The default autonegotiation value";
       type base-if:supported-autoneg;
       config false;
+      description "The default autonegotiation value";
     }
 
     leaf default-fec {
-      description "The default FEC value";
       type base-cmn:fec-type;
       config false;
+      description "The default FEC value";
     }
 
     leaf-list sub-port-id {
-      description "The effective id for that port. Normally a single number except in cases where a port has >1 density; for example QSFP28-DD. List length is port density";
       type uint32;
       config false;
       // Dependencies: Number of items in list is the port density for that port
+      description "The effective id for that port. Normally a single number except in cases where a port has >1 density; for example QSFP28-DD. List length is port density";
     }
 
     leaf port-density {
-      description "Used to account for ports that have multiple logical ports; example QSFP28-DD. This is also the number of sub-port-ids";
       type uint32;
       config false;
       // Notes: Default is 1 since most ports map to 1 logical port
+      description "Used to account for ports that have multiple logical ports; example QSFP28-DD. This is also the number of sub-port-ids";
     }
 
     leaf insertion-cnt {
-      description "Number of times adapter inserted";
       type yang:gauge64;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2846,10 +2880,10 @@ module dell-base-platform-common {
       // Notification: No
       // Notes: Writing any value for this attribute to the target space
       //        has the effect of resetting this counter to 0.
+      description "Number of times adapter inserted";
     }
 
     leaf insertion-timestamp {
-      description "Timestamp of last adapter insertion";
       type yang:timestamp;
       config false;
       // Qualifiers: observed, realtime
@@ -2858,10 +2892,10 @@ module dell-base-platform-common {
       //             Across kernel restart:  yes
       //             Across power cycle:     yes
       // Notification: No
+      description "Timestamp of last adapter insertion";
     }
 
     leaf admin-status {
-      description "Administrative status";
       type base-cmn:admin-status-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -2877,10 +2911,10 @@ module dell-base-platform-common {
       //                 rejected
       //        Testing <=> As with down, but also includes others in
       //                    same diag class
+      description "Administrative status";
     }
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -2888,45 +2922,45 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
     leaf support-status {
-      description "Media support status.";
       type media-support-status;
       config false;
+      description "Media support status.";
     }
 
     leaf category {
-      description "Media category";
       type media-category;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Media category";
     }
 
     leaf type {
-      description "Media type";
       type media-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Media type";
     }
 
     leaf capability {
-      description "Media speed capability";
       type base-if:speed;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Media speed capability";
     }
 
     leaf vendor-id {
-      description "Vendor id of the physical media";
       type binary {
         length "3";
       }
@@ -2935,10 +2969,10 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Vendor id of the physical media";
     }
 
     leaf serial-number {
-      description "Serial number of the physical media";
       type string {
         length "17";
       }
@@ -2947,6 +2981,7 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Serial number of the physical media";
     }
 
     leaf qualified {
@@ -2957,50 +2992,50 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Is dell qualified or not";
     }
 
     leaf high-power-mode {
-      description "Enable high power mode";
       type boolean; // true <=> If its enable
       config true;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Enable high power mode";
     }
 
     leaf identifier {
-      description "Type of serial transceiver";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Type of serial transceiver";
     }
 
     leaf ext-identifier {
-      description "Extended identifier of type of serial transceiver";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Extended identifier of type of serial transceiver";
     }
 
     leaf connector {
-      description "Code for connector type";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Code for connector type";
     }
 
     leaf transceiver {
-      description "Code for electronic or optical compatibility";
       type binary {
         length "8";
       }
@@ -3009,18 +3044,18 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Code for electronic or optical compatibility";
     }
     leaf encoding {
-      description "Code for serial encoding algorithm";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Code for serial encoding algorithm";
     }
     leaf br-nominal  {
-      description "Nominal signaling rate, units of 100Mbits/sec ";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3028,19 +3063,19 @@ module dell-base-platform-common {
       // Units: 100 MBps
       // Persistent: N/A
       // Notification: No
+      description "Nominal signaling rate, units of 100Mbits/sec ";
     }
     leaf rate-identifier  {
-      description "Type of rate select functionality";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Type of rate select functionality";
     }
 
     leaf length-sfm-km {
-      description "Link length supported for SMF fiber in km";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3048,10 +3083,10 @@ module dell-base-platform-common {
       // Units: km
       // Persistent: N/A
       // Notification: No
+      description "Link length supported for SMF fiber in km";
     }
 
     leaf length-sfm {
-      description "Link length supported for single mode fiber, units of 100m";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3059,10 +3094,10 @@ module dell-base-platform-common {
       // Units: 100m
       // Persistent: N/A
       // Notification: No
+      description "Link length supported for single mode fiber, units of 100m";
     }
 
     leaf length-om2 {
-      description "Link length supported for 50um OM2 fiber, units of 10m";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3070,10 +3105,10 @@ module dell-base-platform-common {
       // Units: 10m
       // Persistent: N/A
       // Notification: No
+      description "Link length supported for 50um OM2 fiber, units of 10m";
     }
 
     leaf length-om1 {
-      description "Link length supported for 62.5um OM1 fiber, units of 10m";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3081,10 +3116,10 @@ module dell-base-platform-common {
       // Units: 10m
       // Persistent: N/A
       // Notification: No
+      description "Link length supported for 62.5um OM1 fiber, units of 10m";
     }
 
     leaf length-cable {
-      description "Link length supported for copper or direct attach cable, units of m";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3092,10 +3127,10 @@ module dell-base-platform-common {
       // Units: m
       // Persistent: N/A
       // Notification: No
+      description "Link length supported for copper or direct attach cable, units of m";
     }
 
     leaf length-om3 {
-      description "Link length supported for 50um OM3 fiber, units of 10m";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
@@ -3103,10 +3138,10 @@ module dell-base-platform-common {
       // Units: 10m
       // Persistent: N/A
       // Notification: No
+      description "Link length supported for 50um OM3 fiber, units of 10m";
     }
 
     leaf vendor-name  {
-      description "Vendor name (ASCII)";
       type string {
         length "17";
       }
@@ -3115,20 +3150,20 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Vendor name (ASCII)";
     }
 
     leaf ext-transceiver  {
-      description "Extended Transceiver Codes";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Extended Transceiver Codes";
     }
 
     leaf vendor-pn {
-      description "Part number provided by SFP+ transceiver vendor (ASCII)";
       type string {
         length "17";
       }
@@ -3137,10 +3172,10 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Part number provided by SFP+ transceiver vendor (ASCII)";
     }
 
     leaf vendor-rev {
-      description "Revision level for part number provided by vendor (ASCII)";
       type binary {
         length "2";
       }
@@ -3149,10 +3184,10 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Revision level for part number provided by vendor (ASCII)";
     }
 
     leaf wavelength {
-      description "Laser wavelength (Passive/Active Cable Specification Compliance)";
       type uint32;
       units "nm";
       config false;
@@ -3160,32 +3195,32 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Laser wavelength (Passive/Active Cable Specification Compliance)";
     }
 
     choice media-category {
       case qsfp-plus {
         leaf wavelength-tolerance {
-          description "Guaranteed range of laser wavelength";
           type uint32;
           config false;
           // Qualifiers: observed, realtime
           // Dependencies: Valid only if present = true
           // Persistent: N/A
           // Notification: No
+          description "Guaranteed range of laser wavelength";
         }
         leaf max-case-temp {
-          description "Maximum Case Temperature in Degrees C";
           type uint32;
           config false;
           // Qualifiers: observed, realtime
           // Dependencies: Valid only if present = true
           // Persistent: N/A
           // Notification: No
+          description "Maximum Case Temperature in Degrees C";
         }
       }
       case sfp-plus {
         leaf br-max{
-          description "Upper bit rate margin, units of % ";
           type uint32;
           config false;
           // Qualifiers: observed, realtime
@@ -3193,10 +3228,10 @@ module dell-base-platform-common {
           // Units: Percent
           // Persistent: N/A
           // Notification: No
+          description "Upper bit rate margin, units of % ";
         }
 
         leaf br-min {
-          description "Lower bit rate margin, units of %";
           type uint32;
           config false;
           // Qualifiers: observed, realtime
@@ -3204,42 +3239,43 @@ module dell-base-platform-common {
           // Units: Percent
           // Persistent: N/A
           // Notification: No
+          description "Lower bit rate margin, units of %";
         }
 
         leaf sff-8472-compliance {
-          description "Indicates which revision of SFF-8472 the transceiver complies with";
           type uint32;
           config false;
           // Qualifiers: observed, realtime
           // Dependencies: Valid only if present = true
           // Persistent: N/A
           // Notification: No
+          description "Indicates which revision of SFF-8472 the transceiver complies with";
         }
       }
+      description "Media Types.";
     }
 
     leaf cc_base {
-      description "Check code for Base ID Fields (addresses 0 to 62)";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Check code for Base ID Fields (addresses 0 to 62)";
     }
 
     leaf options {
-      description "Indicates which optional SFP+ signals are implemented";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Indicates which optional SFP+ signals are implemented";
     }
 
     leaf date-code {
-      description "Vendor's manufacturing date code";
       type binary {
         length "8";
       }
@@ -3248,285 +3284,286 @@ module dell-base-platform-common {
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Vendor's manufacturing date code";
     }
 
     leaf diag-mon-type{
-      description "Indicates which type of diagnostic monitoring is implemented (if any)";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Indicates which type of diagnostic monitoring is implemented (if any)";
     }
 
     leaf enhanced-options {
-      description "Indicates which optional enhanced features are implemented (if any)";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Indicates which optional enhanced features are implemented (if any)";
     }
 
     leaf cc_ext {
-      description "Check code for the Extended ID Fields (addr. 64 to 94)";
       type uint32;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Check code for the Extended ID Fields (addr. 64 to 94)";
     }
 
     leaf vendor-Specific {
-      description "Vendor Specific EEPROM";
       type binary;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Vendor Specific EEPROM";
     }
 
     leaf rate-select-state {
-      description "Rate select state";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: None
       // Persistent: N/A
       // Notification: Yes; parameters (present)
+      description "Rate select state";
     }
 
     leaf rx-power-measurement-type {
-      description "Received power measurement type";
       type power-measurement-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Received power measurement type";
     }
 
 
     // Media Alarm and Warning thresholds
 
     leaf temp-high-alarm-threshold {
-      description "Temperature High alarm";
       type common:xfloat;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Temperature High alarm";
     }
 
     leaf temp-low-alarm-threshold {
-      description "Temperature Low alarm";
       type common:xfloat;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Temperature Low alarm";
     }
 
     leaf temp-high-warning-threshold {
-      description "Temperature High warning";
       type common:xfloat;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Temperature High warning";
     }
 
     leaf temp-low-warning-threshold {
-      description "Temperature Low warning";
       type common:xfloat;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Temperature Low warning";
     }
 
     leaf voltage-high-alarm-threshold {
-      description "Voltage High alarm";
       type common:xfloat;
-      config false;
       units "mV";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Voltage High alarm";
     }
 
     leaf voltage-low-alarm-threshold {
-      description "Voltage Low alarm";
       type common:xfloat;
-      config false;
       units "mV";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Voltage Low alarm";
     }
 
     leaf voltage-high-warning-threshold {
-      description "Voltage High warning";
       type common:xfloat;
-      config false;
       units "mV";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Voltage High warning";
     }
 
     leaf voltage-low-warning-threshold {
-      description "Voltage Low warning";
       type common:xfloat;
-      config false;
       units "mV";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Voltage Low warning";
     }
 
     leaf rx-power-high-alarm-threshold {
-      description "RX Power High alarm";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "RX Power High alarm";
     }
 
     leaf rx-power-low-alarm-threshold {
-      description "RX Power Low alarm";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "RX Power Low alarm";
     }
 
     leaf rx-power-high-warning-threshold {
-      description "RX Power High warning";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "RX Power High warning";
     }
 
     leaf rx-power-low-warning-threshold {
-      description "RX Power Low warning";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "RX Power Low warning";
     }
 
     leaf bias-high-alarm-threshold {
-      description "Bias High alarm";
       type common:xfloat;
-      config false;
       units "mA";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Bias High alarm";
     }
 
     leaf bias-low-alarm-threshold {
-      description "Bias Low alarm";
       type common:xfloat;
-      config false;
       units "mA";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Bias Low alarm";
     }
 
     leaf bias-high-warning-threshold {
-      description "Bias High warning";
       type common:xfloat;
-      config false;
       units "mA";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Bias High warning";
     }
 
     leaf bias-low-warning-threshold {
-      description "Bias Low warning";
       type common:xfloat;
-      config false;
       units "mA";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Bias Low warning";
     }
 
     leaf tx-power-high-alarm-threshold {
-      description "Tx power High alarm";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Tx power High alarm";
     }
 
     leaf tx-power-low-alarm-threshold {
-      description "Tx power Low alarm";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Tx power Low alarm";
     }
 
     leaf tx-power-high-warning-threshold {
-      description "Tx power High warning";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Tx power High warning";
     }
 
     leaf tx-power-low-warning-threshold {
-      description "Tx power Low warning";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Tx power Low warning";
     }
 
 
@@ -3534,65 +3571,66 @@ module dell-base-platform-common {
 
 
     leaf current-temperature {
-      description "Current temperature";
       type common:xfloat;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Current temperature";
     }
 
     leaf current-voltage {
-      description "Current voltage";
       type common:xfloat;
-      config false;
       units "mV";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Current voltage";
     }
 
     leaf temp-state {
-      description "Temperature High/Low alarm/warning state";
       type media-status;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "Temperature High/Low alarm/warning state";
     }
 
     leaf voltage-state {
-      description "Voltage High/Low alarm/warning state";
       type media-status;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "Voltage High/Low alarm/warning state";
     }
 
     // Config parameters
 
     leaf autoneg {
-      description "Auto Negotiation";
       type boolean;
       default true;
       config true;
+      description "Auto Negotiation";
     }
 
     leaf-list supported-speed {
-      description "Interface supported speed list";
       type base-if:speed;
       config true;
+      description "Interface supported speed list";
     }
     leaf target_wavelength {
-      description "Configured wavelength for tunable media";
       type common:xfloat;
       config true;
+      description "Configured wavelength for tunable media";
     }
+    description "Attributes of an optical media adapter";
   }
 
 
@@ -3601,10 +3639,8 @@ module dell-base-platform-common {
   //                                          adapter channel
 
   grouping media-channel {
-    description "Attributes of a channel of an optical media adapter";
 
     leaf state {
-      description "Channel state (Enable/Disable)";
       type boolean; //true <=> if channel is enabled
       config true;
       // Qualifiers: observed, realtime
@@ -3612,43 +3648,43 @@ module dell-base-platform-common {
       // Persistent: N/A
       // Units : N/A
       // Notification: No
+      description "Channel state (Enable/Disable)";
     }
 
     leaf rx-power {
-      description "RX power";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if media present = true
       // Persistent: N/A
       // Notification: No
+      description "RX power";
     }
 
     leaf tx-power {
-      description "TX power";
       type common:xfloat;
-      config false;
       units "mW";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if media present = true
       // Persistent: N/A
       // Notification: No
+      description "TX power";
     }
 
     leaf tx-bias-current {
-      description "TX Bias Current";
       type common:xfloat;
-      config false;
       units "mA";
+      config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if media present = true
       // Persistent: N/A
       // Notification: No
+      description "TX Bias Current";
     }
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -3656,118 +3692,118 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf rx-loss {
-      description "Channel TX loss status";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "Channel TX loss status";
     }
 
     leaf tx-loss {
-      description "Channel TX loss status";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "Channel TX loss status";
     }
 
     leaf tx-fault {
-      description "Channel TX fault status";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "Channel TX fault status";
     }
 
     leaf tx-disable {
-      description "Channel TX disable status";
       type boolean;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "Channel TX disable status";
     }
 
     leaf rx-power-state {
-      description "RX power High/Low alarm/warning state";
       type media-status;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "RX power High/Low alarm/warning state";
     }
 
     leaf tx-power-state {
-      description "TX power High/Low alarm/warning state";
       type media-status;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "TX power High/Low alarm/warning state";
     }
 
     leaf tx-bias-state {
-      description "TX-BIAS High/Low alarm/warning state";
       type media-status;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: Yes
+      description "TX-BIAS High/Low alarm/warning state";
     }
 
     leaf cdr-enable {
-      description "CDR enable/disable";
       type boolean;
       config true;
+      description "CDR enable/disable";
     }
 
     // Config parameters
 
     leaf speed {
-      description "Speed to derive and set LED state";
       type base-if:speed;
       config true;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if present = true
       // Persistent: N/A
       // Notification: No
+      description "Speed to derive and set LED state";
     }
 
     leaf autoneg {
-      description "Auto Negotiation";
       type boolean;
       default true;
       config true;
+      description "Auto Negotiation";
     }
 
     leaf-list supported-speed {
-      description "Interface supported speed list";
       type base-if:speed;
       config true;
+      description "Interface supported speed list";
     }
+    description "Attributes of a channel of an optical media adapter";
   }
 
 
   // PHY grouping - Everything there is no know about PHYs
 
   grouping phy {
-    description "Attributes of a port PHY";
 
     leaf admin-status {
-      description "Administrative status";
       type base-cmn:admin-status-type;
       config true;
       // Qualifiers: observed, realtime, target
@@ -3783,10 +3819,10 @@ module dell-base-platform-common {
       //                 rejected
       //        Testing <=> As with down, but also includes others in
       //                    same diag class
+      description "Administrative status";
     }
 
     leaf oper-status {
-      description "Operational status";
       type base-cmn:oper-status-type;
       config false;
       // Qualifiers: observed, realtime
@@ -3794,17 +3830,19 @@ module dell-base-platform-common {
       //               admin-status == testing => oper-status == down.
       // Persistent: N/A
       // Notification: Yes; parameters (oper_status)
+      description "Operational status";
     }
 
     leaf fault-type {
-      description "Cause of fault";
       type fault-type;
       config false;
       // Qualifiers: observed, realtime
       // Dependencies: Valid only if oper-status == fail
       // Persistent: N/A
       // Notification: Yes; parameters (fault_type)
+      description "Cause of fault";
     }
+    description "Attributes of a port PHY";
 
     // TBD
   }
@@ -3814,31 +3852,30 @@ module dell-base-platform-common {
 
   grouping host-system {
 
-      description "Attributes of host system";
-
       leaf booted {
-          description "flag for host system booted successfully";
           type boolean;
+          description "flag for host system booted successfully";
       }
 
       leaf software-rev {
-          description "Host system software revision";
           type string {
               length "32";
           }
+          description "Host system software revision";
       }
 
       leaf slot-number {
-          description "host system slot number";
           type uint16;
+          description "host system slot number";
       }
 
       leaf fabric-id {
-          description "Host system fabric id ";
           type string {
               length "32";
           }
+          description "Host system fabric id ";
       }
+      description "Attributes of host system";
   }
 
   // Contains all the attributes of a comm-dev
@@ -3848,26 +3885,27 @@ module dell-base-platform-common {
   grouping comm-dev {
 
       leaf comm-msg {
-          description "msg between host system and master";
           type string {
               length "4096";
           }
+          description "msg between host system and master";
       }
 
       leaf chassis-service-tag {
-          description "Chassis service tag";
           type string {
               length "34";
           }
+          description "Chassis service tag";
       }
 
       leaf comm-dev-firmware-rev {
-          description "comm-dev firmware revision";
           type string {
               length "64";
           }
+          description "comm-dev firmware revision";
       }
 
+      description "Comm-dev attributes";
   }
 
 }

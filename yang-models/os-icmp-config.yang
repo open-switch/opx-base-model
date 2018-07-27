@@ -11,8 +11,17 @@ module os-icmp-config {
     description "This model controls the ICMP unreachable message generation from
         the OS for non-routable traffic.";
 
+    revision 2018-07-05 {
+        description
+            "This revision adds the VRF name in the IP unreachable configuration.";
+        reference
+            "Network Platform Abstraction";
+    }
+
     revision "2017-08-22" {
         description "Initial version.";
+        reference
+            "Network Platform Abstraction";
     }
 
     rpc ip-unreachables-config {
@@ -30,6 +39,11 @@ module os-icmp-config {
                 description "This is set to true to enable ICMP unreachable message
                     generation for the non-routable traffic from the OS and false otherwise.";
                 type boolean;
+            }
+
+            leaf vrf-name {
+                type string;
+                description "VRF device name";
             }
 
             leaf af {

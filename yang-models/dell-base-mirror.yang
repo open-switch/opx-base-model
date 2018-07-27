@@ -94,7 +94,8 @@ module dell-base-mirror {
             type base-cmn:vlan-id;
             description
                 "ERSPAN Tunnel L2 Header VLAN id";
-        } 			
+        } 	
+
         leaf ttl {
             type uint8;
             description
