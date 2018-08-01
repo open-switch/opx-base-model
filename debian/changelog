@@ -1,3 +1,9 @@
+opx-base-model (3.146.0+opx1) unstable; urgency=medium
+
+  * Update: Fix the build-dependency to get the CPS fix for openapi omission
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Tue, 31 Jul 2018 16:00:00 -0800
+
 opx-base-model (3.146.0) unstable; urgency=medium
 
   * Bugfix: Add proper error message for LAG member mode mismatch
