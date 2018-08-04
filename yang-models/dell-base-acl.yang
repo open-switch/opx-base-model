@@ -884,7 +884,7 @@ module dell-base-acl {
             description
                 "This field should be matched against the 12 LSB
                  bits of the IEEE 802.1Q Vlan tag in the packet.
-                 Valid range: 1-4095 inclusive";
+                 Valid range: 0-4095 inclusive";
         }
         container OUTER_VLAN_PRI_VALUE {
             when "../type = 'OUTER_VLAN_PRI'";
@@ -909,7 +909,7 @@ module dell-base-acl {
                 "This field should be matched against the 12 LSB
                  bits of the inner IEEE 802.1Q Vlan tag in a
                  double tagged packet.
-                 Valid range: 1-4095 inclusive";
+                 Valid range: 0-4095 inclusive";
         }
         container INNER_VLAN_PRI_VALUE {
             when "../type = 'INNER_VLAN_PRI'";

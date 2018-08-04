@@ -25,28 +25,37 @@ module dell-base-neighbor {
         "This module contains a collection of YANG definitions for
         managing configuration and operational data for Neighbor Object";
 
-
+    revision 2018-07-03 {
+        description
+            "This revision replaces the interface name with list of interface names in the neighbor flush RPC.";
+        reference "Network Platform Abstraction";
+    }
     revision 2018-01-31 {
         description
             "This revision adds the IP prefix in the neighbor flush RPC.";
+        reference "Network Platform Abstraction";
     }
     revision 2017-10-16 {
         description
             "This revision adds the auto neighbor refresh configuration.";
+        reference "Network Platform Abstraction";
     }
     revision 2017-10-09 {
         description
             "This revision adds the vrf-name in the flush RPC.";
+        reference "Network Platform Abstraction";
     }
 
     revision 2017-03-13 {
         description
             "Clear neighbor functionality";
+        reference "Network Platform Abstraction";
     }
 
     revision 2016-11-03 {
         description
             "Initial revision.";
+        reference "Network Platform Abstraction";
     }
 
     /* 1. Proactive resolution for Route associated NH or apps (PBR, ER-SPAN) desired NH.
@@ -92,10 +101,10 @@ module dell-base-neighbor {
             description "Address Family of the Neighbor entries to be cleared";
        }
 
-        /* To flush the Neighbor entries on a specific interface name */
-       leaf ifname {
+        /* To flush the Neighbor entries on list of interface names. */
+       leaf-list ifname {
             type string;
-            description "Flush the Neighbor entries configured/learnt on this interface";
+            description "Flush the Neighbor entries configured/learnt on list of interfaces.";
        }
 
        leaf ip {
