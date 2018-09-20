@@ -28,6 +28,7 @@ module dell-base-alms {
 
   list active-alms {
        description "List of active alarms";
+       config false;
 
        leaf timestamp {
            description "Time alarm occurred";
