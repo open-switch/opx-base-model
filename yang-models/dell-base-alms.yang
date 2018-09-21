@@ -22,6 +22,9 @@ module dell-base-alms {
 
   All rights reserved.";
 
+  revision 2018-09-21 {
+    description "Fixe for error from pyang validation";
+  }
   revision 2017-03-02 {
     description "Initial revision.";
   }

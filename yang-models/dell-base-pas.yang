@@ -14,17 +14,20 @@ module dell-base-pas {
 
   description "Configuration and operational data for OS10 Platform Abtraction Service";
 
-  revision 2015-04-03 {
-    description "Initial revision.";
+  revision 2018-09-21 {
+    description "Fix pyang warnings and order revisions as per RFC";
   }
-
+  revision 2017-12-04 {
+    description "new object for PAS platform fault";
+  }
   revision 2017-11-09 {
     description "Input Power Monitor Support";
   }
 
-  revision 2017-12-04 {
-    description "new object for PAS platform fault";
+  revision 2015-04-03 {
+    description "Initial revision.";
   }
+
 
   //PAS Notify subcategory
 

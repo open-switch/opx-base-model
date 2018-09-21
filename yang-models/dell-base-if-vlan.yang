@@ -6,21 +6,22 @@ module dell-base-if-vlan {
     import ietf-interfaces {
         prefix "if";
     }
-    import ietf-yang-types {
-        prefix "yang";
-    }
-	
     import dell-base-common {
         prefix "base-cmn";
     }
+
+    import iana-if-type { prefix "ianaift"; }
 
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
     description "This model augments the standard interface and adds Dell EMC specific
     				vlan extensions.";
+    revision "2018-09-21" {
+        description "Fixes for pyang warnings, correct imports";
+    }
 
-    revision "2016-01-01" {
+    revision "2018-01-01" {
         description "Initial version.";
     }
 	
