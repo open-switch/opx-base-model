@@ -1,4 +1,4 @@
-opx-base-model (3.152.0+nmu1) unstable; urgency=medium
+opx-base-model (3.152.0) unstable; urgency=medium
 
   * Fix pyang warnings and errors
 
