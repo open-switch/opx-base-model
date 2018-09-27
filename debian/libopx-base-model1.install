@@ -1,2 +1,3 @@
 usr/lib/*/*.so.*
 usr/lib/*/*.so
+usr/share/opx/yang-models

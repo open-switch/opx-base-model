@@ -1,3 +1,9 @@
+opx-base-model (3.151.0+opx1) unstable; urgency=medium
+
+  feat: distribute YANG models
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Thu, 27 Sep 2018 16:00:00 -0800
+
 opx-base-model (3.151.0) unstable; urgency=medium
 
   * Update: Support IPv6 extended prefix installation
