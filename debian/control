@@ -15,5 +15,5 @@ Description: Openswitch base model - object models for all services
 
 Package: libopx-base-model-dev
 Architecture: any
-Depends: ${misc:Depends}, libopx-base-model1 (>= 3.109.0), libopx-cps-dev (>= 3.6.2)
+Depends: ${misc:Depends}, libopx-base-model1 (= ${binary:Version}), libopx-cps-dev (>= 3.6.2)
 Description: Openswitch base model - provides APIs prototype and IDs to access objects
