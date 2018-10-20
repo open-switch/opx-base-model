@@ -65,7 +65,6 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/ipsec-sad.yang \
     $(top_srcdir)/yang-models/tunnel.yang
 
-
 #Create VPATH for yang models
 YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
 vpath %.yang ${YANG_DIRS}
@@ -480,3 +479,10 @@ clean-local:
         echo Cleaning @YANG_OUTPUT@; \
         rm -Rf @YANG_OUTPUT@* ; \
         fi; )
+
+data_base_modeldir = /usr/share/opx/yang-models
+data_base_model_DATA = \
+	$(wildcard $(top_srcdir)/common/dell/*.yang) \
+	$(wildcard $(top_srcdir)/common/yumaworks/*.yang) \
+	$(wildcard $(top_srcdir)/rfc/*.yang) \
+	$(wildcard $(top_srcdir)/yang-models/*.yang)

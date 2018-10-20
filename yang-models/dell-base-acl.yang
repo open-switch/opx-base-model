@@ -1041,8 +1041,6 @@ module dell-base-acl {
                 Its presence means that this Acl-Entry should
                 ONLY be applied to packets that are received
                 from the port specified.";
-            type base-cmn:logical-ifindex;
-            status obsolete;
         }
 
         leaf DST_PORT_VALUE {
@@ -1054,8 +1052,6 @@ module dell-base-acl {
                 Its presence means that this Acl-Entry should
                 ONLY be applied to packets that will be
                 transmitted out on the port specified.";
-            type base-cmn:logical-ifindex;
-            status obsolete;
         }
 
         leaf-list IN_INTFS_VALUE {
