@@ -12,57 +12,71 @@ module dell-base-pas {
 
   contact "http://www.dell.com/support";
 
-  description "Configuration and operational data for OS10 Platform Abtraction Service";
+  description "Configuration and operational data for Platform Abtraction Service.
+
+               Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+  revision 2018-08-17 {
+    description "Fixing pyang IETF errors and adding documentiation to the model.";
+    reference "Network Platform Abstraction";
+  }
 
   revision 2015-04-03 {
     description "Initial revision.";
-  }
-
-  revision 2017-11-09 {
-    description "Input Power Monitor Support";
+    reference "Network Platform Abstraction";
   }
 
   revision 2017-12-04 {
     description "new object for PAS platform fault";
+    reference "Network Platform Abstraction";
+  }
+
+  revision 2017-11-09 {
+    description "Input Power Monitor Support";
+    reference "Network Platform Abstraction";
+  }
+
+  revision 2015-04-03 {
+    description "Initial revision.";
+    reference "Network Platform Abstraction";
   }
 
   //PAS Notify subcategory
 
   list ready {
-    description "PAS status notification";
 
     key "slot";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf slot {
-      description "Slot number";
       type uint8;
+      description "Slot number";
     }
 
     uses platform:pas_notify;
+    description "PAS status notification";
   }
 
   // PAS platform-fault subcategory
 
   container platform-fault {
-      description "platform fault notification";
-
       uses platform:pas_fault;
+      description "platform fault notification";
   }
 
   // comm-dev subcategory
 
   container comm-dev {
-      description "Attributes of comm-dev component";
-
       uses platform:comm-dev;
+      description "Attributes of comm-dev component";
   }
 
   // host-system subcategory
 
   container host-system {
-      description "Attributes of host-system component";
-
       uses platform:host-system;
+      description "Attributes of host-system component";
   }
 
 
@@ -70,373 +84,401 @@ module dell-base-pas {
   // Chassis subcategory
 
   container chassis {
-    description "Attributes of a chassis";
+
+    // Qualifier : Target, Observed, Realtime
 
     uses platform:chassis;
+    description "Attributes of a chassis";
   }
 
   // Entity subcategory
 
   list entity {
-    description "Attributes of an entity (FRU)";
 
     key "entity-type slot";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     uses platform:entity;
+    description "List of FRUs and its' attributes";
   }
 
   // PSU subcategory
 
   list psu {
-    description "Attributes of a power supply";
 
     key "slot";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf slot {
-        description "PSU slot";
         type uint8;
+        description "PSU slot";
     }
 
     uses platform:psu;
+    description "Attributes of a power supply";
   }
 
   // Fan tray subcategory
 
   list fan-tray {
-    description "Attributes of a fan tray";
 
     key "slot";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf slot {
-        description "Fan tray slot";
         type uint8;
+        description "Fan tray slot";
     }
 
     uses platform:fan-tray;
+    description "Attributes of a fan tray";
   }
 
   // Card subcategory
 
   list card {
-    description "Attributes of a card";
 
     key "slot";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf slot {
-        description "Card slot";
         type uint8;
+        description "Card slot";
     }
 
     uses platform:card;
+    description "Attributes of a card";
   }
 
   // Fan subcategory
 
   list fan {
-    description "Attributes of a (PSU or fan tray) fan";
 
     key "entity-type slot fan-index";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf fan-index {
-        description "Index of fan on entity";
         type uint8;
+        description "Index of fan on entity";
     }
 
     uses platform:fan;
+    description "Attributes of a (PSU or fan tray) fan";
   }
 
   // LED subcategory
 
   list led {
-    description "Attributes of an LED";
 
     key "entity-type slot name";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf name {
-      description "Printable name for LED";
       type string;
+      description "Printable name for LED";
     }
 
     uses platform:led;
+    description "Attributes of an LED";
   }
 
   // Display subcategory
 
   list display {
-    description "Attributes of a text message display";
 
     key "entity-type slot name";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf name {
-      description "Printable name for display";
       type string;
+      description "Printable name for display";
     }
 
     uses platform:display;
+    description "Attributes of a text message display";
   }
 
   // Temperature sensor subcategory
 
   list temperature {
-    description "Attributes of a temperature sensor";
 
     key "entity-type slot name";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf name {
-      description "Printable name for sensor";
       type string;
+      description "Printable name for sensor";
     }
 
     uses platform:temperature;
+    description "List of temperature sensors and its associated attributes";
   }
 
   // Temperature sensor range threshold subcategory
 
   list temp_threshold {
-    description "Attributes of a temperature sensor threshold";
 
     key "entity-type slot name threshold-index";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf name {
-      description "Printable name for sensor";
       type string;
+      description "Printable name for sensor";
     }
 
     leaf threshold-index {
-        description "Index of threshold for sensor";
         type uint8;
+        description "Index of threshold for sensor";
     }
 
     uses platform:temp_threshold;
+    description "Attributes of a temperature sensor threshold";
   }
 
   // Power-monitor subcategory
 
   list power-monitor {
-    description "Attributes of an Input Power Monitor which is the total power consumed (including PSU loss) by the system";
 
     key "entity-type slot monitor-index";
 
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf monitor-index {
-        description "Index of power monitor chip on entity";
         type uint8;
+        description "Index of power monitor chip on entity";
     }
 
     uses platform:power-monitor;
+    description "Attributes of an Input Power Monitor - values of the total power consumed (including PSU loss) by the system.";
   }
 
   // PLD subcategory
 
   list pld {
-    description "Attributes of a programmable logic device (PLD)";
 
     key "entity-type slot name";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf entity-type {
-        description "Entity type";
         type platform:entity-type;
+        description "Entity type";
     }
 
     leaf slot {
-        description "Entity slot";
         type uint8;
+        description "Entity slot";
     }
 
     leaf name {
-      description "Printable name for PLD";
       type string;
+      description "Printable name for PLD";
     }
 
     uses platform:pld;
+    description "Attributes of a programmable logic device (PLD)";
   }
 
   // Port module subcategory
 
   list port-module {
-    description "Attributes of a linecard port module";
 
     key "slot port-module-slot";
 
     leaf slot {
-        description "Card slot";
         type uint8;
+        description "Card slot";
     }
 
     leaf port-module-slot {
-        description "Slot of port module on card";
         type uint8;
+        description "Slot of port module on card";
     }
 
     uses platform:port-module;
+    description "Attributes of a linecard port module";
   }
 
   /* PAS Media releated configuration */
 
   list media-config {
-    description "PAS media configuration.";
 
     key "node-id slot";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf node-id {
-      description "Node Id (Chassis id / stackId)";
       type uint32;
+      description "Node Id (Chassis id / stackId)";
     }
 
     leaf slot {
-      description "Card slot number";
       type uint32;
+      description "Card slot number";
     }
 
     uses platform:pas-media-config;
+    description "PAS media configuration.";
   }
 
   // Optical media adapter subcategory
 
   list media {
-    description "Attributes of an optical media adapter";
 
     key "slot port-module-slot port";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf slot {
-        description "Card slot";
         type uint8;
+        description "Card slot";
     }
 
     leaf port-module-slot {
-        description "Slot of port module on card";
         type uint8;
+        description "Slot of port module on card";
     }
 
     leaf port {
-        description "Port on port module";
         type uint8;
+        description "Port on port module";
     }
 
     uses platform:media;
+    description "Attributes of an optical media adapter";
   }
 
   // Optical media adapter channel subcategory
 
   list media-channel {
-    description "Attributes of a channel of an optical media adapter";
 
     key "slot port-module-slot port channel";
 
+    // Qualifier : Target, Observed, Realtime
+
     leaf slot {
-        description "Card slot";
         type uint8;
+        description "Card slot";
     }
 
     leaf port-module-slot {
-        description "Slot of port module on card";
         type uint8;
+        description "Slot of port module on card";
     }
 
     leaf port {
-        description "Port on port module";
         type uint8;
+        description "Port on port module";
     }
 
     leaf channel {
-        description "Channel of given port";
         type uint8;
+        description "Channel of given port";
     }
 
     uses platform:media-channel;
+    description "Attributes of a channel of an optical media adapter";
   }
 
   // PHY subcategory
 
   list phy {
-    description "Attributes of a port PHY";
 
     key "slot port-module-slot port";
 
     leaf slot {
-        description "Card slot";
         type uint8;
+        description "Card slot";
     }
 
     leaf port-module-slot {
-        description "Slot of port module on card";
         type uint8;
+        description "Slot of port module on card";
     }
 
     leaf port {
-        description "Port on port module";
         type uint8;
+        description "Port on port module";
     }
 
     uses platform:phy;
+    description "Attributes of a port PHY";
   }
 }

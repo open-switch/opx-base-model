@@ -17,36 +17,41 @@ module dell-base-etl {
     description
         "This module contains a collection of YANG definitions for ETL objects";
 
+    revision 2018-06-15 {
+        description "Fixing IETF error for enum value type.";
+        reference "Network Platform Abstraction";
+    }
+
     revision 2018-03-30 {
         description "Revised Version: IETF Compliance";
-        reference "Dell Proprietary";
+        reference "Network Platform Abstraction";
     }
 
     revision 2015-04-21 {
         description "Initial revision.";
-        reference "Dell Proprietary";
+        reference "Network Platform Abstraction";
     }
 
     typedef notification-type {
         type enumeration {
             enum "event-action-alarm" {
-                value "1";
+                value 1;
                 description "Event notification for Alarm";
             }
             enum "event-action-trap" {
-                value "2";
+                value 2;
                 description "Event notification for Trap";
             }
             enum "event-action-alarm-trap" {
-                value "3";
+                value 3;
                 description "Event notification for Alarm and Trap";
             }
             enum "event-action-alarm-clear" {
-                value "4";
+                value 4;
                 description "Event notification for clearing Alarm";
             }
             enum "event-action-external" {
-                value "5";
+                value 5;
                 description "Event notification for external usage";
             }
         }

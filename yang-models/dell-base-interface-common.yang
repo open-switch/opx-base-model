@@ -12,50 +12,81 @@ module dell-base-interface-common {
 
     contact "http://www.dell.com/support";
 
-    description
-        "This module contains the collection of YANG definitions for
-        managing interfaces";
+    description "This model implements all the interface/port attributes and/or RPCs common to many other models.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-09-12" {
+        description "Adding Virtual Network identity.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-08-10" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-07-03 {
+        description
+            "Adding unicast, multicast and broadcast flooding enabled attribute to
+             remote endpoint to have fine grain control over the type of flooding to
+             be enabled on remote endpoint.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-07-03 {
+        description
+            "Adding unicast, multicast and broadcast flooding enabled attribute to
+             remote endpoint to have fine grain control over the type of flooding to
+             be enabled on remote endpoint.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2018-05-03 {
         description
             "Adding support to configure MAC learning mode for remote endpoint for VxLAN.";
-            reference "Network Platform Abstraction";
+        reference "Network Platform Abstraction";
     }
 
     revision 2018-04-09 {
         description
             "Adding supported-profiles grouping for hybrid-group";
-            reference "Network Platform Abstraction";
+        reference "Network Platform Abstraction";
     }
 
     revision 2018-03-12 {
         description
             "Add statistics grouping for remote endpoint.";
-            reference "Network Platform Abstraction";
+        reference "Network Platform Abstraction";
     }
 
     revision "2017-10-10" {
         description "Add vxlan and vlanSubInterface identity. Add typedef for bridge mode.
                      Add grouping for vn-remote-endpoints for VxLAN";
+        reference "Network Platform Abstraction";
     }
 
     revision 2017-10-05 {
         description
             "Add an enumeration for VLAN type INTERNAL.";
+        reference "Network Platform Abstraction";
     }
     revision 2017-10-04 {
         description
             "Add MAC learn mode types.";
+        reference "Network Platform Abstraction";
     }
 
     revision 2017-09-27 {
         description
             "Add an enumeration for supported auto-negotiation values.";
+        reference "Network Platform Abstraction";
     }
 
     revision 2015-01-29 {
         description
             "Initial revision.";
+        reference "Network Platform Abstraction";
     }
 
     identity null {
@@ -82,14 +113,18 @@ module dell-base-interface-common {
       base ianaift:iana-interface-type;
       description "VXLAN interface type";
 	}
-	
+
     identity macvlan {
       base ianaift:iana-interface-type;
       description "Macvlan interface type";
     }
 
+    identity virtualNetwork {
+      base ianaift:iana-interface-type;
+      description "Virtual Network interface type";
+    }
+
     typedef supported-autoneg {
-        description "Enumeration of supported auto-negotiation values.";
         type enumeration {
             enum NOT_SUPPORTED {
                 value 1;
@@ -108,10 +143,10 @@ module dell-base-interface-common {
                 description "autoneg on and off supported.";
             }
         }
+        description "Enumeration of supported auto-negotiation values.";
     }
 
     typedef bridge-mode {
-        description "Enumeration of bridge mode";
         type enumeration {
             enum 1D {
                 value 1;
@@ -123,10 +158,10 @@ module dell-base-interface-common {
                 description "Bridge is VLAN aware.";
             }
         }
+        description "Enumeration of bridge mode";
     }
 
     typedef speed {
-        description "Enumeration of port speed.";
         type enumeration {
             enum 0MBPS {
                 value 0;
@@ -225,10 +260,10 @@ module dell-base-interface-common {
                 description "1G FC data rate.";
             }
         }
+        description "Enumeration of port speed.";
     }
 
     typedef mode {
-        description "Enumeration of physical interface mode";
         type enumeration {
             enum MODE_NONE {
                 value 1;
@@ -255,9 +290,9 @@ module dell-base-interface-common {
                 description "This port is not in L2 Mode";
             }
         }
+        description "Enumeration of physical interface mode";
     }
     typedef lag-mode-type {
-        description "LAG Mode";
       type enumeration {
         enum STATIC {
             value 1;
@@ -268,12 +303,12 @@ module dell-base-interface-common {
             value 2;
             description "";
         }
-        }
+      }
+      description "LAG Mode";
     }
 
     typedef lacp-mode-type {
-        description "LACP MODE";
-        type enumeration {
+      type enumeration {
 
         enum ACTIVE {
             value 1;
@@ -285,11 +320,10 @@ module dell-base-interface-common {
             description "";
         }
       }
+      description "LACP MODE";
     }
 
     typedef vlan-type {
-        description "VLAN-type type definition";
-
         type enumeration {
             enum DATA {
                 value 1;
@@ -302,6 +336,7 @@ module dell-base-interface-common {
                 description "Applications can use this VLAN type to create VLAN used for internal purpose.";
             }
         }
+        description "VLAN-type type definition";
     }
 
 
@@ -311,16 +346,16 @@ module dell-base-interface-common {
            description "The unit containing the front panel port";
         }
 
-		leaf slot-id {
-			type uint32;
-			description "the slot id of the physical port.";
-		}
+	leaf slot-id {
+	   type uint32;
+	   description "the slot id of the physical port.";
+	}
 
         uses npu-port;
+        description "Physical Location(Slot-Unit) of the port";
     }
 
     grouping npu-port {
-        description "NAS npu port information.";
         leaf npu-id {
             type base-cmn:npu-id;
             description "This denotes the npu Id containing the physical port";
@@ -330,39 +365,35 @@ module dell-base-interface-common {
             type base-cmn:npu-port-id;
             description "This denotes the port Id in the npu";
         }
+        description "NAS npu port information.";
     }
 
     grouping common {
-        description "This is the generic port definition.  Can be reused by any generic interface object.";
-
         leaf switch-id {
             type base-cmn:logical-switch-id;
             description "Logical Switch ID";
         }
-		uses npu-port;
+	uses npu-port;
 
+        description "This is the generic port definition.  Can be reused by any generic interface object.";
     }
 
     grouping mac-learn-limit {
-
-        description
-            "List of Mac Learn Limit configuration";
-
         leaf learn-limit {
             type uint32;
-            description "Maximum number of MACs allowed to be learned on an interace";
+            description "Maximum number of MACs allowed to be learned on an interface";
         }
 
         leaf dynamic {
             type boolean;
             default false;
-            description "Whether the entry created is subject to aging.";
+            description "Flag indicating whether the entry created is subject to aging.";
         }
 
         leaf station-move {
             type boolean;
             default false;
-            description "Whether the station move is allowed or not";
+            description "Flag indicating whether the station-move is allowed or not";
         }
 
         leaf mac-sticky {
@@ -370,13 +401,12 @@ module dell-base-interface-common {
             default false;
             description
                 "If True then all dynamically learnt addresses will be converted into static MAC address
-                and it will not be learnt/moved on other ports. Any new learnt MAC are also converted
-                into sticky MAC address. Sticky flag takes precedence over dynamic";
+                and it will not be learnt/moved on other ports. Any newly learnt MAC is also converted
+                into sticky MAC address. mac-sticky flag takes precedence over dynamic flag";
         }
 
 
         leaf mll-violation-actions {
-            description "Configurable mac learn limit (mll) actions when mac learn limit is violated";
             type enumeration {
                 enum LOG {
                     value 1;
@@ -387,10 +417,10 @@ module dell-base-interface-common {
                     description "Shutdown the Interface";
                 }
             }
+            description "Configurable mac learn limit (mll) actions when mac learn limit is violated";
         }
 
         leaf msm-violation {
-        	description "MAC station move (msm) violation actions.";
             type enumeration {
                 enum LOG {
                     value 1;
@@ -409,22 +439,25 @@ module dell-base-interface-common {
                     description "Disable both the interfaces";
                 }
             }
+       	    description "MAC station move (msm) violation actions.";
         }
+        description
+            "Group of Mac Learn Limit configuration attributes";
     }
-  typedef phy-mode-type {
-    type enumeration {
-      enum ETHERNET {
-        value 1;
-      }
-      enum FC {
-        value 2;
-      }
+
+    typedef phy-mode-type {
+        type enumeration {
+          enum ETHERNET {
+             value 1;
+          }
+          enum FC {
+             value 2;
+          }
+        }
+       description "Enumeration of possible PHY modes of a physical interface";
     }
-  }
 
     typedef mac-learn-mode{
-        description "FDB Learning mode of the interface";
-
         type enumeration{
 
             enum DROP{
@@ -452,13 +485,13 @@ module dell-base-interface-common {
                 description "Trap packets with unknown source MAC address to CPU. Do not learn. Forward based on destination MAC";
             }
         }
+        description "Enumeration of all possible MAC-learning modes that can be configured on the interface.";
+
     }	
 
     grouping supported-profiles {
         list supported-profiles {
             key "profile-name";
-            description "Profile modes supported on hybrid group.
-                         Profile mode is a set of breakout mode and speed to be applied on port.";
             leaf profile-name {
                 type string;
                 description "Name of the profile to be supported on hybrid-group";
@@ -467,16 +500,19 @@ module dell-base-interface-common {
                 type string;
                 description "Description of the profile to be supported on hybrid-group";
             }
+            description "Profile modes supported on hybrid group.
+                         Profile mode is a set of breakout mode and speed to be applied on port.
+                         Each profile is uniquely identified by the key 'profile-name'.";
         }
+        description "Group of lists describing the profiles supported on the interface.";
     }	
 
   grouping breakout-capabilities {
         list br-cap {
-        key "phy-mode breakout-mode port-speed";
-        description "List of breakout capabilities with max port speeds.";
+            key "phy-mode breakout-mode port-speed";
             leaf phy-mode {
                 type phy-mode-type;
-                description " Physical layer mode , FC or Ethernet";
+                description " Physical layer mode (FC or Ethernet)";
             }
             leaf breakout-mode {
                 type base-cmn:breakout-type ;
@@ -484,13 +520,15 @@ module dell-base-interface-common {
             }
             leaf port-speed {
                 type base-if:speed;
-                description "Supported speed.";
+                description "Configured speed.";
             }
             leaf skip-ports {
                 type uint32;
                 description "Skip ports between two active port for the breakout mode";
             }
+            description "List of breakout capabilities with max port speeds.";
         }
+        description "Group of Breakout properties";
     }
 
      grouping stats {
@@ -518,12 +556,12 @@ module dell-base-interface-common {
           description
             "Total number of outgoing bytes";
         }
+        description "Group of counters related to packet flow";
     }
 
    grouping vn-remote-endpoints {
        list remote-endpoint {
            key "addr-family addr";
-           description "List of remote VTEP endpoints which are part of this VXLAN.";
 
            uses base-cmn:ip;
 
@@ -532,16 +570,46 @@ module dell-base-interface-common {
                config false;
                description "Tunnel Id of the corresponding remote endpoint.";
            }
+
            leaf flooding-enabled {
                type boolean;
+               status deprecated;
                config false;
-               description "The remote endpoint address is part of flooding domain if this flag is set.";
+               status deprecated;
+               description "The remote endpoint address is part of flooding domain if this flag is set.
+                            This attribute is deprecated; instead individual flooding attribute for unicast, multicast and
+                            broadcast are used.";
            }
+
+           leaf unicast-flooding-enabled {
+               type boolean;
+               default true;
+               description "The remote endpoint address is part of unicast flooding domain
+                            if this flag is set to true.";
+           }
+
+           leaf multicast-flooding-enabled {
+               type boolean;
+               default true;
+               description "The remote endpoint address is part of multicast flooding domain
+                            if this flag is set to true.";
+           }
+
+           leaf broadcast-flooding-enabled {
+               type boolean;
+               default true;
+               description "The remote endpoint address is part of broadcast flooding domain
+                            if this flag is set to true.";
+           }
+
            leaf mac-learning-mode {
                type mac-learn-mode;
-               description "MAC-learning mode for remote endpoint.";
+               description "MAC-learning mode for the remote endpoint.";
            }
+           description "List of remote VTEP endpoints, identified by the key-pair 'addr-family addr',
+                        which are part of this VXLAN.";
        }
+       description "Group of VTEP Remote Endpoint Properties";
    }
 
 

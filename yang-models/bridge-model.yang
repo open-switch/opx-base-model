@@ -20,6 +20,10 @@ module bridge-domain {
 
                  Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
 
+    revision 2018-07-26{
+        description " Add bridge id";
+        reference "Network Platform Abstraction";
+    }
     revision 2018-04-12{
         description "Fixing pyang IETF errors and adding documentation to the model";
         reference "Network Platform Abstraction";
@@ -51,6 +55,12 @@ module bridge-domain {
         leaf name {
             type string;
             description "Bridge name.";
+        }
+        leaf id {
+             type uint32;
+             range "1..16777215";
+             description "Bridge id is optional and if name is not provided during creation time then
+                           bridge id is used for the generation of the bridge name.";
         }
         leaf-list member-interface {
             type if:interface-ref;

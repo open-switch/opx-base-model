@@ -22,8 +22,15 @@ module dell-base-neighbor {
         "http://www.dell.com/support";
 
     description
-        "This module contains a collection of YANG definitions for
-        managing configuration and operational data for Neighbor Object";
+        "This model contains a collection of attributes and RPCs used for
+        managing the switch neighbors.
+
+        Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-08-17 {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2018-07-03 {
         description
@@ -65,6 +72,7 @@ module dell-base-neighbor {
             type base-cmn:logical-ifindex;
             description "Incase of VLAN IP routing, this holds the physical interface through which the MAC is learnt.";
         }
+        description "Extending the neighbor object with Dell proprietary attributes";
     }
 
     /* To flush the Nbr entries on admin down */
@@ -73,24 +81,43 @@ module dell-base-neighbor {
             type base-cmn:logical-ifindex;
             description "Flush the neighbor entries configured/learnt on this interface";
         }
+        description "Extending the interface object with Dell proprietary attributes";
     }
 
 
     /* For clear arp/neighbor support */
     rpc flush {
      description "Flush the Neighbor entries for given input per Interface or AF or neighbor address/prefix";
+
+
+     // ATTRIBUTE PATH  : base-neighbor/flush
+     // ==============
+     //
+     // QUALIFIER       : Target
+     // =========
+     //
+     // INPUT           : base-neighbor/flush/input/vrf-id (ID of the VRF. If this parameter is missing, vrf id 0 is assumed),
+     // =====             base-neighbor/flush/input/vrf-name (vrf name),
+     //                   base-neighbor/flush/input/af (address family - default is ipv4),
+     //                   base-neighbor/flush/input/ifname (interface(s) whose neighbor list would be flushed) ,
+     //                   base-neighbor/flush/input/ip (IP address of the neighbor to be flushed),
+     //                   base-neighbor/flush/input/prefix-len (subnet mask used to speificy arange of neighbor IPs).
+     //
+     // OUTPUT          : None
+     // ======
+
      input {
 
        leaf vrf-id {
             type uint32;
             default 0;
-            description "VRF ID";
             status obsolete;
+            description "VRF ID";
        }
 
        leaf vrf-name {
-           mandatory true;
            type string;
+           mandatory true;
            description "VRF device name";
        }
 
@@ -122,8 +149,8 @@ module dell-base-neighbor {
 
     list auto-nbr-refresh {
         key "vrf-name af";
-        description "This controls whether or not the auto neighbor refresh is enabled
-            for the stale neighbor.";
+
+        // Qualifier : Target
 
         leaf vrf-name {
             type string;
@@ -138,6 +165,8 @@ module dell-base-neighbor {
             default true;
             description "This set to true to enable auto neighbor refresh and false otherwise.";
         }
+        description "This controls whether or not the auto neighbor refresh is enabled
+            for the stale neighbor.";
     }
 
 }

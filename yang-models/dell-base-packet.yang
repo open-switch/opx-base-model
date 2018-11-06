@@ -19,16 +19,20 @@ module dell-base-packet {
 
     description
         "This module contains a collection of YANG definitions provided
-         by platform to manage control packet handling";
+         by the platform to implement forwarding-table packet handling criterion";
+
+    revision 2018-08-17 {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";	
+    }
 
     revision 2016-03-23 {
         description
             "Initial revision";
+        reference "Network Platform Abstraction";	
     }
 
     typedef packet-match-type {
-        description "Enumeration of all possible packet fields that can be
-                     used to match packets.";
 
         type enumeration {
 
@@ -107,10 +111,11 @@ module dell-base-packet {
                 description "Match based on Packet offset";
             }
         }
+        description "Enumeration of all possible packet fields that can be
+                     used to match packets.";
     }
 
     typedef packet-direction-type {
-            description "Match based on packet direction";
 
         type enumeration {
             enum DIR_IN {
@@ -123,10 +128,10 @@ module dell-base-packet {
                 description "Match on Egress Packet";
             }
         }
+        description "Enumeration of types of a packet based on its traffic direction";
     }
 
     typedef packet-action-type {
-        description "Enumeration of packet actions";
 
         type enumeration {
 
@@ -145,78 +150,92 @@ module dell-base-packet {
                 description "Copy the packet to a specified socket. Not a valid action for DIR_OUT";
             }
         }
+        description "Enumeration of possible actions to be performed in case of packet match";
     }
 
     grouping offset-match {
-        description "Match up to twelve bytes from a specified offset.
-                     Match start from the offset-pos for the next len bytes";
-
         leaf data {
            type binary {
                length "12";
            }
+           description "Data field used for a match operation - up to 12 bytes";
         }
 
         leaf mask {
            type binary {
                length "12";
            }
+           description "Bytes in the mask field used for a match operation - up to 12.
+                        Must be same number of bytes as in the data field.";
         }
 
         leaf len {
-            type uint32;
+           type uint32;
+           description "Number of bytes to be scanned, starting from offset-pos";
         }
 
         leaf offset-pos {
-            type uint32;
+           type uint32;
+           description "Offset in a packet where a match operation starts from.";
         }
+        description "Match up to twelve bytes from a specified offset.
+                     'len' number of bytes are matched starting from 'offset-pos'";
     }
 
     grouping match-parameters {
-        description "Specify the match-parameter. Only ONE field of packet-match-type must be
-                     filled as part of one match criteria.
-                     For e.g., if match-type is SRC_IPV6, then provide the leaf-attribute <ipv6>
-                     Similarly if match-type is OUTER_VLAN_ID or TRAP_ID, then provide vlan-id or
-                     trap-id value in leaf-attribute <data>";
 
         leaf type {
             type packet-match-type;
+            description "Identifies the packet field to be used in a match operation";
         }
 
         leaf ipv4 {
             type base-cmn:ipv4-address;
+            description "IPv4 address to be matched with the src/dest IPv4 address";
         }
 
         leaf ipv6 {
             type base-cmn:ipv6-address;
+            description "IPv6 address to be matched against the source or destination IPv6 address field of a packet.";
         }
 
         leaf mac-addr {
             type base-cmn:mac-address;
+            description "MAC address to be matched against the source or destination MAC address field of a packet.";
         }
 
         leaf-list ports {
             type base-cmn:logical-ifindex;
+            description "Set of logical interface ids, on which the packet is received/sent";
         }
 
         leaf data {
             type uint64;
+            description "Value to use for matching packet fields of integer type, such as vlan-id, trap-id etc.";
         }
 
         container offset-value {
             when "../type = OFFSET";
             uses offset-match;
+            description "Provide parameters for offset-match when OFFSET packet type matching is performed";
         }
+        description "Specify the match-parameter. Only ONE field of packet-match-type must be
+                     filled as part of one match criteria.
+                     For e.g., if match-type is SRC_IPV6, then provide the leaf-attribute <ipv6>
+                     Similarly if match-type is OUTER_VLAN_ID or TRAP_ID, then provide vlan-id or
+                     trap-id value in leaf-attribute <data>";
     }
 
     grouping action-parameters {
 
         leaf type {
             type packet-action-type;
+            description "Action performed when a packet match occurs";
         }
 
         leaf redirect-if {
             type base-cmn:logical-ifindex;
+            description "Interface id where the packet is sent in case of match.";
         }
 
         container socket-address {
@@ -225,18 +244,57 @@ module dell-base-packet {
                  Applications must provide this while creating the rule with socket action";
 
             leaf ip {
-                mandatory true;
                 type base-cmn:ipv4-address;
+                mandatory true;
+                description "IP address of the UDP socket where matched packets are sent.";
             }
 
             leaf udp-port {
-                mandatory true;
                 type uint16;
+                mandatory true;
+                description "Port of the UDP socket where matched packets are sent.";
             }
         }
+        description "Group of attributes for action object";
     }
 
     list rule {
+
+        key "id";
+
+        // Qualifier : Target
+
+        leaf id {
+            type uint32;
+            description  "Id to uniquely identify a packet match criteria.
+                          A unique integer value shall be returned to the application and can
+                          be used as the key for all further get and delete actions";
+        }
+
+        leaf direction {
+            type packet-direction-type;
+            default DIR_IN;
+            description  "Rule to be applied on either Ingress or Egress packets";
+        }
+
+        list match {
+            key "type";
+            min-elements "1";
+            uses match-parameters;
+            description  "Match-filter list";
+        }
+
+        list action {
+            key "type";
+            uses action-parameters;
+            description "List of actions";
+        }
+
+        leaf stop {
+            type boolean;
+            default true;
+            description  "Stop processing further rules";
+        }
         description "List of control packet software filter entries. Every rule is intended to be matched
                      and corresponding action taken. Currently, there is no priority matching or any conflict
                      resolution. Each rule can have a list of match-parameters and a list of actions.
@@ -252,63 +310,24 @@ module dell-base-packet {
 
                      If the matched-rule has only action as COPY-TO-SOCK, then default action shall ALSO be applied.
                      In all other cases, the default action is NOT taken";
-
-        key "id";
-
-        leaf id {
-            description  "Id to uniquely identify a packet match criteria.
-                          A unique integer value shall be returned to the application and can
-                          be used as the key for all further get and delete actions";
-            type uint32;
-        }
-
-        leaf direction {
-            description  "Rule to be applied on either Ingress or Egress packets";
-
-            type packet-direction-type;
-            default DIR_IN;
-        }
-
-        list match {
-            description  "Match-filter list";
-
-            key "type";
-            min-elements "1";
-            uses match-parameters;
-        }
-
-        list action {
-            description "List of actions";
-
-            key "type";
-            uses action-parameters;
-        }
-
-        leaf stop {
-            description  "Stop processing further rules";
-
-            type boolean;
-            default true;
-        }
     }
 
     container statistics {
-        description "Collection of control packet statistics objects.";
-
         leaf sflow-pkts {
-            description "Number of SFLOW sampled packets lifted to CPU";
             type yang:counter64;
+            description "Number of SFLOW sampled packets directed to the CPU.";
         }
 
         leaf in-pkts {
-            description "Number of ingressed packets received by packet-IO";
             type yang:counter64;
+            description "Number of ingressed packets received by packet-IO";
         }
 
         leaf out-pkts {
-            description "Number of egressed packets trasmitted by packet-IO";
             type yang:counter64;
+            description "Number of egressed packets trasmitted by packet-IO";
         }
+        description "Collection of control packet statistics objects.";
     }
 
 }

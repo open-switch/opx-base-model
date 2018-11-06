@@ -16,6 +16,31 @@ module dell-interface {
     extensions. This model contains the entry point for the interface
     object extensions.";
 
+  revision "2018-09-18" {
+    description "Add default-vlan leaf to vlan-globals ";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-08-27" {
+    description "This revision corrects the type for untagged VLAN id for virtual network member interface";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-08-17" {
+    description "Fixing pyang IETF errors and adding documentation to the model.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-08-06" {
+    description "This revision adds untagged VLAN id for virtual netowrk member interface";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-06-27" {
+    description "This revision adds ingress and egress split horizon attribute id";
+    reference "Network Platform Abstraction";
+  }
+
   revision "2018-05-31" {
     description "This revision adds error-message for LAG mode constrain";
     reference "Network Platform Abstraction";
@@ -43,73 +68,92 @@ module dell-interface {
   }
 
   revision "2018-03-29" {
-    description "Add parent bridge attribute as part of the vlan interface.";
+    description "Add parent bridge attribute as part of the VLAN interface.";
     reference "Network Platform Abstraction";
   }
 
   revision "2018-02-26" {
-    description "Modifying l3vlan to l3ipvlan in accordance with iana-if-type";
+    description "Modifying L3VLAN to L3IPVLAN in accordance with iana-if-type";
+    reference "Network Platform Abstraction";
   }
 
   revision "2018-02-08" {
     description "Added statistics to track port headroom buffer occupancy.";
+    reference "Network Platform Abstraction";
   }
 
   revision "2018-02-06" {
     description "Added max-speed leaf to interface state object";
+    reference "Network Platform Abstraction";
   }
 
   revision "2018-01-22" {
-    description "Added scaled-vlan attribute to enable scaled vlan deployment. Also
-                 added vlan-mode attribute to support l3 vlans in scaled vlan mode";
+    description "Added scaled-VLAN attribute to enable scaled VLAN deployment. Also
+                 added VLAN-mode attribute to support L3 VLANs in scaled VLAN mode";
+    reference "Network Platform Abstraction";
   }
 
   revision "2017-12-12" {
     description "Added ip-mtu leaf to interface state object";
+    reference "Network Platform Abstraction";
   }
 
   revision "2017-11-20" {
-    description "Moving must statement on the default-vlan-id leaf to platform specific yang annotation.";
+    description "Moving must statement on the default-VLAN-id leaf to platform specific yang annotation.";
+    reference "Network Platform Abstraction";
   }
 
   revision "2017-10-24" {
     description "Add ecn-marked packet counter";
+    reference "Network Platform Abstraction";
   }
 
   revision "2017-10-23" {
     description "Change VLAN member tagged/untagged leaf constrains.";
+    reference "Network Platform Abstraction";
   }
 
   revision "2017-10-10" {
     description "Add vlanSubInterface and VXLAN interface attributes";
+    reference "Network Platform Abstraction";
   }
 
   revision 2017-10-09 {
         description
-            "Add lag-mode attribute to interface state LAG object.";
+            "Add LAG-mode attribute to interface state LAG object.";
+        reference "Network Platform Abstraction";
   }
 
   revision 2017-10-04 {
         description
             "Add MAC learn mode attribute to interface object.";
+        reference "Network Platform Abstraction";
   }
 
   revision "2017-09-27" {
     description "Add per interface supported auto-negotiation attribute.";
+    reference "Network Platform Abstraction";
   }
 
   revision "2016-01-01" {
     description "Initial version.";
+    reference "Network Platform Abstraction";
   }
 
   augment "/if:interfaces" {
     container vlan-globals {
-      presence "Enable default vlan configurations";
+      presence "Enable default VLAN configurations";
       leaf default-vlan-id {
         type if:interface-ref;
         default "vlan1";
         description
-              "Default vlan id for the switch";
+              "Default VLAN id for the switch";
+      }
+
+      leaf default-vlan {
+          type base-cmn:vlan-id;
+          description "Default VLAN ID for the switch.
+                       Differs from leaf default-vlan-id by type.";
       }
 
       leaf scaled-vlan{
@@ -119,11 +163,22 @@ module dell-interface {
                 "To enable scaled VLAN configuration in the system. By default
                  this is disabled.";
        }
+
+        leaf vn-untagged-vlan {
+            type base-cmn:vlan-id;
+            description
+                "This is the VLAN id that will be used when untagged member interfaces
+                 are added to virtual network. This VLAN will be used exclusively for
+                 untagged interfaces in virtual network. This VLAN cannot be used
+                 for regular switching and forwarding purpose.";
+        }
+
+        description "Default VLAN configurations";
     }
+    description "Extending the interfaces container to add Dell proprietary attributes";
   }
 
   augment "/if:interfaces/if:interface" {
-    description "The following attributes are common to all interface types.";
 
     leaf mtu {
       type uint32;
@@ -138,8 +193,8 @@ module dell-interface {
     }
     leaf mac-learn {
         type base-if:mac-learn-mode;
-        description "MAC address learning mode for the port or VLAN/VXLAN interface.";
         default "HW";
+        description "MAC address learning mode for the port or VLAN/VXLAN interface.";
     }
 
     leaf eee {
@@ -161,6 +216,7 @@ module dell-interface {
         type string;
         description "VRF/Namespace name";
     }
+    description "The following attributes are common to all interface types.";
   }
 
   // Phy and LAG
@@ -180,6 +236,31 @@ module dell-interface {
         description
           "Traffic sampling interval for the interface";
     }
+
+    leaf ingress-split-horizon-id{
+        type uint32;
+        default "0";
+        description
+        "Ingress split horizon ID of the interface. This will not apply to the actual
+         interface but to all sub interfaces which are part of 1D bridge whose parent
+         interface is this interface. If ingress split horizon id of ingress sub
+         interface is equal to egress split horizon id of egress sub interface,
+         then packets should be discarded";
+    }
+
+    leaf egress-split-horizon-id{
+        type uint32;
+        default "0";
+        description
+        "Egress split horizon ID of the interface. This will not apply to the actual
+         interface but to all sub interfaces which are part of 1D bridge whose parent
+         interface is this interface. If ingress split horizon id of ingress sub
+         interface is equal to egress split horizon id of egress sub interface,
+         then packets should be discarded";
+    }
+
+    description "Extending interfaces object to include attributes common to PHY and LAG
+                 interfaces";
   }
 
   // Phy specific
@@ -219,29 +300,31 @@ module dell-interface {
           description
                 "Should be removed and used from ietf yang model";
         }
-      }
+        description
+         "Extending the interfaces container to add attributes common to different phy interface types";
+  }
 
 
     augment "/if:interfaces/if:interface" {
         when "if:type = 'base-if:vlanSubInterface'";
-        description "VLAN sub-interface is created for the combination of Physical
-                      interface/LAG and Vlan Id.";
 
         leaf vlan-id {
             type base-cmn:vlan-id;
             description "VLAN ID of the sub-interface.";
         }
+        description "VLAN sub-interface is created for the combination of Physical
+                      interface/LAG and Vlan Id.";
     }
 
 
   augment "/if:interfaces-state/if:interface" {
-    description "The following attribute is common to all interface types.";
 
     leaf ip-mtu {
       type uint32;
       description
         "The IP MTU of the interface.";
     }
+    description "Extending the interfaces-state object to include attributes common to all interface types.";
   }
 
     augment "/if:interfaces-state/if:interface" {
@@ -296,32 +379,31 @@ module dell-interface {
             type base-if:supported-autoneg;
             description "Supported auto-negotiation value for the interface.";
         }
+        description
+         "Extending the interfaces-state container add attributes common to different phy interface types";
     }
 
   // LAG specfic
   augment "/if:interfaces/if:interface" {
         when "if:type = 'ianaift:ieee8023adLag'";
-        description "This extension is focused on LAG attributes.";
 
         leaf min-links {
           type uint32 {
             range "1..32";
           }
+          default "1";
           description
                 "Minimum number of members in port channel group";
-          default "1";
         }
 
         leaf lag-mode {
-          description "Mode of lag to be create static lag or dynamic lag";
           type base-if:lag-mode-type;
           default "STATIC";
+          description "Mode of LAG to be create static LAG or dynamic LAG";
         }
 
         list member-ports {
           key "name";
-          description
-                "This has member interfaces";
           leaf name {
             type if:interface-ref;
             must "/if:interfaces/if:interface[if:name = current()]"
@@ -329,30 +411,38 @@ module dell-interface {
               error-message
                 "Only Ethernet interfaces can be added as member ports to a port-channel!";
             }
+            description "interface name";
           }
           leaf lacp-mode {
             type base-if:lacp-mode-type;
             must "../../dell-if:lag-mode = 'DYNAMIC'"  {
+            error-message
+                "the mode is not compatible with the existing member(s)";
             description
                     "lacp mode";
             error-message
                 "the mode is not compatible with the existing member(s)";
             }
+            description
+                    "lacp mode";
           }
+          description
+                "This has member interfaces";
         }
-      }
+        description "This extension is focused on LAG attributes.";
+  }
 
   // LAG specfic - state
   augment "/if:interfaces-state/if:interface" {
         when "if:type = 'ianaift:ieee8023adLag'";
-        description "This extension is focused on LAG state attributes.";
 
         leaf lag-mode {
-          description "Mode of lag configured.";
           type base-if:lag-mode-type;
           default "STATIC";
+          description "Mode of LAG configured.";
         }
-      }
+        description "This extension is focused on LAG state attributes.";
+  }
 
   /* Ethernet specific */
   augment "/if:interfaces/if:interface" {
@@ -376,6 +466,8 @@ module dell-interface {
             0 to 0xffffff and default value is 25G Consortium OUI 0x6A737D.
             OUI configuration should be same for all 25G interface in a front panel port";
     }
+    description
+         "Extending the interfaces container to add Ethernet specific attributes";
   }
 
   augment "/if:interfaces-state/if:interface" {
@@ -396,6 +488,8 @@ module dell-interface {
             It is only applicable for 25G and 50G interfaces. Allowed range is
             0 to 0xffffff and default value is 25G Consortium OUI 0x6A737D";
     }
+    description
+         "Extending the interfaces-state container to add Ethernet specific attributes";
   }
   // VLAN specfic
   augment "/if:interfaces/if:interface" {
@@ -412,15 +506,15 @@ module dell-interface {
     }
 
     leaf vlan-type {
-      description "VLAN type (data/management)";
       type base-if:vlan-type;
       default "DATA";
+      description "VLAN type (data/management)";
     }
 
     leaf vlan-mode {
       type base-if:mode;
-      description "VLAN mode can be change to L3 when global scaled-vlan config is enabled.
-      If global scaled-vlan is disabled then vlan-mode is not taken in account.";
+      description "VLAN mode can be change to L3 when global scaled-VLAN config is enabled.
+      If global scaled-VLAN is disabled then VLAN-mode is not taken in account.";
     }
 
     leaf-list tagged-ports {
@@ -430,20 +524,21 @@ module dell-interface {
          + " or (/if:interfaces/if:interface[if:name = current()]"
          + "/if:type = 'base-if:management')" {
         error-message
-          "Interface being added (to vlan) is not in switchport mode trunk!";
+          "Interface being added (to VLAN) is not in switchport mode trunk!";
       }
       must "(../dell-if:vlan-type = 'DATA'"
          + " and /if:interfaces/if:interface[if:name = current()]"
          + "/if:type != 'base-if:management') or (../dell-if:vlan-type = 'MANAGEMENT')" {
         error-message
-          "Data vlan cannot have management interface as member. Vlan type can be changed only when it has no members!";
+          "Data VLAN cannot have management interface as member. Vlan type can be changed only when it has no members!";
       }
       must "(../dell-if:vlan-type = 'MANAGEMENT'"
          + " and /if:interfaces/if:interface[if:name = current()]"
          + "/if:type = 'base-if:management') or (../dell-if:vlan-type = 'DATA')" {
         error-message
-          "Management vlan cannot have data interface as member. Vlan type can be changed only when it has no members!";
+          "Management VLAN cannot have data interface as member. Vlan type can be changed only when it has no members!";
       }
+      description "VLAN tagged ports";
     }
 
     leaf-list untagged-ports {
@@ -455,20 +550,21 @@ module dell-interface {
          + " or (/if:interfaces/if:interface[if:name = current()]"
          + "/if:type = 'base-if:management')" {
         error-message
-          "Interface being added (to vlan) is not in switchport mode access or trunk!";
+          "Interface being added (to VLAN) is not in switchport mode access or trunk!";
       }
       must "(../dell-if:vlan-type = 'DATA'"
          + " and /if:interfaces/if:interface[if:name = current()]"
          + "/if:type != 'base-if:management') or (../dell-if:vlan-type = 'MANAGEMENT')" {
         error-message
-          "Data vlan cannot have management interface as member. Vlan type can be changed only when it has no members!";
+          "Data VLAN cannot have management interface as member. Vlan type can be changed only when it has no members!";
       }
       must "(../dell-if:vlan-type = 'MANAGEMENT'"
          + " and /if:interfaces/if:interface[if:name = current()]"
          + "/if:type = 'base-if:management') or (../dell-if:vlan-type = 'DATA')" {
         error-message
-          "Management vlan cannot have data interface as member. Vlan type can be changed only when it has no members!";
+          "Management VLAN cannot have data interface as member. Vlan type can be changed only when it has no members!";
       }
+      description "VLAN untagged ports";
     }
     leaf parent-bridge {
       type string;
@@ -477,6 +573,8 @@ module dell-interface {
                     members becomes part of the bridge domain. VLAN inherits L3 properties of the parent-bridge.
                     IP address and route info should be configured on the parent bridge only.";
     }
+    description
+         "Extending the interfaces container to add VLAN specific attributes";
   }
 
   // VXLAN specfic
@@ -499,28 +597,29 @@ module dell-interface {
             //Qualifiers Observed : list of all remote endpoints associated with the VTEP."
             //Qualifiers Target: List of remote endpoints associated with this vtep's flooding domain"
         }
-
+        description
+         "Extending the interfaces container to add VxLAN specific attributes";
     }
 
-  //Macvlan VLAN sub interface specific
+  //MacVLAN or VLAN sub interface specific
   augment "/if:interfaces/if:interface" {
     when "if:type = 'base-if:macvlan' or if:type = 'base-if:vlanSubInterface'";
-    description "Macvlan Interface configuration attributes";
 
     leaf parent-interface {
       type if:interface-ref;
-      description "The interface name from which macvlan interface is to be created";
+      description "The interface name from which macVLAN interface is to be created";
     }
+    description "Macvlan Interface configuration attributes";
   }
 
   augment "/if:interfaces-state/if:interface" {
     when "if:type = 'base-if:macvlan' or if:type = 'base-if:vlanSubInterface'";
-    description "Macvlan Interface configuration attributes";
 
     leaf parent-interface {
       type if:interface-ref;
       description "The interface name from which macvlan interface is to be created";
     }
+    description "Macvlan Interface configuration attributes";
   }
 
   augment "/if:interfaces-state/if:interface" {
@@ -542,6 +641,8 @@ module dell-interface {
             //Qualifiers Observed : list of all remote endpoints associated with the VTEP."
             //Qualifiers Target: List of remote endpoints associated with this vtep's flooding domain"
         }
+    description "Extending the interfaces-state object to include VxLAN interface
+                 specific configuration attributes";
   }
 
   augment "/if:interfaces-state/if:interface" {
@@ -561,12 +662,12 @@ module dell-interface {
            type base-if:speed;
            description "Port's NPU Speed";
        }
-    }
+       description
+         "Extending the interfaces-state container to add Fibre-Channel specific attributes";
+  }
 
   augment "/if:interfaces-state/if:interface" {
     when "if:type = 'base-if:management'";
-    description "Interface state attributes applicable for
-                 ethernet/management/LAG/L2VLAN/L3VLAN interfaces.";
 
        leaf bind-ni-name {
          type leafref {
@@ -575,288 +676,288 @@ module dell-interface {
          description
            "Network Instance to which an interface is bound.";
        }
+    description "Interface state attributes applicable for
+                 ethernet/management/LAG/L2VLAN/L3VLAN interfaces.";
   }
 
 
   augment "/if:interfaces-state/if:interface/if:statistics" {
-     description
-        "Interface counter attributes";
 
         leaf if-in-vlan-discards {
-            description "Number of interface incoming vlan discarded packets";
             type yang:counter64;
+            description "Number of interface incoming VLAN discarded packets";
         }
         leaf if-out-qlen {
-            description "Number of interface outgoing queue length";
             type yang:counter64;
+            description "Number of interface outgoing queue length";
         }
         leaf ether-drop-events {
-            description "Number of ethernet drop events";
             type yang:counter64;
+            description "Number of ethernet drop events";
         }
         leaf ether-multicast-pkts {
-            description "Number of ethernet multicast packets";
             type yang:counter64;
+            description "Number of ethernet multicast packets";
         }
         leaf ether-broadcast-pkts {
-            description "Number of ethernet broadcast packets";
             type yang:counter64;
+            description "Number of ethernet broadcast packets";
         }
         leaf ether-undersize-pkts {
-            description "Number of ethernet undersize packets";
             type yang:counter64;
+            description "Number of ethernet undersize packets";
         }
         leaf ether-fragments {
-            description "Number of ethernet fragments";
             type yang:counter64;
+            description "Number of ethernet fragments";
         }
         leaf ether-oversize-pkts {
-            description "Number of ethernet stats oversize packets";
             type yang:counter64;
+            description "Number of ethernet stats oversize packets";
         }
         leaf ether-rx-oversize-pkts {
-            description "Number of ethernet received oversize packets";
             type yang:counter64;
+            description "Number of ethernet received oversize packets";
         }
         leaf ether-tx-oversize-pkts {
-            description "Number of ethernet transmitted oversize packets";
             type yang:counter64;
+            description "Number of ethernet transmitted oversize packets";
         }
         leaf ether-jabbers {
-            description "Number of ethernet stats jabbers";
             type yang:counter64;
+            description "Number of ethernet stats jabbers";
         }
         leaf ether-octets {
-            description "Number of ethernet stats octets";
             type yang:counter64;
+            description "Number of ethernet stats octets";
         }
         leaf ether-pkts {
-            description "Number of ethernet stats packets";
             type yang:counter64;
+            description "Number of ethernet stats packets";
         }
         leaf ether-collisions {
-            description "Number of ethernet stats collisions";
             type yang:counter64;
+            description "Number of ethernet stats collisions";
         }
         leaf ether-crc-align-errors {
-            description "Number of ethernet stats crc align errors";
             type yang:counter64;
+            description "Number of ethernet stats crc align errors";
         }
         leaf ether-tx-no-errors {
-            description "Number of ethernet stats tx no errors";
             type yang:counter64;
+            description "Number of ethernet stats tx no errors";
         }
         leaf ether-rx-no-errors {
-            description "Number of ethernet stats rx no errors";
             type yang:counter64;
+            description "Number of ethernet stats rx no errors";
         }
         leaf green-discard-dropped-packets {
-            description "Number of WRED green packet count";
             type yang:counter64;
+            description "Number of WRED green packet count";
         }
         leaf green-discard-dropped-bytes {
-            description "Number of WRED green byte count";
             type yang:counter64;
+            description "Number of WRED green byte count";
         }
         leaf yellow-discard-dropped-packets {
-            description "Number of WRED yellow packet count";
             type yang:counter64;
+            description "Number of WRED yellow packet count";
         }
         leaf yellow-discard-dropped-bytes {
-            description "Number of WRED yellow packet count";
             type yang:counter64;
+            description "Number of WRED yellow packet count";
         }
         leaf red-discard-dropped-packets {
-            description "Number of WRED red packet count";
             type yang:counter64;
+            description "Number of WRED red packet count";
         }
         leaf red-discard-dropped-bytes {
-            description "Number of WRED red packet count";
             type yang:counter64;
+            description "Number of WRED red packet count";
         }
         leaf discard-dropped-packets {
-            description "Number of WRED dropped packet count";
             type yang:counter64;
+            description "Number of WRED dropped packet count";
         }
         leaf discard-dropped-bytes {
-            description "Number of WRED dropped packet bytes";
             type yang:counter64;
+            description "Number of WRED dropped packet bytes";
         }
         leaf ecn-marked-packets {
-            description "Number of ECN-marked packets";
             type yang:counter64;
+            description "Number of ECN-marked packets";
         }
         leaf ether-in-pkts-64-octets {
-            description "Number of Ethernet receive packets of 64 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 64 octets";
         }
         leaf ether-in-pkts-65-to-127-octets {
-            description "Number of Ethernet receive packets of 65 to 127 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 65 to 127 octets";
         }
         leaf ether-in-pkts-128-to-255-octets {
-            description "Number of Ethernet receive packets of 128 to 255 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 128 to 255 octets";
         }
         leaf ether-in-pkts-256-to-511-octets {
-            description " Number of Ethernet receive packets of 256 to 511 octets";
             type yang:counter64;
+            description " Number of Ethernet receive packets of 256 to 511 octets";
         }
         leaf ether-in-pkts-512-to-1023-octets {
-            description "Number of Ethernet receive packets of 512 to 1023 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 512 to 1023 octets";
         }
         leaf ether-in-pkts-1024-to-1518-octets {
-            description "Number of Ethernet receive packets of 1024 to 1518 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 1024 to 1518 octets";
         }
         leaf ether-in-pkts-1519-to-2047-octets {
-            description "Number of Ethernet receive packets of 1519 to 2047 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 1519 to 2047 octets";
         }
         leaf ether-in-pkts-2048-to-4095-octets {
-            description "Number of Ethernet receive packets of 2047 to 4095 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 2047 to 4095 octets";
         }
         leaf ether-in-pkts-4096-to-9216-octets {
-            description "Number of Ethernet receive packets of 4096 to 9216 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 4096 to 9216 octets";
         }
         leaf ether-in-pkts-9217-to-16383-octets {
-            description "Number of Ethernet receive packets of 9217 to 16383 octets";
             type yang:counter64;
+            description "Number of Ethernet receive packets of 9217 to 16383 octets";
         }
         leaf ether-out-pkts-64-octets {
-            description "Number of Ethernet transmit packets of 64 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 64 octets";
         }
         leaf ether-out-pkts-65-to-127-octets {
-            description "Number of Ethernet transmit packets of 65 to 127 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 65 to 127 octets";
         }
         leaf ether-out-pkts-128-to-255-octets {
-            description "Number of Ethernet transmit packets of 128 to 255 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 128 to 255 octets";
         }
         leaf ether-out-pkts-256-to-511-octets {
-            description " Number of Ethernet transmit packets of 256 to 511 octets";
             type yang:counter64;
+            description " Number of Ethernet transmit packets of 256 to 511 octets";
         }
         leaf ether-out-pkts-512-to-1023-octets {
-            description "Number of Ethernet transmit packets of 512 to 1023 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 512 to 1023 octets";
         }
         leaf ether-out-pkts-1024-to-1518-octets {
-            description "Number of Ethernet transmit packets of 1024 to 1518 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 1024 to 1518 octets";
         }
         leaf ether-out-pkts-1519-to-2047-octets {
-            description "Number of Ethernet transmit packets of 1519 to 2047 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 1519 to 2047 octets";
         }
         leaf ether-out-pkts-2048-to-4095-octets {
-            description "Number of Ethernet transmit packets of 2047 to 4095 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 2047 to 4095 octets";
         }
         leaf ether-out-pkts-4096-to-9216-octets {
-            description "Number of Ethernet transmit packets of 4096 to 9216 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 4096 to 9216 octets";
         }
         leaf ether-out-pkts-9217-to-16383-octets {
-            description "Number of Ethernet transmit packets of 9217 to 16383 octets";
             type yang:counter64;
+            description "Number of Ethernet transmit packets of 9217 to 16383 octets";
         }
         leaf current-occupancy-bytes {
-            description "Current port occupancy in bytes";
             type yang:counter64;
+            description "Current port occupancy in bytes";
         }
         leaf watermark-bytes {
-            description "port occupancy watermark in bytes";
             type yang:counter64;
+            description "port occupancy watermark in bytes";
         }
         leaf shared-current-occupancy-bytes {
-            description "current port shared occupancy in bytes";
             type yang:counter64;
+            description "current port shared occupancy in bytes";
         }
         leaf shared-watermark-bytes {
-            description "port shared coccupancy watermark in bytes";
             type yang:counter64;
+            description "port shared coccupancy watermark in bytes";
         }
         leaf xoff-room-current-occupancy-bytes {
-            description "current port xoff room occupancy in bytes";
             type yang:counter64;
+            description "current port xoff room occupancy in bytes";
         }
         leaf pause-rx-pkts {
-            description "number of pause frames received on the port";
             type yang:counter64;
+            description "number of pause frames received on the port";
         }
         leaf pause-tx-pkts{
-            description "number of pause frames transmitted on the port";
             type yang:counter64;
+            description "number of pause frames transmitted on the port";
         }
         leaf pfc-0-rx-pkts{
-            description "PFC 0 RX packet counter";
             type yang:counter64;
+            description "PFC 0 RX packet counter";
         }
         leaf pfc-0-tx-pkts{
-            description "PFC 0 TX packet counter";
             type yang:counter64;
+            description "PFC 0 TX packet counter";
         }
         leaf pfc-1-rx-pkts{
-            description "PFC 1 RX packet counter";
             type yang:counter64;
+            description "PFC 1 RX packet counter";
         }
         leaf pfc-1-tx-pkts{
-            description "PFC 1 TX packet counter";
             type yang:counter64;
+            description "PFC 1 TX packet counter";
         }
         leaf pfc-2-rx-pkts{
-            description "PFC 2 RX packet counter";
             type yang:counter64;
+            description "PFC 2 RX packet counter";
         }
         leaf pfc-2-tx-pkts{
-            description "PFC 2 TX packet counter";
             type yang:counter64;
+            description "PFC 2 TX packet counter";
         }
         leaf pfc-3-rx-pkts{
-            description "PFC 3 RX packet counter";
             type yang:counter64;
+            description "PFC 3 RX packet counter";
         }
         leaf pfc-3-tx-pkts{
-            description "PFC 3 TX packet counter";
             type yang:counter64;
+            description "PFC 3 TX packet counter";
         }
         leaf pfc-4-rx-pkts{
-            description "PFC 4 RX packet counter";
             type yang:counter64;
+            description "PFC 4 RX packet counter";
         }
         leaf pfc-4-tx-pkts{
-            description "PFC 4 TX packet counter";
             type yang:counter64;
+            description "PFC 4 TX packet counter";
         }
         leaf pfc-5-rx-pkts{
-            description "PFC 5 RX packet counter";
             type yang:counter64;
+            description "PFC 5 RX packet counter";
         }
         leaf pfc-5-tx-pkts{
-            description "PFC 5 TX packet counter";
             type yang:counter64;
+            description "PFC 5 TX packet counter";
         }
         leaf pfc-6-rx-pkts{
-            description "PFC 6 RX packet counter";
             type yang:counter64;
+            description "PFC 6 RX packet counter";
         }
         leaf pfc-6-tx-pkts{
-            description "PFC 6 TX packet counter";
             type yang:counter64;
+            description "PFC 6 TX packet counter";
         }
         leaf pfc-7-rx-pkts{
-            description "PFC 7 RX packet counter";
             type yang:counter64;
+            description "PFC 7 RX packet counter";
         }
         leaf pfc-7-tx-pkts{
-            description "PFC 7 TX packet counter";
             type yang:counter64;
+            description "PFC 7 TX packet counter";
         }
         leaf tx-lpi-count {
             type yang:counter64;
@@ -878,6 +979,7 @@ module dell-interface {
             description
                 "Rx LPI duration";
         }
+        description "Interface counter attributes";
 
     }
 
@@ -895,6 +997,8 @@ module dell-interface {
           description
             "Total number of outgoing packets";
         }
+        description
+         "Extending the interfaces-state container to add VLAN/loopback/mgmt interface specific attributes";
     }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
@@ -1022,41 +1126,44 @@ module dell-interface {
           description
             "Total number of errors, including rx and tx";
         }
+        description
+         "Extending the interfaces-state container to add various Fibre Channel statistics";
     }
 
    grouping ipv4-stats {
        leaf ip-in-receives {
+            type yang:counter64;
             description "The total number of input datagrams received from
                       interfaces, including those received in error.";
-            type yang:counter64;
             reference
               "RFC 1213: Network Management of TCP/IP-based internets";
         }
 
         leaf ip-in-hdr-errors {
+            type yang:counter64;
             description "The number of input datagrams discarded due to
                       errors in their IP headers, including bad
                       checksums, version number mismatch, other format
                       errors, time-to-live exceeded, errors discovered
                       in processing their IP options, etc.";
-            type yang:counter64;
             reference
               "RFC 1213: Network Management of TCP/IP-based internets";
         }
 
         leaf ip-in-discards {
+            type yang:counter64;
             description "The number of input IP datagrams for which no
                       problems were encountered to prevent their
                       continued processing, but which were discarded
                       (e.g., for lack of buffer space).  Note that this
                       counter does not include any datagrams discarded
                       while awaiting re-assembly.";
-            type yang:counter64;
             reference
               "RFC 1213: Network Management of TCP/IP-based internets";
         }
 
         leaf ip-in-forw-datagrams {
+            type yang:counter64;
             description "The number of input datagrams for which this
                       entity was not their final IP destination, as a
                       result of which an attempt was made to find a
@@ -1065,34 +1172,35 @@ module dell-interface {
                       counter will include only those packets which were
                       Source-Routed via this entity, and the Source-
                       Route option processing was successful.";
-            type yang:counter64;
             reference
               "RFC 1213: Network Management of TCP/IP-based internets";
         }
 
+        description "Set of statistics pertaining to ipv4 packets received in the interface";
    }
 
    grouping ipv6-stats {
        leaf ipv6-in-receives {
+            type yang:counter64;
             description "The total number of input datagrams received by
                 the interface, including those received in error.";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-in-hdr-errors {
+            type yang:counter64;
             description "The number of input datagrams discarded due to
                 errors in their IPv6 headers, including version
                 number mismatch, other format errors, hop count
                 exceeded, errors discovered in processing their
                 IPv6 options, etc.";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-in-addr-errors {
+            type yang:counter64;
             description "The number of input datagrams discarded because
                 the IPv6 address in their IPv6 header's destination
                 field was not a valid address to be received at
@@ -1103,24 +1211,24 @@ module dell-interface {
                 do not forward datagrams, this counter includes
                 datagrams discarded because the destination address
                 was not a local address.";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-in-discards {
+            type yang:counter64;
             description "The number of input IPv6 datagrams for which no
                 problems were encountered to prevent their
                 continued processing, but which were discarded
                 (e.g., for lack of buffer space).  Note that this
                 counter does not include any datagrams discarded
                 while awaiting re-assembly.";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-out-discards {
+            type yang:counter64;
             description "The number of output IPv6 datagrams for which no
                  problem was encountered to prevent their
                  transmission to their destination, but which were
@@ -1128,12 +1236,12 @@ module dell-interface {
                  that this counter would include datagrams counted
                  in ipv6IfStatsOutForwDatagrams if any such packets
                  met this (discretionary) discard criterion.";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-out-forw-datagrams {
+            type yang:counter64;
             description "The number of output datagrams which this
                 entity received and forwarded to their final
                 destinations.  In entities which do not act
@@ -1143,156 +1251,156 @@ module dell-interface {
                 processing was successful.  Note that for
                 a successfully forwarded datagram the counter
                 of the outgoing interface is incremented.";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-in-mcast-pkts {
+            type yang:counter64;
             description "The number of multicast packets received
                  by the interface";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
 
         leaf ipv6-out-mcast-pkts {
+            type yang:counter64;
             description "The number of multicast packets transmitted
                  by the interface";
-            type yang:counter64;
             reference
               "RFC 2465: Management Information Base for IP Version 6";
         }
+        description "Set of statistics pertaining to ipv6 packets received in the interface";
    }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
         when "../if:type = 'ianaift:ethernetCsmacd'";
 
         leaf alignment-errors {
+            type yang:counter64;
             description "A count of frames received on a particular
                        interface that are not an integral number of
                        octets in length and do not pass the FCS check.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf fcs-errors {
+            type yang:counter64;
             description "A count of frames received on a particular
                        interface that are an integral number of octets
                        in length but do not pass the FCS check.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf single-collision-frames {
+            type yang:counter64;
             description "A count of frames that are involved in a single
                        collision, and are subsequently transmitted
                        successfully.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf multiple-colision-frames {
+            type yang:counter64;
             description "A count of frames that are involved in more
                          than one collision and are subsequently
                          transmitted successfully.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf sqe-test-errors {
+            type yang:counter64;
             description "A count of times that the SQE TEST ERROR
                        is received on a particular interface.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf deferred-transmissions {
+            type yang:counter64;
             description "A count of frames for which the first
                        transmission attempt on a particular interface
                        is delayed because the medium is busy.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf late-collisions {
+            type yang:counter64;
             description "The number of times that a collision is
                        detected on a particular interface later than
                        one slotTime into the transmission of a packet.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf excessive-collisions {
+            type yang:counter64;
             description "A count of frames for which transmission on a
                        particular interface fails due to excessive
                        collisions.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf internal-mac-transmit-errors {
+            type yang:counter64;
             description "A count of frames for which transmission on a
                        particular interface fails due to an internal
                        MAC sublayer transmit error.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf carrier-sense-errors {
+            type yang:counter64;
             description "The number of times that the carrier sense
                        condition was lost or never asserted when
                        attempting to transmit a frame on a particular
                        interface.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf frame-too-long {
+            type yang:counter64;
             description "A count of frames received on a particular
                        interface that exceed the maximum permitted
                        frame size.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf internal-mac-receive-errors {
+            type yang:counter64;
             description "A count of frames for which reception on a
                        particular interface fails due to an internal
                        MAC sublayer receive error.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf symbol-errors {
+            type yang:counter64;
             description "This is a read-only counter that logs various carrier events
                          on an interface depending on its speed and type.
                          Eg. 'invalid data symbol' (100 Mb/s speed),
                          'Data reception error'(1000 Mb/s speed and half-duplex),
                          'Carrier extend error'(1000 Mb/s speed and full-duplex),
                          For more details refer RFC 3635 Section 4.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
 
         leaf in-unknown-opcodes {
+            type yang:counter64;
             description "A count of MAC Control frames received on this
                        interface that contain an opcode that is not
                        supported by this device.";
-            type yang:counter64;
             reference
               "RFC 3635: EtherLike-MIB";
         }
@@ -1300,6 +1408,7 @@ module dell-interface {
         uses ipv4-stats;
         uses ipv6-stats;
 
+        description "Extending interfaces-state object to include PHY interface specific attributes";
     }
 
     rpc clear-counters {
@@ -1307,6 +1416,17 @@ module dell-interface {
                    1. Single interface name (or ifindex for base)
                    2. All interfaces
                    3. All interfaces of a particular type";
+
+      // ATTRIBUTE PATH  : dell-if/clear-counters
+      // ==============
+      //
+      // INPUT           : dell-if/clear-counters/input/all-intf  (specify the interface type),
+      // =====          OR dell-if/clear-counters/input/ifname    (specify the interface name),
+      //                OR dell-if/clear-counters/input/if-index  (specify the if-index).
+      //
+      // OUTPUT          : None
+      // ======
+
       input {
         choice intf-choice {
           case all-intf-case {
@@ -1349,6 +1469,7 @@ module dell-interface {
               description "Interface index";
             }
           }
+          description "Different choices of values for interface-specific attributes";
         }
       }
     }
@@ -1357,6 +1478,17 @@ module dell-interface {
         description "RPC for clearing 802.3az (EEE)interface counters. Input will be :
                      all interfaces (all-intf = ALL), or
                      a single interface name (or ifindex for base)";
+
+       // ATTRIBUTE PATH  : dell-if/clear-eee-counters
+       // ==============
+       //
+       // INPUT           : dell-if/clear-eee-counters/input/all-intf (specify the interface type),
+       // =====          OR dell-if/clear-eee-counters/input/ifname   (specify the interface name),
+       //                OR dell-if/clear-eee-counters/input/if-index (specify the if-index).
+       //
+       // OUTPUT          : None
+       // ======
+
         input {
             choice intf-choice {
                 case all-intf-case {
@@ -1381,13 +1513,23 @@ module dell-interface {
                         description "Interface index";
                     }
                 }
+                description "Different choices of values for 802.3az interface specific attributes";
             }
         }
     }
 
     rpc if-location-led {
         description
-          "Set the interface location led";
+          "Set the led status of a specific interface";
+
+        // ATTRIBUTE PATH  : dell-if/clear-eee-counters
+        // ==============
+        //
+        // INPUT           : dell-if/if-location-led/input/ifname  (specify the interface name),
+        // =====             dell-if/if-location-led/input/led-on  (specify the led status),
+        //
+        // OUTPUT          : None
+        // ======
         input {
           leaf ifname {
             type if:interface-ref;

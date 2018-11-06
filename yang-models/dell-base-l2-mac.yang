@@ -24,6 +24,12 @@ module dell-base-l2-mac {
          Copyright(c) 2015-2018 by Dell EMC,
          All rights reserved.";
 
+    revision "2018-09-12"{
+        description "Add enum to support MAC address flush on a port
+                     based on port and bridge.";
+        reference "Network Platform Abstraction";
+    }
+
     revision "2018-05-20" {
         description "Fixing pyang IETF errors and adding documentiation to the model.";
         reference "Network Platform Abstraction";
@@ -209,6 +215,15 @@ module dell-base-l2-mac {
                     "MAC address flush on the given subport which
                      is a combination of VLAN id and port. This
                      flush type is for port-vlan combination which is
+                     a subport of VLAN unaware(1d) bridge";
+            }
+
+            enum bridge-port {
+                value 9;
+                description
+                    "MAC address flush on the given port which
+                     is a combination of bridge and port. This
+                     flush type is for untagged port which is
                      a subport of VLAN unaware(1d) bridge";
             }
         }

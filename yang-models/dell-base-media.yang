@@ -14,61 +14,74 @@ module dell-base-media {
 
     contact "http://www.dell.com/support";
 
-    description "This model will support the configruation of params on interfaces";
+    description "This model defines the properties of the physical media available in the switch.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-17" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2016-01-11 {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 
     list media-info {
         key "media-type";
-        description "This grouping defines the default settings for the media type";
+
+        // Qualifier : Observed
+
+        config false;
 
         leaf media-type {
-            config false;
             type uint32;
+            config false;
             description "The media type of the physical media";
         }
 
         leaf media-name {
-            config false;
             type string;
+            config false;
             description "The physical Media name";
         }
 
         leaf speed {
-            config false;
             type base-if:speed;
+            config false;
             description "default speed configuration for this physical media";
         }
 
         leaf autoneg {
-            config false;
             type boolean;
+            config false;
             description "default auto negotiation configuration for this physical media";
         }
 
         leaf duplex {
-            config false;
             type base-cmn:duplex-type;
+            config false;
             description "default duplex configuration for this physical media";
         }
 
         leaf hw-profile {
-            config false;
             type uint32;
+            config false;
             description "The hardware profile ID of the physical media";
         }
 
         leaf-list supported-speed {
-            config false;
             type base-if:speed;
+            config false;
             description " List of supported speed on this physical media";
         }
         leaf-list supported-phy-mode {
-            config false;
             type base-if:phy-mode-type;
+            config false;
             description " List of supported physical modes FC, ETHER on this physical media";
         }
+        description "This grouping defines the default settings for the media type.
+                     It's a read-only list.";
     }
 }

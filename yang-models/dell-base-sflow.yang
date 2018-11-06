@@ -14,20 +14,29 @@ module dell-base-sflow {
     "http://www.dell.com/support";
 
     description
-        "This module contains a collection of YANG definitions provided
-         by platfrom to manage sflow objects";
+        "sflow is a protocol used for network monitoring. This is used to provide
+         a sampled flow of network information (truncated packets, interface counters etc.)
+         to the network monitoring applications.This model contains a collection of
+         YANG definitions provided by platform to manage sflow objects.
+
+         Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-17" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2014-02-11 {
         description
             "Initial revision";
+        reference "Network Platform Abstraction";
     }
 
     list entry {
 
         key "id";
 
-        description
-            "sflow session attributes";
+        // Qualifier : Target
 
 		leaf id{
 			type uint32;
@@ -52,17 +61,19 @@ module dell-base-sflow {
                         logical/physical interface";
                 }
             }
+            description "Identity of the interface to used for the sflow.";
         }
 
         leaf ifindex {
             type base-cmn:logical-ifindex;
             status deprecated;
-        	mandatory true;	
+            mandatory true;
             description
-            	"Interface index which uniquely identifies physical
-            	 interface in the switch where packet sampling needs to
-            	 to be enabled";
+                  "Interface index which uniquely identifies physical
+                   interface in the switch where packet sampling needs to
+                   to be enabled";
         }
+
 
         leaf direction {
             type base-cmn:traffic-path;
@@ -76,21 +87,28 @@ module dell-base-sflow {
             mandatory true;
             description "Rate at which packets sampling needs to be enabled";
         }
+        description
+            "List of sflow sessions uniquely identified by 'id'.
+            Each contains a number of attributes defined here";
     }
 
     container socket-address {
-        description
-            "Address that Sflow Applications need to open UDP socket on
-             to receive sampled packets. Sampled packets from all Sflow
-             sessions are sent to a single UDP socket.";
+
+        // Qualifier : Target
 
         leaf ip {
             type base-cmn:ipv4-address;
             default 127.0.0.1;
+            description "socket IP address.";
         }
         leaf udp-port {
             type uint16;
             default 20001;
+            description "socket port number";
         }
+        description
+            "Address that Sflow Applications need to open UDP socket on,
+             to receive sampled packets. Sampled packets from all Sflow
+             sessions are sent to a single UDP socket.";
     }
 }

@@ -22,19 +22,28 @@ module dell-base-if-phy {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell EMC specific
-    				physical port extensions.";
+
+    description "This model augments the standard interface object(s) and adds
+                 specific attributes and/or RPC for physical interfaces.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-10" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2017-09-27" {
-        description
-        "Add per interface supported auto-negotiation attribute.";
+        description "Add per interface supported auto-negotiation attribute.";
+        reference "Network Platform Abstraction";
     }
 
     revision "2016-01-01" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 
-	typedef breakout-mode {
+    typedef breakout-mode {
 		type enumeration {
 			enum DISABLED {
                           value 1;
@@ -49,10 +58,10 @@ module dell-base-if-phy {
                           value 4;
                         }
 		}
-	}
+                description "Enumeration of all possible values of breakout modes";
+    }
 
     typedef mac-learn-mode{
-        description "FDB Learning mode of the interface.";
 
         type enumeration{
 
@@ -81,14 +90,14 @@ module dell-base-if-phy {
                 description "Trap packets with unknown source MAC to CPU. Do not learn. Forward based on destination MAC";
             }
         }
+        description "Enumeration of all possible MAC-learning modes that can be configured on the interface.";
     }	
 	
 
-	list front-panel-port {
+    list front-panel-port {
         key "front-panel-port";
 
-        description "This map contains the front panel ports and the
-           NPU ports associated with with the front panel ports.";
+        //QUALIFIER : Target
 
         leaf front-panel-port {
             type uint32;
@@ -108,8 +117,8 @@ module dell-base-if-phy {
 
         leaf-list port {
         	type base-cmn:npu-port-id;
-        	description "This list contains all of the hardware ports that are contained.  Look up the details on the lane in the
-        	npu-port-lane object";
+        	description "This list contains all the hardware ports this fron-panel port contains.
+                             Look up the details on the lane in the npu-port-lane object";
         }
 
         leaf control-port {
@@ -124,49 +133,52 @@ module dell-base-if-phy {
 
         leaf mac-offset {
             type uint32;
-            description "Offset from system base MAC Address. MAC address of the port is calculated by adding mac_offset in base MAC address";
+            description "Offset from system base MAC Address. MAC address of the port is calculated by adding mac_offset with the base MAC address";
         }	
 
         leaf phy-mode {
             type base-if:phy-mode-type;
-            description "Port PHY mode, Ethernet or FC";
+            description "PHY mode of the port(Ethernet or FC)";
         }
 
-		leaf breakout-mode {
-			config false;
-			type base-cmn:breakout-type;
+	leaf breakout-mode {
+	    type base-cmn:breakout-type;
+       	    config false;
             description "Breakout mode of the front panel port";
-		}
+	}
         leaf port-speed {
             type base-if:speed;
             description "port speed of the front panel port";
         }
 
         leaf default-phy-mode {
-            config false;
             type base-if:phy-mode-type;
-            description "Default Port PHY mode, Ethernet or FC";
+            config false;
+            description "Default Port PHY mode (Ethernet or FC)";
         }
 
         leaf default-breakout-mode {
-            config false;
             type base-cmn:breakout-type;
+            config false;
             description "Default platform breakout mode for the port";
         }
 
         leaf default-port-speed {
-            config false;
             type base-if:speed;
-            description "Default speed for the port";
+            config false;
+            description "Default speed of the port";
         }
 		
         uses base-if:breakout-capabilities;
-	}
+
+        description "List of all front-panel ports, uniquely identified with the key 'front-panel-port'.
+                     Each item in the list contain various attributes of the front-panel port, including the NPU ID it belongs to.";
+    }
 		
-	list hardware-port {
+    list hardware-port {
         key "npu-id hw-port";
-        description "This entity holds the details of which front panel port corresponds to a specific NPU/hardware port.  This
-                    list is not dynamic and therefore will not change for a single instance of a product.";
+
+        //QUALIFIER : Target
 
         leaf npu-id {
             type uint32;
@@ -174,33 +186,41 @@ module dell-base-if-phy {
         }
         leaf hw-port {
             type uint32;
-            description "The hardware ports that are owned by the front panel port.";
+            description "The hardware port id.";
         }
 
         leaf hw-control-port {
             type uint32;
-            description "The hardware port that is the master.  Normally one hardware port will be designated master and on this port
-                a user will be able to change the breakout configuration.";
+            description "The hardware port that is the master.  Normally one hardware port
+                         will be designated as a master port. This port is used to change the breakout
+                         configuration of any front-panel port member.";
         }
 
         leaf subport-id {
             type uint32;
-            description "the physical lane on which this port exists.";
+            description "The physical lane on which this hardware port exists.";
         }
 
-		leaf front-panel-port {
-			type uint32;
-            description "The hardware ports that are owned by the front panel port.";
-		}
-		
-		leaf fanout-mode {
-			config false;
-			type breakout-mode;
-		}
+	leaf front-panel-port {
+	    type uint32;
+            description "The front-panel port that this hardware port is a member of.";
 	}
+		
+	leaf fanout-mode {
+	    type breakout-mode;
+	    config false;
+            description "The breakout-mode value";
+	}
+
+        description "List of all hardware ports, uniquely identified with the key-pair 'npu-id, hw-port'.
+                     This list associates a hardware port to the front-panel port and the NPU it belongs to.
+                     This list is not dynamic and therefore it's similar across all the instances of a product.";
+    }
 	
     list physical {
         key "npu-id port-id";
+
+        //QUALIFIER : Target
 
         uses base-if:physical-port-address;
 
@@ -212,12 +232,12 @@ module dell-base-if-phy {
 
         leaf-list hardware-port-list {
             type base-cmn:npu-port-id;
-            description "This is the physical hardware port list";
+            description "A sub-list of all the npu port(s) this physical port contains";
         }
 
         leaf phy-mode {
             type base-if:phy-mode-type;
-            description "Port PHY mode, Ethernet or FC";
+            description "Port PHY mode (Ethernet or FC)";
         }
 
         leaf speed {
@@ -225,21 +245,24 @@ module dell-base-if-phy {
             description "Current max configured speed of physical port";
         }
 
-		leaf front-panel-number {
-			type uint32;
-            description "depreciated.";
-		}
+	leaf front-panel-number {
+	    type uint32;
+            description "Front panel port this physical port is part of.
+                         This leaf is deprecated.";
+	}
 		
         leaf-list breakout-capabilities {
-			type breakout-mode ;
+	    type breakout-mode ;
             status deprecated;
-		}
+            description "Breakout capabilities of this port.";
+	}
 		
-		leaf fanout-mode {
-			config false;
-			type breakout-mode;
+	leaf fanout-mode {
+	    type breakout-mode;
+	    config false;
             status deprecated;
-		}
+            description "Fanout capabilities of this port.";
+	}
 		
         leaf phy-media {
             type platform:media-type;
@@ -247,17 +270,21 @@ module dell-base-if-phy {
         }
 						
         leaf loopback {
-           type base-cmn:loopback-type;
+            type base-cmn:loopback-type;
+            description "Loopback type(phy/mac), in case it is a loopback interface;
+                         otherwise set to 'none'";
         }
 
         leaf-list supported-speed {
             type base-if:speed;
-            description "list of supported speeds in the interface";
+            description "sub-list of all supported interface speeds";
         }
-
+        description "List of all physical ports, uniquely identified with the key-pair 'npu-id, port-id'.
+                     This list associates a physical port to the front-panel port and the NPU it belongs to.
+                     This list includes attributes specific for physical intefaces.";
     }
 	
-	augment "/if:interfaces/if:interface" {
+    augment "/if:interfaces/if:interface" {
 		uses base-if:physical-port-address;
 		
         leaf phy-media {
@@ -272,19 +299,20 @@ module dell-base-if-phy {
         }
 
         leaf loopback {
-           type base-cmn:loopback-type;
+            type base-cmn:loopback-type;
+            description "loopback type(phy/mac) if it is a loopback interface; otherwise set to 'none'";
         }
 
         leaf identification-led {
-            description "Led state to set OFF(0) / ON (1)";
             type boolean;
+            description "LED state to set OFF(0) / ON (1)";
         }
         	
         uses base-if:mac-learn-limit;
 
         leaf learn-mode{
             type mac-learn-mode;
-            description "Mode in which mac adresses are learned on this interface";
+            description "MAC-learning mode this interface is configured for";
         }
 
         leaf tagging-mode {
@@ -302,16 +330,34 @@ module dell-base-if-phy {
         			description "port accepts both untagged and tagged packets.";
         		}
         	}
+                description "Enumeration of all possible types of packets(tagged/un-tagged/hybrid) this interface can accept";
         }
 
         leaf supported-autoneg {
             type base-if:supported-autoneg;
             description "Supported auto-negotiation value for the interface.";
         }
-	}		
+        description "Extending standard interface object to include attributes specific to a physical interface";
+   }		
 	rpc breakout {
+
 		description "This method allows the change of the breakout mode on a front panel port and
 			at the same time will create logical interfaces based on the provided names";
+
+            // QUALIFIER       : Target
+            // =========
+            //
+            // ATTRIBUTE PATH  : base-if-phy/breakout
+            // =============
+            //
+            // INPUT           : base-if-phy/breakout/input/front-panel-port (id of the front-panel port)
+            //                   base-if-phy/breakout/input/breakout-mode    (break-out mode to be configured)
+            //                   base-if-phy/breakout/input/port-speed       (port-speed to be configured)
+            // =====
+            //
+            // OUTPUT          : None
+            // ======
+
 	    input {
 	        leaf front-panel-port {
 	            type uint32;
@@ -319,25 +365,42 @@ module dell-base-if-phy {
 	        }
 	        	
 	        leaf breakout-mode {
-				type breakout-mode ;
-			}	
-            leaf port-speed {
-                type base-if:speed;
-            }
+	       	    type breakout-mode ;
+	            description "The breakout mode of the front panel port";
+		}	
+                leaf port-speed {
+                    type base-if:speed;
+	            description "The interface speed of the front panel port.";
+                }
 	    }
 	}
 
 	rpc set-breakout-mode {
+
 		description "This RPC just changes the breakout mode on a front panel port object but
 					doesn't effect any of the logical interfaces.  The expectation is that
 					all logical interfaces are deleted before this operation is executed";
+            // QUALIFIER       : Target
+            // =========
+            //
+            // ATTRIBUTE PATH  : base-if-phy/set-breakout-mode
+            // =============
+            //
+            // INPUT           : Attributes from base-if/physical-port-address     (as needed)
+            //                   base-if-phy/set-breakout-mode/input/breakout-mode (break-out mode to be configured)
+            //                   base-if-phy/set-breakout-mode/input/effected-port (port(s)this new mode is applicable on)
+            // =====
+            //
+            // OUTPUT          : None
+            // ======
+
 	    input {
     	    uses base-if:physical-port-address;
 	        	
 	        leaf breakout-mode {
+			type breakout-mode ;
 	        	description "this is the new mode to configure.";
-				type breakout-mode ;
-			}	
+		}	
 
 			leaf-list  effected-port {
 				type base-cmn:npu-port-id;

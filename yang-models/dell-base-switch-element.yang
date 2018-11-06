@@ -13,23 +13,61 @@ organization
 contact
     "http://www.dell.com/support";
 
-description
-"This module contains a collection of YANG definitions for
-managing configuration and operational data for Dell EMC Switch Element";
+description "This model contains a collection of YANG definitions for
+             managing the global configuration and operational data for the NPU.
+
+             Copyright (c) 2015-2018 by Dell EMC,
+
+             All rights reserved.";
+
+revision 2018-09-19 {
+        description "Added L3 VXLAN (Virtual Extensible LAN) RIOT (Routing In and Out of Tunnel) enable/disable and
+            the maximum number of RIFs and Nexthops when enabled.";
+        reference "Network Platform Abstraction";
+}
+
+revision 2018-09-02 {
+        description "Support for Priority Flow Control (PFC) deadlock detection.
+                     PFC deadlock occurrence in a network is inferred through detection of PFC 'storms'
+                     at individual devices - namely detection of a large number of PFC frames received
+                     in a short 'detection' time interval.
+                     As a result of PFC deadlock detection, the system ignores the received
+                     PFC pause frames and takes one of two actions:
+                     DROP all incoming traffic for a certain 'recovery' time interval
+                     or
+                     FORWARD all traffic during this recovery time interval";
+        reference "Network Platform Abstraction";
+}
+
+revision 2018-08-30 {
+        description "Buffer Statistics Tracking feature support adding to model.
+                     BST allows to take snapshot of buffer utilization in system and allows
+                     setting thresholds to generate events.";
+        reference "Network Platform Abstraction";
+}
+
+revision 2018-08-22 {
+        description "Added global flag to enable deep buffer mode ";
+        reference "Network Platform Abstraction";
+}
+
+revision 2018-08-17 {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+}
 
 revision 2018-07-02 {
-description
-"Add Configuration of IPv6 Extended prefix routes.";
+        description "Add Configuration of IPv6 Extended prefix routes.";
+        reference "Network Platform Abstraction";
 }
 
 revision 2018-02-20 {
-description
-"Add global ECN ECT control flag.";
+        description "Add global ECN ECT control flag.";
+        reference "Network Platform Abstraction";
 }
-
 revision 2014-08-06 {
-description
-"Initial revision.";
+	description "Initial revision.";
+        reference "Network Platform Abstraction";
 }
 
 /*
@@ -60,6 +98,7 @@ typedef hash-algorithm {
 	      	value 3;
 	      }
     }
+    description "Enumeration of all possible Hashing Algorithms";
 }
 
 typedef switching-mode {
@@ -71,6 +110,7 @@ typedef switching-mode {
 	      	value 2;
 	      }
     }
+    description "Enumeration of all possible switching modes";
 }
 
 typedef hash-fields {
@@ -106,10 +146,10 @@ typedef hash-fields {
 	        value 10;
 	      }
     }
+    description "Enumeration of all possible fields to be hashed";
 }
 
     typedef subsystem{
-        description "Switch Subsystem Ids";
         type enumeration{
             enum "unspecified"{
                 value 1;
@@ -184,10 +224,10 @@ typedef hash-fields {
 
             }
         }
+        description "IDs of all the possible subsystems in the switch";
     }
 
     typedef log-level{
-        description "Switch Subsystem log levels";
         type enumeration{
             enum "debug"{
                 value 1;
@@ -208,12 +248,14 @@ typedef hash-fields {
                 value 6;
             }
         }
+        description "Various log levels that a subsystem allows";
     }
 
     typedef profile-name {
         type string {
             length "1..32";
         }
+        description "Type for the user defined profile name.";
     }
     typedef uft-mode {
         type enumeration {
@@ -230,6 +272,35 @@ typedef hash-fields {
               value 4;
             }
         }
+        description "Enumeration of all possible values for the Unified Forwarding Table(UFT) mode";
+    }
+
+    typedef pfc-dlr-action {
+        type enumeration {
+            enum DROP {
+                value 0;
+                description "Drop all packets already enqueued and newly received packets";
+            }
+            enum FORWARD {
+                value 1;
+                description "Forwards packets, ignoring incoming PFC pause frames from neighbor device";
+            }
+        }
+        description "Enumeration of types of actions that the system performs on recovery from deadlock situation for the configured recovery time interval";
+    }
+
+   typedef bst-tracking-mode {
+        type enumeration {
+            enum "peak" {
+              value 1;
+              description "Peak mode provides buffer counter maximum for a given time period and tracks peak usage";
+            }
+            enum "current" {
+              value 2;
+              description "Current mode provides the instantaneous value of buffer usage";
+            }
+        }
+        description "Enumeration of all possible values for the BST tracking mode";
     }
 
     grouping mode-info {
@@ -245,12 +316,14 @@ typedef hash-fields {
             type uint32;
             description "ARP/NBR table size";
         }
+        description "Attribute for table size in various modes";
     }
 
 
 list switching-entity-env {
     key "switch-id";
-    description  "the list of switching entities environment.";
+
+    // Qualifier : Target
 
     leaf switch-id {
         type base-cmn:logical-switch-id;
@@ -261,11 +334,13 @@ list switching-entity-env {
         type int32;
         description "Current temperature of NPU";
     }
+    description  "List of a set of switching environment attributes for every 'switch-id'.";
 }
 
 container switching-entities {
 
-  description "switching entity configuration parameters.";
+  // Qualifier : Target
+
   leaf switch-count {
     type uint32;
     description "The number of virtual switches on the platform";
@@ -273,7 +348,6 @@ container switching-entities {
 
   list switching-entity {
     key "switch-id";
-    description  "the list of switching entities.";
 	
     leaf switch-id {
         type base-cmn:logical-switch-id;
@@ -294,6 +368,7 @@ container switching-entities {
         type uint32;
         description "The switch lag hash seed value";
     }
+
     leaf-list lag-hash-fields {
     	type hash-fields;
     	description "The switches hash fields used for lags";
@@ -305,23 +380,25 @@ container switching-entities {
     }
 
     leaf operational-status{
-        config false;
         type base-cmn:oper-status-type;
+        config false;
+        description "operational status of the switch";
     }
 
     leaf admin-status{
         type base-cmn:admin-status-type;
+        description "Administrative status of the switch - set by user applications.";
     }
 
     leaf bridge-table-size {
-        config false;
         type uint32;
+        config false;
         description "Size of Layer2 FDB";
     }
 
     leaf max-supported-lags {
-        config false;
         type uint32;
+        config false;
         description "The maximum number of lags this device supports";
     }
 
@@ -350,44 +427,48 @@ container switching-entities {
         description "Configure maximum ECMP entries per group";
     }
     leaf ipv4-route-table-size {
-        config false;
         type uint32;
+        config false;
         description "Size of IPv4 Routing table";
     }
 
     leaf ipv6-route-table-size {
-        config false;
         type uint32;
+        config false;
         description "Size of IPv6 Routing table";
     }
 
     leaf ipv4-host-size {
-        config false;
         type uint32;
+        config false;
         description "Size of IPv4 NBR table";
     }
 
     leaf ipv6-host-size {
-        config false;
         type uint32;
+        config false;
         description "Size of IPv6 NBR table";
     }
 
     leaf num-unicast-queues-per-port {
         type uint32;
+        description "Number of unicast queues per port";
     }
 
     leaf num-multicast-queues-per-port {
         type uint32;
+        description "Number of multicast queues per port";
     }
 
     leaf num-queues-per-port {
         type uint32;
         default 8;
+        description "Number of queues per port";
     }
 
     leaf num-queues-cpu-port {
         type uint32;
+        description "Number of queues for a cpu-port";
     }
 
     leaf qos-rate-adjust {
@@ -399,11 +480,13 @@ container switching-entities {
     leaf ingress-flow-table-size {
         type uint32;
         default 4096; /* 4K entries */
+        description "Size of the ingress flow-table";
     }
 
     leaf egress-flow-table-size {
         type uint32;
         default 2048; /* 2K entries */
+        description "Size of the egress flow-table";
     }
 
     leaf mac-age-timer {
@@ -480,30 +563,30 @@ container switching-entities {
                     differnt speeds conbination";
     }
     leaf-list supported-profiles {
-        config false;
         type profile-name;
+        config false;
         description "list of all supported switch profiles for a given platform";
     }
     leaf default-profile {
-        config false;
         type profile-name;
+        config false;
         description "default switch profile";
     }
     leaf uft-mode {
         type uft-mode;
-        description "configured Unified Forwarding Table (UFT) mode";
         default "default-mode";
+        description "configured Unified Forwarding Table (UFT) mode";
     }
     list uft-mode-info {
-        config false;
-        description "describes the table size values for the given mode. by default
-                    returns all the modes and their respective table size";
         key "mode";
+        config false;
         leaf mode {
             type uft-mode;
             description "Unified Forwarding Table (UFT) mode";
         }
         uses mode-info;
+        description "describes the table size values for the given mode. by default
+                    returns all the modes and their respective table size";
     }
 
     leaf ecn-ect-threshold-enable {
@@ -518,23 +601,131 @@ container switching-entities {
     }
 
     leaf max-ipv6-extended-prefix-routes {
-        config false;
         type uint32;
+        config false;
         description "Maximum number of extended IPv6 prefix routes with the mask length of /65 to /128 supported in LPM table";
     }
 
     leaf ipv6-extended-prefix-routes-lpm-block-size {
-        config false;
         type uint32;
+        config false;
         description "Configuration of extended IPv6 prefix routes with the mask length of /65 to /128 in LPM table supports in multiples of blocks, This is for each block size.";
     }
+
+    leaf bst-enable {
+        type boolean;
+        default "false";
+        description "Enable/disable Buffer Statistics Tracking feature(BST).
+                     When enabled BST allows to take snapshot of buffer utilization in system and allows setting thresholds to generate events";
+    }
+
+    leaf bst-tracking-mode {
+        type bst-tracking-mode;
+        description "Configuration of buffer utilization tracking mode when BST enabled.";
+    }
+
+    leaf deep-buffer-mode-enable {
+        type boolean;
+        default false;
+        description "Enable/disable per switch Deep Buffer Mode";
+    }
+
+    leaf vxlan-riot-enable {
+        type boolean;
+        default true;
+        description "Enable/disable VXLAN (Virtual Extensible LAN) RIOT (Routing In and Out of Tunnel),
+            by default, VXLAN RIOT is enabled.";
+    }
+
+    leaf max-vxlan-overlay-rifs {
+        type uint32;
+        description "Maximum number of VXLAN overlay router interfaces in blocks of 2K when VXLAN RIOT is enabled,
+                    the default value varies based on platform capability.";
+    }
+
+    leaf max-vxlan-overlay-nexthops {
+        type uint32;
+        description "Maximum number of VXLAN overlay nexthops in blocks of 4K when VXLAN RIOT is enabled,
+                    the default value varies based on platform capability.";
+    }
+
+    leaf pfc-dlr-action {
+        type pfc-dlr-action;
+        default FORWARD;
+        description "Action to take on PFC Deadlock Recovery";
+    }
+
+    leaf pfc-dld-interval-range-min {
+        type uint32;
+        units "millisecond";
+        config false;
+        description "Minimum allowable value for PFC Deadlock Detection Interval range in milliseconds";
+    }
+
+    leaf pfc-dld-interval-range-max {
+        type uint32;
+        units "millisecond";
+        config false;
+        description "Maximum allowable value for PFC Deadlock Detection Interval range in milliseconds";
+    }
+
+    leaf pfc-dlr-interval-range-min {
+        type uint32;
+        units "millisecond";
+        config false;
+        description "Minimum allowable value for PFC Deadlock Recovery Interval range in milliseconds";
+    }
+
+    leaf pfc-dlr-interval-range-max {
+        type uint32;
+        units "millisecond";
+        config false;
+        description "Maximum allowable value for PFC Deadlock Recovery Interval range in milliseconds";
+    }
+
+    list pfc-dl-cfg-params {
+        key "traffic-class";
+
+        leaf traffic-class {
+            type uint32 {
+            range "0..7";
+            }
+        }
+
+        leaf dld-interval {
+            type uint32;
+            units "millisecond";
+            description "PFC Traffic Class Deadlock Detection Interval in milliseconds";
+        }
+
+        leaf dlr-interval {
+            type uint32;
+            units "millisecond";
+            description "PFC Traffic Class Deadlock Recovery Interval in milliseconds";
+        }
+    }
+
+    description  "List of a set of switching attributes that define various operational attributes per switch-id.";
   }
+  description "switching entity configuration parameters.";
 }
 
 
 rpc diag_shell {
-	description "This RPC allows debug access to the switch to perform some basic status
-		commands.";
+    description "This RPC implements a diag shell that allows to run debug commands on the switch.";
+
+    // ATTRIBUTE PATH  : base-switch/diag_shell
+    // ==============
+    //
+    // QUALIFIER       : Target
+    // =========
+    //
+    // INPUT           : base-switch/diag_shell/input/command (a valid diagnostic shell command).
+    // =====
+    //
+    // OUTPUT          : base-switch/diag_shell/output/result (output of the command run on the diag shell)
+    // ======
+
     input {
         leaf command {
             type string;
@@ -552,7 +743,19 @@ rpc diag_shell {
 
 rpc set_log {
     description
-    "This RPC allows to change the switch subsystem log level";
+    "This RPC implements a method that allows to change the switch subsystem log level";
+
+    // ATTRIBUTE PATH  : base-switch/set-log
+    // ==============
+    //
+    // QUALIFIER       : Target
+    // =========
+    //
+    // INPUT           : base-switch/set-log/input/subsystem-id (id of the subsystem).
+    // =====
+    //
+    // OUTPUT          : base-switch/set-log/output/level (log level)
+    // ======
 
     input {
         leaf subsystem-id {
@@ -568,9 +771,4 @@ rpc set_log {
 }
 
 }
-
-
-
-
-
 
