@@ -12,10 +12,10 @@ opx-base-model (3.165.0) unstable; urgency=medium
   * Update: Add media leaf to flag when qsa is used unstead of qsa28
   * Update: Add proper err message for LAG member mode mismatch
   * Update: Add ietf-inet-address.yang file for BGP4v2 MIB Implementation
-  * Update: Add parameter to configure mac-lean-mode in remote-endpoint groupin
+  * Update: Add parameter to configure mac-lean-mode in remote-endpoint grouping
   * Update: Support flush for remote IP and vlan port subport
   * Update: Add outgoing source ip attribute to support source ip config for outgoing connections
-  * Update: Add leaves for ESR media interface, separable connector flag, and cbale length in centimeters
+  * Update: Add leaves for ESR media interface, separable connector flag, and cable length in centimeters
   * Update: Add parent bridge info for vlan interface
   * Update: Support BRIDGE_TYPE filter
   * Update: VRF route leaking support
