@@ -487,3 +487,11 @@ clean-local:
         echo Cleaning @YANG_OUTPUT@; \
         rm -Rf @YANG_OUTPUT@* ; \
         fi; )
+
+
+data_base_modeldir = /usr/share/opx/yang-models
+data_base_model_DATA = \
+    $(wildcard $(top_srcdir)/common/dell/*.yang) \
+    $(wildcard $(top_srcdir)/common/yumaworks/*.yang) \
+    $(wildcard $(top_srcdir)/rfc/*.yang) \
+    $(wildcard $(top_srcdir)/yang-models/*.yang)
