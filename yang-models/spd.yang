@@ -16,26 +16,39 @@ module spd {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model Security Policy Database (SPD) augments IETF IPsec and adds security association grouping to policy database
-                 since it contains generic attributes required for policy database. ";
+    description "This model Security Policy Database (SPD) augments IETF IPsec and
+                 adds security association grouping to policy database.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-08-17{
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";	
+    }
+
+    revision "2018-08-02" {
+        description "Adding VRF name into the spd-entries.";
+        reference "Network Platform Abstraction";	
+    }
 
     revision "2017-08-18" {
         description "Initial version.";
+        reference "Network Platform Abstraction";	
     }
 
     typedef ipsec-level {
-        description "IPSec level which could be required or use";
 
         type enumeration {
             enum REQUIRED {
                 value 1;
-                description "IPSec required level";
+                description "drop the packet and acquire SA";
             }
             enum USE {
                 value 2;
-                description "IPSec use level";
+                description "do not drop the packet and do not acquire SA";
             }
         }
+        description "Different IPSec levels indicating action to be taken when SAs for the policy is not found.";
     }
 
     deviation "/eipsec:ipsec/eipsec:sad/eipsec:sad-entries/eipsec:ah/eipsec:authentication-algorithm/eipsec:hmac-sha1-96/eipsec:key-str" {
@@ -45,7 +58,6 @@ module spd {
     }
 
     grouping ip-prefix {
-        description "This grouping provides ip-prefix represenation for source and destination ip addresses.";
 
         leaf source-ip-address {
             type inet:ip-prefix;
@@ -56,10 +68,10 @@ module spd {
             type inet:ip-prefix;
             description "Destination Interface ip prefix.";
         }
+        description "This grouping provides ip-prefix represenation for source and destination ip addresses.";
     }
 
     augment "/eipsec:ipsec/eipsec:spd/eipsec:spd-entries" {
-        description "The following grouping will be used to configure security policy database";
 
         uses eipsec:ipsec-sa-grouping;
 
@@ -80,10 +92,16 @@ module spd {
             default 0;
             description "Priority Value for the policy.";
         }
+
+        leaf vrf-name {
+            type string;
+            description "Network instance (VRF) name.";
+        }
+        description "The following grouping will be used to configure security policy database";
+
     }
 
      augment "/eipsec:spd/eipsec:spd-entries" {
-        description "The following grouping will be used to get security policy database information";
 
         uses ip-prefix;
         leaf ifname {
@@ -95,8 +113,7 @@ module spd {
             type uint32;
             description "Priority Value for the policy.";
         }
-
+        description "The following grouping will be used to get security policy database information";
 
      }
-
 }

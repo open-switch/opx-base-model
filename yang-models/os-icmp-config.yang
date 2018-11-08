@@ -9,32 +9,81 @@ module os-icmp-config {
     contact "http://www.dell.com/support";
 
     description "This model controls the ICMP unreachable message generation from
-        the OS for non-routable traffic.";
+                 the OS for non-routable traffic.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-08-17 {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-07-05 {
+        description
+            "This revision adds the VRF name in the IP unreachable configuration.";
+        reference
+            "Network Platform Abstraction";
+    }
+
+    revision 2018-07-05 {
+        description
+            "This revision adds the VRF name in the IP unreachable configuration.";
+        reference
+            "Network Platform Abstraction";
+    }
 
     revision "2017-08-22" {
         description "Initial version.";
+        reference
+            "Network Platform Abstraction";
     }
 
     rpc ip-unreachables-config {
         description "This method controls the generation of ICMP unreachable
             message for non-routable traffic from the OS.";
 
+        // ATTRIBUTE PATH  : os-icmp-cfg/ip-unreachables-config
+        // ==============
+        //
+        // QUALIFIER       : Target
+        // ========
+        //
+        // INPUT           : os-icmp-cfg/ip-unreachables-config/input/operation (create/delete/update)
+        // =====             os-icmp-cfg/ip-unreachables-config/input/enable    (true/false)
+        //                   os-icmp-cfg/ip-unreachables-config/input/vrf-name  (vrf name)
+        //                   os-icmp-cfg/ip-unreachables-config/input/af        (address family)
+        //                   os-icmp-cfg/ip-unreachables-config/input/ifname    (optional argument. Name of the interface
+        //                                                                       where this config would be applied)
+        //
+        // OUTPUT          : None
+        // ======
+
         input {
             leaf operation {
+                type base-cmn:operation-type;
                 mandatory true;
                 description "This indicates the operation type (create or delete).";
-                type base-cmn:operation-type;
             }
             leaf enable {
+                type boolean;
                 mandatory true;
                 description "This is set to true to enable ICMP unreachable message
                     generation for the non-routable traffic from the OS and false otherwise.";
-                type boolean;
+            }
+
+            leaf vrf-name {
+                type string;
+                description "VRF device name";
+            }
+
+            leaf vrf-name {
+                type string;
+                description "VRF device name";
             }
 
             leaf af {
-                mandatory true;
                 type base-cmn:af-type;
+                mandatory true;
                 description "Address Family";
             }
 
@@ -48,3 +97,5 @@ module os-icmp-config {
         }
     }
 }
+
+

@@ -2,32 +2,45 @@ module os-routing-events {
     namespace "http://www.dellemc.com/networking/os10/dell-base-os-routing";
     prefix "os-re";
 
+    import dell-base-common { prefix "base-cmn"; }
     import dell-base-routing { prefix "base-route"; }
 
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the dell-base-routing YANG model for OS Route/Neighbor events.";
+    description "This model augments the dell-base-routing YANG model for OS Route/Neighbor events.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-17" {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";	
+    }
+
+    revision "2018-08-01" {
+        description "This revision adds the support for leaking the route from one VRF to another VRF in OS.";
+        reference "Network Platform Abstraction";	
+    }
 
     revision "2018-03-12" {
         description "This revision adds the lower layer interface (L2 interface) for router interface to bind the neighbor with the MAC.";
-        reference
-            "Update since last revision.";
+        reference "Network Platform Abstraction";	
     }
 
     revision "2018-02-27" {
         description "This revision adds the VRF identifier in the route and neighbor updates for identifier based lookup.";
-        reference
-            "Update since last revision.";
+        reference "Network Platform Abstraction";	
     }
 
     revision "2017-11-01" {
         description "VLAN id attribute is added to neighbor object to identify the VLAN on
                      which neighbor entry is learnt.";
+        reference "Network Platform Abstraction";	
     }
 
     revision "2017-07-17" {
         description "Initial version.";
+        reference "Network Platform Abstraction";	
     }
 
     /* Base route object augmented for publishing the route add/delete events from OS. */
@@ -37,6 +50,7 @@ module os-routing-events {
             description "Internal VRF identifier which is used to uniquely identify
                 the route updates from OS";
         }
+        description "Base route object augmented for publishing the route add/delete events from OS.";
     }
 
     /* Base neighbor object augmented for publishing the neighbor add/delete events from OS. */
@@ -57,8 +71,39 @@ module os-routing-events {
         }
         leaf lower-layer-if {
             type base-cmn:logical-ifindex;
-            description "This is the lower layer interface of the router interface
+            description "This is the lower layer interface of the router interface,
                 when the router interface is in the non-default VRF context.";
         }
+        description "Base neighbor object augmented for publishing the neighbor add/delete events from OS.";
     }
+
+    list os-leak-route-config {
+        key "vrf-name af route-prefix prefix-len";
+        leaf vrf-name {
+            type string;
+            description "Destination VRF name.";
+        }
+
+        leaf af {
+            type base-cmn:af-type;
+            description "Address Family";
+        }
+
+        leaf route-prefix {
+            type base-cmn:ip-address;
+            description "Route address to leak from source VRF to destination VRF.";
+        }
+
+        leaf prefix-len {
+            type uint32;
+            description "Prefix Length";
+        }
+
+        leaf src-vrf-name {
+            type string;
+            description "Source VRF name.";
+        }
+        description "Provide list of routes leaking in the OS, from a source VRF to a destination VRF.";
+    }
+
 }

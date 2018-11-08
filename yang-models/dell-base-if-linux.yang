@@ -15,24 +15,30 @@ module dell-base-if-linux {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell EMC specific
-    				extensions.  This model contains the entry point for the
-    				interface object extensions.";
+    description "This model augments the standard interface object(s) and adds
+                 specific attributes and/or RPC for linux interfaces.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-10" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2016-01-22" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 	
-	augment "/if:interfaces/if:interface" {
-		description "The following attributes are common to all interface types.";
+    augment "/if:interfaces/if:interface" {
 		
         leaf if-index {
             type base-cmn:logical-ifindex;
-            description "Can be used as an alternate to the name key field.  The if-index is the linux representation for the interface.";
+            description "Unique identifying number that is used for identifying a physical or logical interface." ;
         }
 		leaf if-flags {
 			type uint32;
-			description "Private interface flags.  The contents are reserved.";
+			description "Interface specific flags. These are private and reserved.";
 		}
 		leaf if-master {
 			type uint32;
@@ -40,9 +46,10 @@ module dell-base-if-linux {
 		}
 		leaf dell-type {
 			type base-cmn:interface-type;
-			description "The dell interface type.";
+			description "The interface type as per Dell categorization.";
 		}
-	}	
+	description "Augmenting the standard interface node to include additional attributes.";
+    }	
 }
 
 

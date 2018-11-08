@@ -11,6 +11,12 @@ module dell-base-common {
 
      Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
 
+  revision "2018-09-18" {
+    description "Added 8x1 breakout mode for new 8x25G and 8x10G modules.
+                 This change addresses a bug that previously used 8x2 breakout modes for QSFP28-DD 8x25G and 8x10G modules";
+    reference "Network Platform Abstraction";
+  }
+
   revision "2018-05-08" {
     description "Added support for VLAN filtering feature which enables applications
                  to enable or disable VLAN filtering on an interface";
@@ -570,6 +576,10 @@ module dell-base-common {
       enum NO_BREAKOUT {
         value 11; /* Device does not breakout  */
 	description "breakout is not supported on the given port(s).";
+      }
+      enum BREAKOUT_8x1 {
+        value 12; /* 8 physical interfaces derived from a front panel port */
+    description "1 physical port mapping to 8 logical interfaces.";
       }
     }
     description "Enumeration of all possible breakout modes";

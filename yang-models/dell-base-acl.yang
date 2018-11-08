@@ -32,6 +32,24 @@ module dell-base-acl {
 
          Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
 
+    revision 2018-09-20 {
+        description "Added support for new match type to filter packets based on type of bridge that
+                     is used to forward the packet. User could set the filtering bridge type as either
+                     1Q or 1D.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-08-10 {
+        description "This revision adds the support for ACL table application profile
+                     configuration and retrieval, ACL table usage retrieval for the switch NPU.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-06-15 {
+        description "Fixing IETF error for enum value type.";
+        reference "Network Platform Abstraction";	
+    }
+
     revision 2018-04-12 {
         description "Fixing pyang IETF errors and adding documentiation to the model.";
         reference "Network Platform Abstraction";	
@@ -308,6 +326,11 @@ module dell-base-acl {
               value 46;
                 description "Match based on marked Drop-bit";
             }
+
+            enum BRIDGE_TYPE {
+              value 47;
+                description "Match packet based on forwarding bridge type";
+            }
         }
         description "Enumeration of all possible packet fields that can be
                      used to match packets.";
@@ -518,6 +541,7 @@ module dell-base-acl {
               value 30;
                 description "Set user defined trap id";
             }
+
             enum SET_PACKET_COLOR {
               value 31;
                 description "Set packet color";
@@ -639,19 +663,33 @@ module dell-base-acl {
     typedef packet-color {
         type enumeration {
             enum GREEN {
-                value "1";
+                value 1;
                 description "Green";
             }
             enum YELLOW {
-                value "2";
+                value 2;
                 description "Yellow";
             }
             enum RED {
-                value "3";
+                value 3;
                 description "Red";
             }
         }
         description "Enumeration of packet color types based on RFC 2697";
+    }
+
+    typedef bridge-type {
+        type enumeration {
+            enum BRIDGE_1Q {
+                value 1;
+                description "VLAN aware bridge";
+            }
+            enum BRIDGE_1D {
+                value 2;
+                description "Not VLAN aware bridge";
+            }
+        }
+        description "Enumeration of bridge type by which packet is forwarded";
     }
 
     grouping ipv6-match {
@@ -963,40 +1001,40 @@ module dell-base-acl {
         }
 
         container TTL_VALUE {
-             when "../type = 'TTL'";
-             uses uint8-match;
+            when "../type = 'TTL'";
+            uses uint8-match;
             description "Value for Ip Ttl";
         }
 
         container TOS_VALUE {
-             when "../type = 'TOS'";
-             uses uint8-match;
-             description "Value for Ip Tos";
+            when "../type = 'TOS'";
+            uses uint8-match;
+            description "Value for Ip Tos";
         }
 
         container IP_FLAGS_VALUE {
-             when "../type = 'IP_FLAGS'";
-             uses uint8-match;
-             description "Value for Ip Flags.
-                          Valid range: 0-63 inclusive";
+            when "../type = 'IP_FLAGS'";
+            uses uint8-match;
+            description "Value for Ip Flags.
+                         Valid range: 0-63 inclusive";
         }
 
         container TCP_FLAGS_VALUE {
-             when "../type = 'TCP_FLAGS'";
-             uses uint8-match;
-             description "Value for Tcp Flags";
+            when "../type = 'TCP_FLAGS'";
+            uses uint8-match;
+            description "Value for Tcp Flags";
         }
 
         leaf IP_TYPE_VALUE {
-             when "../type = 'IP_TYPE'";
-             type match-ip-type;
-             description "Value for IP types";
+            when "../type = 'IP_TYPE'";
+            type match-ip-type;
+            description "Value for IP types";
         }
 
         leaf IP_FRAG_VALUE {
-             when "../type = 'IP_FRAG'";
-             type match-ip-frag;
-             description "Value for Fragment position in the IP packet";
+            when "../type = 'IP_FRAG'";
+            type match-ip-frag;
+            description "Value for Fragment position in the IP packet";
         }
 
         container IPV6_FLOW_LABEL_VALUE {
@@ -1122,6 +1160,7 @@ module dell-base-acl {
             type base-cmn:base-obj-id-type;
             description "List of ACL range checker IDs.";
         }
+
         leaf NEIGHBOR_DST_HIT_VALUE {
             when "../type = 'NEIGHBOR_DST_HIT'";
             type boolean;
@@ -1148,6 +1187,11 @@ module dell-base-acl {
             description "Value to specify packet drop-bit match or not match";
         }
 
+        leaf BRIDGE_TYPE_VALUE {
+            when "../type = 'BRIDGE_TYPE'";
+            type bridge-type;
+            description "Value to specify packet forwarding bridge type to be matched";
+        }
 	description "List of paramaters to be matched against an ACL entry";
     }
 
@@ -1520,6 +1564,7 @@ module dell-base-acl {
                 platforms. If it's not specified, by default all actions are
                 allowed";
         }
+
         leaf-list udf-group-list {
             type base-cmn:base-obj-id-type;
             description "List of UDF Group ID associated with this table";
@@ -1643,6 +1688,7 @@ module dell-base-acl {
                  sub-object including the top level action attribute.";
 
         }
+
         leaf table-name {
             type string {
                 length 32;
@@ -1931,6 +1977,220 @@ module dell-base-acl {
                      the Next-Hop Group for which the ACL entries are to be deleted.";
             }
         }
+    }
+
+    grouping app-group-profile {
+
+        leaf stage {
+            config false;
+            type base-acl:stage;
+            description "Types of packet forwarding pipeline stages (ingress or egress).";
+        }
+
+        leaf depth {
+            config false;
+            type uint32;
+            description "Max number of normalized units available for this application group in a single pool.
+                         A normalized unit is the basic memory unit used for ACL rules created by applications;
+                         some ACL rules need 1 unit, others need 2 and so forth, depending on the ACL rule contents.";
+        }
+
+        leaf default-pool-count {
+            config false;
+            type uint32;
+            description "Number of ACL pools assigned by default for this application group by switch NPU.";
+        }
+
+
+        leaf pool-count {
+            type uint32;
+            description "Configured number of ACL pools for this application group, that would take effect on next boot.";
+        }
+
+        list application {
+            key "app-id";
+
+            leaf app-id {
+                type string {
+                    length "1..32";
+                }
+                description "ACL application id for this application in the application group.";
+            }
+
+            leaf num-units-per-entry {
+                config false;
+                type uint32;
+                description "Number of normalized pool units required for one application acl entry.
+                             A normalized unit is the basic memory unit used for ACL rules created by applications;
+                             some ACL rules need 1 unit, others need 2 and so forth, depending on the ACL rule contents.";
+            }
+        }
+    }
+
+    // This list is used for configuring ACL table application profile information and
+    // also to retrieve the profile information for a switch NPU.
+
+    list switching-entity {
+
+        key "switch-id";
+
+        leaf switch-id {
+            type base-cmn:logical-switch-id;
+            description "Switch Identifier";
+        }
+
+        leaf max-ingress-acl-pool-count {
+            config false;
+            type uint32;
+            description "Maximum number of Ingress ACL pools available.";
+        }
+
+        leaf max-egress-acl-pool-count {
+            config false;
+            type uint32;
+            description "Maximum number of Egress ACL pool available.";
+        }
+
+        list app-group {
+
+            key "id";
+
+            leaf id {
+                type string {
+                    length "1..32";
+                }
+                description "ACL application group id for this group in this switch NPU.";
+            }
+
+            uses app-group-profile;
+
+            description "List of applications mapped to this application group,
+                         one application should be part of one application group only.";
+        }
+
+        description "Switching entity ACL pool, application configuration parameters.";
+    }
+
+
+    grouping acl-table-info {
+        leaf pipeline-id {
+            type uint32;
+            description "In multi pipeline systems,
+                         0-based index of the pipeline where the pool is present.";
+        }
+
+        leaf used-count {
+            type uint32;
+            config false;
+            description "Number of normalized units used in the ACL table in this pipeline.
+                         A normalized unit is the basic memory unit used for ACL rules created by applications;
+                         some ACL rules need 1 unit, others need 2 and so forth, depending on the ACL rule contents.";
+        }
+        leaf avail-count {
+            type uint32;
+            config false;
+            description "Number of normalized units available for use in the ACL table in this pipeline.
+                         A normalized unit is the basic memory unit used for ACL rules created by applications;
+                         some ACL rules need 1 unit, others need 2 and so forth, depending on the ACL rule contents.";
+        }
+
+        description "ACL table usage and other information for a pipeline within the NPU";
+    }
+
+
+    // This list is used for retrieval of ACL table usage information for a switch NPU.
+
+    list acl-table {
+
+        key "npu-id id";
+
+        leaf npu-id {
+            type base-cmn:npu-id;
+            description
+                "NPU to which this acl-table belongs to.";
+        }
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "This refers to the ACL table object id
+                         YANG Ref: dell-base-acl/table/id.";
+        }
+        list info {
+            key "pipeline-id";
+            uses acl-table-info;
+            description "List of ACL table utilization information for all pipelines within the NPU.";
+        }
+
+        description "list of ACL table information.";
+    }
+
+    grouping pool-info {
+        leaf index {
+            type uint32;
+            config false;
+            description "Index of the pool within a given pipeline and stage";
+        }
+
+        leaf pipeline-id {
+            type uint32;
+            config false;
+            description "In multi pipeline systems,
+                         0-based index of the pipeline where the pool is present.";
+        }
+
+        leaf stage {
+            type base-acl:stage;
+            config false;
+            description "Types of packet forwarding pipeline stages (ingress or egress).";
+        }
+
+        leaf used-count {
+            type uint32;
+            config false;
+            description "Number of entries used in the pool.";
+        }
+
+        leaf avail-count {
+            type uint32;
+            config false;
+            description "Number of entries available for use in the pool.";
+        }
+
+        leaf depth {
+            config false;
+            type uint32;
+            description "Number of normalized units in this pool.
+                         This is initialized to avail-count at switch NPU init time.";
+        }
+
+        leaf-list acl-table {
+            config false;
+            type base-cmn:base-obj-id-type;
+            description "List of ACL table ids for a given pool.
+                         This refers to the ACL table object id,
+                         YANG Ref: dell-base-acl/table/id.";
+        }
+    }
+
+    // This list is used for retrieval of ACL table pool usage information for a switch NPU.
+
+    list acl-pool-info {
+
+        key "npu-id pool-id";
+
+        leaf npu-id {
+            type base-cmn:npu-id;
+            description "NPU to which this pool belongs to.";
+        }
+
+        leaf pool-id {
+            type base-cmn:base-obj-id-type;
+            description "Unique ACL Pool Id generated upon system initialization.
+                         Scope of this ID is within the NPU.";
+        }
+
+        uses pool-info;
+        description "List of ACL table pool for a NPU.";
     }
 }
 

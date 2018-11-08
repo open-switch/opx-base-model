@@ -1,0 +1,99 @@
+
+module app-ztd {
+    namespace "http://www.dellemc.com/networking/os10/app-ztd";
+    prefix "app-ztd";
+
+    import ietf-inet-types {
+        prefix inet;
+    }
+
+    organization "Dell EMC";
+
+    contact
+        "http://www.dell.com/support";
+
+    description
+        "This module contains a collection of YANG definitions for managing
+         Zero touch deployment (ZTD) application. ";
+
+    revision 2018-06-14 {
+        description
+            "Initial revision";
+    }
+
+    rpc ztd-start {
+        description
+            "Start the ZTD protocol";
+        input {
+            leaf image-file {
+                type inet:uri;
+                description
+                    "Specify the location of the image file that will be used to perform software upgrade operation.";
+            }
+            leaf config-file {
+                type inet:uri;
+                description
+                    "Specify the location of the configuration file that will be applied to the switch.";
+            }
+            leaf script-file {
+                type inet:uri;
+                description
+                    "Specify the location of the post script file that will be run post ZTD process.";
+            }
+        }
+        output {
+            leaf status {
+                type string;
+                description
+                    "Status of the RPC request.";
+            }
+
+        }
+    }
+
+    container ztd-state {
+        config false;
+        description
+                "Current status of ZTD process";
+
+        leaf protocol-state {
+            type enumeration {
+                enum "init" {
+                    value 1;
+                    description "ZTD Protocol Initialised.";
+                }
+                enum "idle" {
+                    value 2;
+                    description "ZTD Protocol waiting for enablement or completed.";
+                }
+                enum "waiting" {
+                    value 3;
+                    description "ZTD Protocol started waiting for the call back.";
+                }
+                enum "downloading" {
+                    value 4;
+                    description "ZTD Protocol downloading the given files.";
+                }
+                enum "installing" {
+                    value 5;
+                    description "ZTD Protocol installing the given image.";
+                }
+                enum "pre-config" {
+                    value 6;
+                    description "ZTD Protocol executing the pre-configuration.";
+                }
+                enum "post-config" {
+                    description "ZTD Protocol executing the post-configuration.";
+                    value 7;
+                }
+                enum "post-script" {
+                    description "ZTD Protocol executing the post-script.";
+                    value 8;
+                }
+            }
+
+          description
+                "Current state of ztd protocol";
+        }
+    }
+}

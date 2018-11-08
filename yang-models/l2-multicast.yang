@@ -15,16 +15,42 @@ module l2-multicast {
     contact "http://www.dell.com/support";
 
     description "This module contains a collection of YANG definitions
-                 for managing L2 multicast.";
+                 for managing L2 multicast. This feature works in conjunction with
+                 IGMP/MLD Snooping support.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-17" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2017-11-01" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 
     rpc cleanup-l2mc-member {
-        description "This method is used to notify L2 multicast component to remove input interface from member
-                     list of all multicast groups of specific VLAN. This method is triggered when interface is
-                     deleted or added to lag master";
+        description "Each VLAN has a number of associated multicast groups. Each such group comprises of a list
+                     of logical or physical interfaces. This RPC trigers L2-multicast service to remove the given interface
+                     from all the multicats groups of the given vlan-id. This RPC is triggered during interface
+                     deletion/addition to a LAG master";
+
+
+        // ATTRIBUTE PATH  : base-l2-mcast/cleanup-l2mc-member
+        // ==============
+        //
+        // QUALIFIER       : Target
+        // =========
+        //
+        // INPUT           : base-l2-mcast/cleanup-l2mc-member/input/ifindex (if-index of the multicast group member to be removed)
+        // =====          OR base-l2-mcast/cleanup-l2mc-member/input/ifname  (interface name of the multicast group member to be removed)
+        //
+        //               AND base-l2-mcast/cleanup-l2mc-member/input/vlan-id (VLAN ID associated with the multicast member-group)
+        //
+        // OUTPUT          : None
+        // ======
+
         input {
             leaf ifindex {
                 type base-cmn:logical-ifindex;

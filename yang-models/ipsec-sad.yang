@@ -16,16 +16,27 @@ module ipsec-sad {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model - IPSec Security Association Database (SAD) - augments IETF IPSec and adds support for optional parameters. ";
+    description "This model - IPSec Security Association Database (SAD) - augments IETF IPSec and adds support for optional parameters.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-08-17 {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-08-02" {
+        description "Adding VRF name into the sad-entries.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-01-05" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 
 
     grouping ip-prefix {
-        description "This grouping provides ip-prefix represenation for source and destination IP addresses.";
-
         leaf source-ip-address {
             type inet:ip-prefix;
             description "Source Interface ip prefix.";
@@ -35,11 +46,10 @@ module ipsec-sad {
             type inet:ip-prefix;
             description "Destination Interface ip prefix.";
         }
+        description "This grouping provides ip-prefix represenation for source and destination IP addresses.";
     }
 
     augment "/eipsec:ipsec/eipsec:sad/eipsec:sad-entries" {
-        description "Grouping used to configure the optional parameters of security association database";
-
         uses ip-prefix;
 
         leaf ifname {
@@ -47,6 +57,11 @@ module ipsec-sad {
             description "Network interface for which the association is applied.";
         }
 
+        leaf vrf-name {
+            type string;
+            description "Network instance (VRF) name.";
+        }
+        description "Grouping used to configure the optional parameters of security association database";
     }
 
 }

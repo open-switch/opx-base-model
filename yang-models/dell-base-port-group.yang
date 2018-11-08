@@ -7,7 +7,15 @@ module dell-base-port-group {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model contains Dell EMC specific port-group defintion and its attributes.";
+    description "This model contains Dell EMC specific port-group definition and its attributes
+                 This model extends the dell-pg model.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-17" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-04-05" {
         description "Augmenting hybrid group config and state object.";
@@ -16,14 +24,15 @@ module dell-base-port-group {
 
     revision "2016-11-22" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 
     augment "/dell-pg:port-groups/dell-pg:port-group" {
-
+        description "Extending the port-group list";
     }
 
     augment "/dell-pg:port-groups/dell-pg:hybrid-group" {
-
+        description "Extending the hybrid-group list";
     }
 
     augment "/dell-pg:port-groups-state/dell-pg:port-group-state" {
@@ -36,6 +45,7 @@ module dell-base-port-group {
             type uint32;
             description "list of the front panel port Ids associated with this port-group.";
         }
+        description "Extending the port-group state object";
     }
 
 
@@ -49,8 +59,11 @@ module dell-base-port-group {
             type uint32;
             description "list of the front panel port id's associated with this port-group.";
         }
+        description "Extending the hybrid-group state object. Hybrid group consists of a
+                 group of ports that can be configured with different breakout mode using profiles";
     }
 
     augment "/dell-pg:port-groups-state/dell-pg:port-group-state/dell-pg:br-cap" {
+        description "Extending the breakout capabilities";
     }
 }

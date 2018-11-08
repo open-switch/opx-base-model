@@ -21,11 +21,17 @@ module dell-base-udf {
         "This module contains a collection of YANG definitions
         for managing User Defined Filters (UDFs).
 
-        Copyright (c) 2015-2016 by Dell EMC,
+        Copyright (c) 2015-2018 by Dell EMC,
         All rights reserved.";
+
+    revision 2018-08-17 {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2016-10-04 {
         description "Initial revision";
+        reference "Network Platform Abstraction";
     }
 
     typedef udf-group-type {
@@ -40,36 +46,34 @@ module dell-base-udf {
                 description "UDF Group for HASH";
             }
         }
+        description "Enumeration of all possible UDF groups";
     }
 
     list udf-group {
         key "id";
 
-        description
-            "List contains attributes of UDF Group object.";
-
         leaf id {
             type base-cmn:base-obj-id-type;
             description "Unique ID generated upon Create request.
-                         Subsequent Modify and Delete request required
+                         Subsequent Modify and Delete request requiries
                          this Group ID to be passed in.";
         }
 
         leaf type {
-            mandatory true;
             type udf-group-type;
+            mandatory true;
             description "Type of UDF Group to be created";
         }
 
         leaf length {
-            mandatory true;
             type uint8;
+            mandatory true;
             description "Length of bytes for the UDF objects in the group";
         }
 
         leaf-list udf-id-list {
-            config false;
             type base-cmn:base-obj-id-type;
+            config false;
             description "List of UDF object IDs associated with this UDF Group";
         }
 
@@ -80,6 +84,8 @@ module dell-base-udf {
                  If this atttribute is not specified then the UDF Group is installed on
                  all NPUs to which the UDF Group belongs.";
         }
+
+        description  "List of attributes of a UDF Group object.";
     }
 
     typedef udf-match-type {
@@ -94,13 +100,11 @@ module dell-base-udf {
                 description "Match packets with GRE tunnel encapsulation.";
             }
         }
+        description "Enumeration of all possible match rules";
     }
 
     list udf-match {
         key "id";
-
-        description
-            "List contains attributes of UDF Match object.";
 
         leaf id {
             type base-cmn:base-obj-id-type;
@@ -110,14 +114,14 @@ module dell-base-udf {
         }
 
         leaf priority {
-            mandatory true;
             type uint8;
+            mandatory true;
             description "UDF Match priority.";
         }
 
         leaf type {
-            mandatory true;
             type udf-match-type;
+            mandatory true;
             description "Specify encapsulation type of packets this UDF Match
                          object is going to match";
         }
@@ -126,8 +130,8 @@ module dell-base-udf {
             when "../type = NON_TUNNEL";
 
             leaf l2-type {
-                mandatory true;
                 type uint16;
+                mandatory true;
                 description "Protocol type of L2 header";
             }
 
@@ -137,8 +141,8 @@ module dell-base-udf {
             }
 
             leaf l3-type {
-                mandatory true;
                 type uint8;
+                mandatory true;
                 description "Protocol type of L3 header";
             }
 
@@ -146,14 +150,15 @@ module dell-base-udf {
                 type uint8;
                 description "Protocol type mask of L3 header";
             }
+            description "Set of attributes for non-tunnel case";
         }
 
         container GRE_TUNNEL_VALUE {
             when "../type = GRE_TUNNEL";
 
             leaf inner-type {
-                mandatory true;
                 type inet:ip-version;
+                mandatory true;
                 description "Type of inner IP header";
             }
 
@@ -161,6 +166,7 @@ module dell-base-udf {
                 type inet:ip-version;
                 description "Type of outer IP header";
             }
+            description "Set of attributes for GRE-tunnel case";
         }
 
         leaf-list npu-id-list {
@@ -170,6 +176,7 @@ module dell-base-udf {
                  If this atttribute is not specified then the UDF Match is installed on
                  all NPUs to which the UDF Match belongs.";
         }
+        description "List of attributes of an UDF Match object.";
     }
 
     typedef udf-base-type {
@@ -189,13 +196,11 @@ module dell-base-udf {
                 description "UDF offset base L4 header";
             }
         }
+        description "Enumeration of all possible values of UDF base-offest";
     }
 
     list udf-obj {
         key "id";
-
-        description
-            "List contains attributes of UDF object.";
 
         leaf id {
             type base-cmn:base-obj-id-type;
@@ -205,20 +210,20 @@ module dell-base-udf {
         }
 
         leaf group-id {
-            mandatory true;
             type base-cmn:base-obj-id-type;
+            mandatory true;
             description "UDF Group ID associated with this UDF object";
         }
 
         leaf match-id {
-            mandatory true;
             type base-cmn:base-obj-id-type;
+            mandatory true;
             description "UDF Match ID associated with this UDF object";
         }
 
         leaf base {
-            mandatory true;
             type udf-base-type;
+            mandatory true;
             description "Base of the UDF";
         }
 
@@ -239,5 +244,6 @@ module dell-base-udf {
                  If this atttribute is not specified then the UDF Object is installed on
                  all NPUs to which the UDF Object belongs.";
         }
+        description "List of attributes of an UDF object.";
     }
 }

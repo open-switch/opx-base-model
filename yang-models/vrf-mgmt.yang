@@ -18,7 +18,28 @@ module vrf-mgmt {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the ietf-network-instance YANG model for VRF operations.";
+    description "This model augments the ietf-network-instance YANG model for VRF operations.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-08-17{
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";	
+    }
+
+    revision 2018-08-10 {
+        description
+            "This revision adds the source IP for the traffic originated from one VRF and exiting via another VRF.";
+        reference
+            "Network Platform Abstraction";
+    }
+
+    revision 2018-08-07 {
+        description
+            "This revision adds the VRF internal binding information for Apps.";
+        reference
+            "Network Platform Abstraction";
+    }
 
     revision 2018-04-02 {
         description
@@ -30,8 +51,7 @@ module vrf-mgmt {
     revision 2018-03-12 {
         description
             "This revision adds the RPC to enable/disable VRF information.";
-        reference
-            "Update since last revision.";
+        reference "Network Platform Abstraction";	
     }
 
     revision 2018-02-27 {
@@ -39,24 +59,22 @@ module vrf-mgmt {
             "This revision adds the RPC to bind the interface with the network instance (VRF)
              in the OS and responds with router interface information specific to VRF context,
              also, adds the VRF-id to map with VRF-name for faster lookup.";
-        reference
-            "Update since last revision.";
+        reference "Network Platform Abstraction";	
     }
 
     revision "2017-09-19" {
         description "Initial version.";
-        reference
-            "July 3, 2017 draft-ietf-rtgwg-ni-model-03";
+        reference "Network Platform Abstraction";	
     }
 
-    // This augmentation is used for network instance create/delete operation in the OS.
     augment "/ni:network-instances/ni:network-instance" {
         leaf vrf-id {
             type uint32;
             description "VRF ID";
         }
+        description "This augmentation is used for network instance create/delete operation in the OS.";
     }
-    // This augmentation is used for mapping parent interface with router interface in VRF context.
+
     augment "/ni:if/ni:interfaces/ni:interface" {
         leaf vrf-id {
             type uint32;
@@ -76,9 +94,9 @@ module vrf-mgmt {
             type string;
             description "Interface name of the router interface which is present in the VRF context.";
         }
+        description "This augmentation is used for mapping parent interface with router interface in VRF context.";
     }
 
-    // This list is used by App for getting the router interface in VRF context to parent interface mapping.
     list router-intf-entry {
         key "name";
 
@@ -98,12 +116,26 @@ module vrf-mgmt {
             type string;
             description "Interface name of the parent interface.";
         }
+        description "It lists the router interface to parent interface mappings.";
     }
 
-    // This RPC should be used by App to associate router interface to VRF and
-    // the output of this RPC returns the router interface information specific to VRF context.
+    // This RPC should be used by App to associate router interface to VRF
+    // The output of this RPC returns the router interface information specific to VRF context.
     rpc intf-bind-ni {
         description "Bind an interface with network instance (VRF).";
+
+        // ATTRIBUTE PATH  : vrf-mgmt/intf-bind-ni
+        // ==============
+        //
+        // INPUT           : vrf-mgmt/intf-bind-ni/input/operation (add/delete/update)
+        // =====             vrf-mgmt/intf-bind-ni/input/ni-name   (VRF name)
+        //                   vrf-mgmt/intf-bind-ni/input/interface (interaface name)
+        //
+        // OUTPUT          : vrf-mgmt/intf-bind-ni/output/result   (indicates success or failure)
+        // ======            vrf-mgmt/intf-bind-ni/output/ifindex  (ifindex of the router interface)
+        //                   vrf-mgmt/intf-bind-ni/output/ifname   (name of the router interface)
+        //                   vrf-mgmt/intf-bind-ni/output/mac-addr (name of the router interface)
+
         input {
             leaf operation {
                 type base-cmn:operation-type;
@@ -149,6 +181,17 @@ module vrf-mgmt {
     // This RPC is used only for internal purpose, should not be used by App.
     rpc vrf-config {
         description "This RPC creates/deletes the VRF in the NPU.";
+
+        // ATTRIBUTE PATH  : vrf-mgmt/vrf-config
+        // ==============
+        //
+        // INPUT           : vrf-mgmt/vrf-config/input/operation (add/delete/update)
+        // =====             vrf-mgmt/vrf-config/input/ni-name   (VRF name)
+        //                   vrf-mgmt/vrf-config/input/vrf-id    (VRF id)
+        //
+        // OUTPUT          : None
+        // ======
+
         input {
             leaf operation {
                 type base-cmn:operation-type;
@@ -165,6 +208,100 @@ module vrf-mgmt {
                     path "/ni:network-instances/ni:network-instance/ni:name";
                 }
                 description "Network instance (VRF) name.";
+            }
+        }
+    }
+
+    // This RPC should be used by App to get the internal interface to reach the destination VRF from source VRF,
+    // the output of this RPC returns the internal interface for IP services/leaked route destined traffic forwarding.
+    rpc get-vrf-internal-binding {
+        description "Get an internal interface to reach destination VRF for a source VRF.";
+
+
+        // ATTRIBUTE PATH  : vrf-mgmt/get-vrf-internal-binding
+        // ==============
+        //
+        // INPUT           : vrf-mgmt/get-vrf-internal-binding/input/ni-name     (src vrf name)
+        // =====             vrf-mgmt/get-vrf-internal-binding/input/dst-ni-name (dst vrf name)
+        //
+        // OUTPUT          : vrf-mgmt/get-vrf-internal-binding/output/result     (indicates success or failure)
+        // ======            vrf-mgmt/get-vrf-internal-binding/output/ifname     (interface via which dst vrf could be reached
+        //                                                                        from the src vrf)
+
+        input {
+            leaf ni-name {
+                type leafref {
+                    path "/ni:network-instances/ni:network-instance/ni:name";
+                }
+                mandatory true;
+                description "Source Network instance (VRF) name.";
+            }
+            leaf dst-ni-name {
+                type leafref {
+                    path "/ni:network-instances/ni:network-instance/ni:name";
+                }
+                mandatory true;
+                description "Destination Network instance (VRF) name.";
+            }
+        }
+        output {
+            leaf result {
+                type string;
+                description "The result of the request which may be successful or a failure response.";
+            }
+
+            leaf ifname {
+                type string;
+                description "Interface which is used to reach the destination VRF from source VRF.";
+            }
+        }
+    }
+    rpc src-ip-config {
+        description "Set a source IP address for the traffic exiting via different VRFs (Traffic originated
+                     from leaked VRF should take the source IP to exit via different parent VRFs.)";
+
+        // ATTRIBUTE PATH  : vrf-mgmt/src-ip-config
+        // ==============
+        //
+        // INPUT           : vrf-mgmt/src-ip-config/input/operation (add/delete/update)
+        // =====             vrf-mgmt/src-ip-config/input/ni-name   (vrf name)
+        //                   vrf-mgmt/src-ip-config/input/af        (address family)
+        //                   vrf-mgmt/src-ip-config/input/src-ip    (IP to be set)
+        //
+        // OUTPUT          : vrf-mgmt/get-vrf-internal-binding/output/result  (indicates success or failure)
+        // ======
+
+
+        input {
+            leaf operation {
+                type base-cmn:operation-type;
+                mandatory true;
+                description "This indicates the operation type (create or delete).";
+            }
+            leaf ni-name {
+                type leafref {
+                    path "/ni:network-instances/ni:network-instance/ni:name";
+                }
+                mandatory true;
+                description "Network instance (VRF) name.";
+            }
+
+            leaf af {
+                type base-cmn:af-type;
+                mandatory true;
+                description "Address Family";
+            }
+
+            leaf src-ip {
+                type base-cmn:ip-address;
+                mandatory true;
+                description "Source IPv4 or IPv6 address to be used for the traffic exiting via different VRF.";
+            }
+        }
+        output {
+            leaf result {
+                type string;
+                description "The result of the request which may be successful or a failure response.";
             }
         }
     }

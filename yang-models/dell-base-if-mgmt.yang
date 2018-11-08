@@ -19,34 +19,55 @@ module dell-base-if-mgmt {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell EMC specific
-    				extensions.  This model contains the entry point for the
-    				interface object extensions.";
+
+    description "This model augments the standard interface object(s) and adds
+                 specific attributes and/or RPC for management interfaces.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-10" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2016-01-22" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 	
-	augment "/if:interfaces/if:interface" {
+    augment "/if:interfaces/if:interface" {
         when "if:type = 'base-if:management' ";
-        description " MGMT Interface configuration attributes";
-	}
+        description "Configuration attributes specific to management interfaces";
+    }
     augment "/if:interfaces-state/if:interface" {
         when "if:type = 'base-if:management' ";
-        description " MGMT Interface state attributes";
-	}
+        description "Interface-state attributes specific to management interfaces";
+    }
     augment "/if:interfaces-state/if:interface/if:statistics" {
         when "if:type = 'base-if:management' ";
-        description "Interface counter attributes";
+        description "Interface-counter attributes specific to management interfaces";
     }
 
     rpc if_name_change {
-        description "Management interface name change request RPC";
+
+        description "RPC used for modifying the name of a management interface";
+
+        // QUALIFIER       : Target
+        // =========
+        //
+        // ATTRIBUTE PATH  : base-if-mgmt/if_name_change
+        // ==============
+        //
+        // INPUT           : base-if-mgmt/if_name_change/input/name     (current name of the management interface)
+        //                   base-if-mgmt/if_name_change/input/new_name (new name of the management interface)
+        //
+        // OUTPUT          : None
+        // ======
 
         input {
             leaf name {
                 type string;
-                description "Management interface name.";
+                description "Management interface current name.";
             }
 
             leaf new_name {
@@ -54,5 +75,6 @@ module dell-base-if-mgmt {
                 description "Management interface new name.";
             }
         }
+
     }
 }

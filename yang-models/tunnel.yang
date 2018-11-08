@@ -15,8 +15,18 @@ module tunnel {
         prefix "base-if-cmn";
     }
 
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
     description "This module defines the configuration data and operational
-                 state data for managing tunnels in the system.";
+                 state data for managing tunnels in the system.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-17" {
+        description "Fixing pyang IETF errors and adding documentiation to the model.";
+        reference "Network Platform Abstraction";	
+    }
 
      revision "2018-03-22" {
         description "Added a remote procedure call clear-tunnel-stats to clear the
@@ -24,15 +34,12 @@ module tunnel {
         reference "Network Platform Abstraction";
     }
 
-    revision "2018-03-007" {
+    revision "2018-03-07" {
         description "Initial version.";
         reference "Network Platform Abstraction";
     }
 
     typedef tunnel-type {
-
-        description
-        "Indicate the type of the tunnel";
 
         type enumeration {
             enum ip-in-ip {
@@ -56,13 +63,12 @@ module tunnel {
             }
 
         }
+        description
+        "Indicate the type of the tunnel";
     }
 
 
     grouping tunnel-entry {
-
-        description
-        "Specify the tunnel entry attributes";
 
         leaf name {
             type string;
@@ -87,38 +93,36 @@ module tunnel {
             description
             "IP address of the remote tunnel end";
         }
+        description
+        "Specify the tunnel entry attributes";
 
     }
 
     container tunnel-state{
         config false;
-        description
-            "Contains the information about currently configured tunnels";
 
         list tunnels{
             key "local-ip remote-ip";
+            uses tunnel-entry;
             description
             "Operational state data of configured tunnel";
-
-            uses tunnel-entry;
-
         }
+        description
+            "State information of the list of currently configured tunnels";
     }
 
     container tunnel-stats {
         config false;
-        description
-            "Contains the information about currently configured tunnels";
 
         list tunnels{
             key "local-ip remote-ip";
+            uses tunnel-entry;
+            uses base-if-cmn:stats;
             description
             "Operational state data of configured tunnel";
-
-            uses tunnel-entry;
-
-            uses base-if-cmn:stats;
         }
+        description
+            "Various statistics of the list of currently configured tunnels";
     }
 
     rpc clear-tunnel-stats{
@@ -129,10 +133,14 @@ module tunnel {
              should be used carefully. If a tunnel does not exsist it will
              have no impact.";
 
-             // qualifier  : target
-             //
-             // key        : TUNNEL_CLEAR_TUNNEL_STATS_OBJ
-             //              tunnel/clear-tunnel-stats
+        // ATTRIBUTE PATH  : tunnel/clear-tunnel-stats
+        // ==============
+        //
+        // INPUT           : tunnel/clear-tunnel-stats/input/local-ip  (addr-family, address and anything else in bace-cmn:ip)
+        // =====             tunnel/clear-tunnel-stats/input/remote-ip (addr-family, address and anything else in bace-cmn:ip)
+        //
+        // OUTPUT          : None
+        // ======
 
         input {
 

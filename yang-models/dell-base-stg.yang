@@ -14,12 +14,22 @@ module dell-base-stg {
     "http://www.dell.com/support";
 
     description
-        "This module contains a collection of YANG definitions provided
-          by platform for managing STG objects";
+        "A Spanning Tree Group (STG) comprises of one or more VLANs, which share
+         the same instance of the Spanning Tree Protocol (STP).
+         This model contains a collection of YANG definitions provided by platform
+         for managing the STG objects.
+
+         Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision 2018-08-17{
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";	
+    }
 
     revision 2014-12-30 {
         description
             "Initial revision";
+        reference "Network Platform Abstraction";	
     }
 
     typedef interface-state {
@@ -50,12 +60,15 @@ module dell-base-stg {
                     "Indicates STP state of the interface is blocking";
             }
         }
+        description "Enumeration of possible states of the interface.";
     }
 
     container default-stg{
+        // Qualifier : Target
+
         leaf id{
-            config false;
             type uint32;
+            config false;
             description "Default STG instance id";
         }
 
@@ -64,15 +77,14 @@ module dell-base-stg {
             description
                 "Default STP state of the all interfaces for default STG instance";
         }
+        description "Attribute values of the default STG.";
     }
 
 
     list entry {
+        // Qualifier : Target
 
         key "id";
-
-        description
-            "Spanning Tree Group instance attributes";
 
         leaf id {
             type uint32;
@@ -95,9 +107,6 @@ module dell-base-stg {
 
         list intf {
             key "if";
-            description
-                "List of interfaces and its STP state to be changed
-                for the given STG instance";
 
             choice  if {
                 case index {
@@ -116,12 +125,17 @@ module dell-base-stg {
                             logical/physical interface";
                     }
                 }
+                description "interface identifier";
             }
             leaf state {
                 type interface-state;
                 description
                     "STP state of the interface";
             }
+            description
+                "List of interfaces associated with the STP instance.";
         }
+        description
+            "Spanning Tree Group instance attributes";
     }
 }

@@ -17,11 +17,20 @@ module dell-base-if-vlan {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell EMC specific
-    				vlan extensions.";
+
+    description "This model augments the standard interface object(s) and adds
+                 specific attributes and/or RPC for VLAN interfaces.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-08-10" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2016-01-01" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 	
     augment "/if:interfaces/if:interface" {
@@ -29,7 +38,8 @@ module dell-base-if-vlan {
 
         leaf id {
             type base-cmn:vlan-id;
-            description "the vlan id associated with interface";
+            description "the VLAN id associated with the interface";
         }	
+        description "Adding VLAN specific attributes to the interface object";
     }
 }

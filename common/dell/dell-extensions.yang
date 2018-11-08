@@ -7,27 +7,27 @@ module dell-extensions {
          Yang extensions.";
 
     revision 2015-12-07 {
-        description 
+        description
             "Initial version";
-    } 
+    }
 
     extension edit-version {
         description
-             "Backend edit callback functions can be conformant to 
-              netconf engine edit2 or edit1 version. This extension 
+             "Backend edit callback functions can be conformant to
+              netconf engine edit2 or edit1 version. This extension
               will be used to  determine the backend edit callback version
               supported by the backend for container, list or choice.
-                   
-              This yang extension is checked just before registering the 
+
+              This yang extension is checked just before registering the
               callback functions with the netconf engine.";
-        argument ver; 
+        argument ver;
     }
 
     extension val-cb {
         description
               "This extension defines the name of callback function to
                validate configuration.";
-        argument cb_name; 
+        argument cb_name;
     }
 
     extension pre-hook {
@@ -35,7 +35,7 @@ module dell-extensions {
               "Pre hooks are used to define user callbacks to the
                transaction. Pre-hook callbacks are invoked within
                the trsnaction when an object is modified.";
-        argument cb_name; 
+        argument cb_name;
     }
 
     extension ifname-trans {

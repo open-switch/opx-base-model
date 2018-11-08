@@ -19,51 +19,78 @@ module dell-base-if-common {
     organization "Dell EMC";
     contact "http://www.dell.com/support";
 
-    description "This model augments the standard interface and adds Dell EMC specific
-                    extensions.  This model contains the entry point for the
-                    interface object extensions.";
+    description "This model augments the standard interface model and adds DellEMC
+                 specific attributes and/or RPCs to it.
+
+                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+    revision "2018-09-07" {
+         description "Adding front-panel-port id and subport-id into the interface state object.";
+         reference "Network Platform Abstraction";
+     }
+
+    revision "2018-08-10" {
+        description "Fixing pyang IETF errors and adding documentation to the model.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-05-08" {
         description "Added support for VLAN filtering object. This object helps to
                      get or set VLAN filtering feature on an interface";
-        reference "IEEE 802.1Q";
+        reference "Network Platform Abstraction";
     }
 
     revision "2018-01-22" {
         description "Augmented if/interfaces model from dell-interface to handle the
                      attributes augmented in dell-interface.yang";
+        reference "Network Platform Abstraction";
     }
 
     revision "2017-10-10" {
         description "Add typedef for update type to use it for leaf list attribute type.
                      Add member-op attribute for rpc set-interface to handle leaf-list update";
+        reference "Network Platform Abstraction";
     }
 
     revision "2016-01-01" {
         description "Initial version.";
+        reference "Network Platform Abstraction";
     }
 
 
     augment "/if:interfaces/if:interface" {
-        description "The following attributes are common to all interface types.";
 
         leaf if-index {
             type base-cmn:logical-ifindex;
-            description "Can be used as an alternate to the name key field.  The if-index is the linux representation for the interface.";
+            description "Unique ID used for identifying a physical or logical interface.";
         }
 
         leaf vlan-filter {
             type base-cmn:filter-type;
             default "INGRESS_ENABLE";
-            description "Used to enable or disable VLAN filtering flag on an interface. By default, Ingress VLAN Filter is enabled";
+            description "Flag used for enabling or disabling VLAN filtering on an interface.
+                         By default, Ingress VLAN Filter is enabled";
         }
+        description "Including DellEMC specific interface attributes that are common to all interface types.";
     }
 
     augment "/if:interfaces-state/if:interface" {
+
         leaf vlan-filter {
             type base-cmn:filter-type;
             description "Used to get the status of Interface VLAN filtering flag";
         }
+
+        leaf front-panel-port {
+            type uint32;
+            description "ID of front-panel-port (Indexed from 1 to max front panel port).";
+        }
+
+        leaf-list subport-id {
+            type uint32;
+            description "Physical lane on which hardware port exists.";
+        }
+        description "Including DellEMC specific interface-state attributes that are common to all interface types";
     }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
@@ -72,10 +99,10 @@ module dell-base-if-common {
             type yang:timestamp;
             description "Timestamp at which stats are returned";
         }
+        description "Including DellEMC specific interface-counter attributes that are common to all interface types.";
     }
 
     typedef operation-type {
-        description "Operation type of interface configuration";
 
         type enumeration {
             enum CREATE {
@@ -91,6 +118,8 @@ module dell-base-if-common {
                 description "Operation to update interface attributes";
             }
         }
+        description "Types of operations performed during interface configuration";
+
     }
     typedef update-type {
         type enumeration {
@@ -103,16 +132,17 @@ module dell-base-if-common {
                 description "Operation to remove member";
             }
         }
+        description "Types of operations performed while updating interface configuration";
     }
 
 
     rpc set-interface {
+
         description "This method is used to create, delete or set multiple types of interface. For
                 create operation, mac address will be allocated if it is not given within input argument.
                 Currently there is only one input argument which specified operation type, user should
                 use attributes of the model of corresponding interface type as extra input.
                 if:interface model is used as input for interface configuration.";
-
         // QUALIFIER  :  target
         // ========
         //
@@ -154,13 +184,13 @@ module dell-base-if-common {
 
         input {
             leaf operation {
-                description "Specify operation type to configure interface.";
                 type operation-type;
+                description "Specify operation type to configure interface.";
             }
             leaf member-op {
+                type update-type;
                 description " Specify the operation type in case of member add or remove. This field is optional
                               and member list is considered a complete list in case if member-op is not present.";
-                type update-type;
             }
         }
     }
@@ -169,17 +199,21 @@ module dell-base-if-common {
         description "This method is used to get assgined mac address for different type of interfaces.
                 User should give required attributes such as interface-name, type as input. The actual
                 attributes needed depends on requested interface type";
+        // QUALIFIER  :  target
     }
 
-    augment "dell-if:clear-counters/dell-if:input" {
+    augment "/dell-if:clear-counters/dell-if:input" {
+        description "Adding attributes to the input parameter of dell-if/clear-counters RPC";
 
     }
 
-    augment "dell-if:clear-eee-counters/dell-if:input" {
+    augment "/dell-if:clear-eee-counters/dell-if:input" {
+        description "Adding attributes to the input parameter of dell-if/clear-eee-counters RPC";
 
     }
 
     augment "/if:interfaces"{
+        description "Adding nodes to the standard interface model";
 
     }
 }

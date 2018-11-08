@@ -63,7 +63,9 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/spd.yang \
     $(top_srcdir)/yang-models/system-status.yang \
     $(top_srcdir)/yang-models/ipsec-sad.yang \
-    $(top_srcdir)/yang-models/tunnel.yang
+    $(top_srcdir)/yang-models/tunnel.yang \
+    $(top_srcdir)/yang-models/app-ztd.yang
+
 
 #Create VPATH for yang models
 YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
@@ -133,7 +135,8 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/spd.cpp \
     @YANG_OUTPUT@/system-status.cpp \
     @YANG_OUTPUT@/yang-models/ipsec-sad.cpp \
-    @YANG_OUTPUT@/yang-models/tunnel.cpp
+    @YANG_OUTPUT@/yang-models/tunnel.cpp \
+    @YANG_OUTPUT@/yang-models/app-ztd.cpp
 
 YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/yumaworks-extensions.h \
@@ -199,7 +202,8 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/spd.h \
     @YANG_OUTPUT@/system-status.h \
     @YANG_OUTPUT@/ipsec-sad.h \
-    @YANG_OUTPUT@/tunnel.h
+    @YANG_OUTPUT@/tunnel.h \
+    @YANG_OUTPUT@/app-ztd.h
 
 BUILT_SOURCES = ${YANG_GENERATED_SRCS} ${YANG_GENERATED_HDRS}
 
@@ -269,7 +273,8 @@ lib_LTLIBRARIES = \
     libcpsclass_spd.la \
     libcpsclass_system-status.la \
     libcpsclass_ipsec-sad.la \
-    libcpsclass_tunnel.la
+    libcpsclass_tunnel.la \
+    libcpsclass_app-ztd.la
 
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
@@ -468,6 +473,9 @@ libcpsclass_ipsec_sad_la_LIBADD = -lopx_cps_api_common
 libcpsclass_tunnel_la_SOURCES = @YANG_OUTPUT@/tunnel.cpp
 libcpsclass_tunnel_la_LIBADD = -lopx_cps_api_common
 
+libcpsclass_app_ztd_la_SOURCES = @YANG_OUTPUT@/app-ztd.cpp
+libcpsclass_app_ztd_la_LIBADD = -lopx_cps_api_common
+
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang
 	@ rm -f @YANG_OUTPUT@/$*.cpp
@@ -480,9 +488,10 @@ clean-local:
         rm -Rf @YANG_OUTPUT@* ; \
         fi; )
 
+
 data_base_modeldir = /usr/share/opx/yang-models
 data_base_model_DATA = \
-	$(wildcard $(top_srcdir)/common/dell/*.yang) \
-	$(wildcard $(top_srcdir)/common/yumaworks/*.yang) \
-	$(wildcard $(top_srcdir)/rfc/*.yang) \
-	$(wildcard $(top_srcdir)/yang-models/*.yang)
+    $(wildcard $(top_srcdir)/common/dell/*.yang) \
+    $(wildcard $(top_srcdir)/common/yumaworks/*.yang) \
+    $(wildcard $(top_srcdir)/rfc/*.yang) \
+    $(wildcard $(top_srcdir)/yang-models/*.yang)
