@@ -20,6 +20,12 @@ description "This model contains a collection of YANG definitions for
 
              All rights reserved.";
 
+revision 2018-10-12 {
+        description "Added L3 RIF (Router Interface) table size and nexthop size attributes.";
+        reference "Network Platform Abstraction";
+}
+
+
 revision 2018-09-19 {
         description "Added L3 VXLAN (Virtual Extensible LAN) RIOT (Routing In and Out of Tunnel) enable/disable and
             the maximum number of RIFs and Nexthops when enabled.";
@@ -448,6 +454,18 @@ container switching-entities {
         type uint32;
         config false;
         description "Size of IPv6 NBR table";
+    }
+
+    leaf rif-table-size {
+        type uint32;
+        config false;
+        description "RIF (Router Interface) table size";
+    }
+
+    leaf l3-nexthop-table-size {
+        type uint32;
+        config false;
+        description "L3 nexthop table size";
     }
 
     leaf num-unicast-queues-per-port {
