@@ -1,3 +1,10 @@
+opx-base-model (3.166.0) unstable; urgency=medium
+
+  * Feature: Add support for Solution ID fields to identify support level
+  * Update: Fixing pyang IETF errors and adding documentation to the model
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Thu, 15 Nov 2018 12:30:00 -0800
+
 opx-base-model (3.165.0) unstable; urgency=medium
 
   * Feature: Static L2 VxLAN Support

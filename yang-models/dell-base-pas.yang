@@ -16,13 +16,13 @@ module dell-base-pas {
 
                Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
 
-  revision 2018-08-17 {
-    description "Fixing pyang IETF errors and adding documentiation to the model.";
+  revision 2018-09-17 {
+    description "Add object for NVRAM tag-value pairs";
     reference "Network Platform Abstraction";
   }
 
-  revision 2015-04-03 {
-    description "Initial revision.";
+  revision 2018-08-17 {
+    description "Fixing pyang IETF errors and adding documentiation to the model.";
     reference "Network Platform Abstraction";
   }
 
@@ -480,5 +480,23 @@ module dell-base-pas {
 
     uses platform:phy;
     description "Attributes of a port PHY";
+  }
+
+  // NVRAM subcategory
+  list nvram {
+    key "tag";
+
+    leaf tag {
+        type uint64;
+        description "Tag for the value";
+    }
+
+    leaf value {
+        type binary;
+        length "1..255";
+        description "Value field";
+    }
+
+    description "NVRAM tag-value pairs";
   }
 }
