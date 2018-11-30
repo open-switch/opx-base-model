@@ -1,0 +1,360 @@
+module dhcp-agent {
+
+    namespace "urn:ietf:params:xml:ns:yang:dhcp-agent";
+    prefix dhcp-agent;
+
+    import ietf-inet-types {
+        prefix inet;
+    }
+    import ietf-interfaces {
+        prefix if;
+    }
+    import dell-base-common { prefix "base-cmn"; }
+    import iana-if-type { prefix "ianaift"; }
+
+    organization "Inocybe Technologies";
+
+    contact "Anton Ivanov <anton.ivanov@cambridgegreys.com>";
+
+    description
+        "This module contains a set of definitions to control
+         a programmable Layer2 switch DHCP agent and/or DHCP Relay.";
+
+    revision 2018-04-26 {
+        description "Initial revision.";
+    }
+
+    typedef comparison-operation {
+        type enumeration {
+            enum "EQ" {
+                value 0;
+            }
+            enum "GE" {
+                value 1;
+            }
+            enum "LE" {
+                value 2;
+            }
+            enum "G" {
+                value 3;
+            }
+            enum "L" {
+                value 4;
+            }
+            enum "AND" {
+                value 5;
+            }
+            enum "OR" {
+                value 6;
+            }
+            enum "GLOB" {
+                description
+                    "Return true regardless of values - intended for additions";
+                value 7;
+            }
+        }
+    }
+
+    typedef which-direction {
+        type enumeration {
+            enum "UP" {
+                description "To Server";
+                value 0;
+            }
+            enum "DOWN" {
+                description "To Client";
+                value 1;
+            }
+        }
+    }
+    grouping dhcp-option {
+        description "Format of DHCP options"; 
+        leaf dhcp-option-code {
+            type uint8;
+            mandatory true;
+            description "DHCP Option Code";
+        }
+        choice option-type {
+            case void-option {
+            }
+            case inet-option {
+                leaf inet {
+                    type base-cmn:ip-address;
+                    description "An IPv4 Address";
+                }
+            }
+            case inet-list {
+                list inets {
+                    key "order";
+                    description "A list of IPv4 Addresses";
+                    leaf order {
+                        type uint8; 
+                        description "Dummy number used to order the list";
+                    }
+                    leaf address {
+                        type base-cmn:ip-address;
+                        description "An IPv4 Address";
+                    }
+                }
+            }
+            case inet-paired-list {
+                list paired-inets {
+                    key "order";
+                    description "A list of IPv4 Addresses";
+                    leaf order {
+                        type uint8; 
+                        description "Dummy number used to order the list";
+                    }
+                    leaf address-1 {
+                        type base-cmn:ip-address;
+                        description "An IPv4 Address";
+                    }
+                    leaf address-2 {
+                        type base-cmn:ip-address;
+                        description "An IPv4 Address";
+                    }
+                }
+            }
+            case integer {
+                leaf int-value {
+                    type uint32; 
+                    description "32 bit integer value";
+                }
+            }
+            case short {
+                leaf short-value {
+                    type uint16; 
+                    description "16 bit integer value";
+                }
+            }
+            case short-list {
+                leaf-list short-value-list {
+                    type uint16; 
+                    description "list of 16 bit integer values";
+                }
+            }
+            case byte {
+                leaf byte-value {
+                    type uint8; 
+                    description "8 bit integer value";
+                }
+            }
+            case byte-list {
+                leaf-list byte-value-list {
+                    type uint8; 
+                    description "List of 8 bit integer values";
+                }
+            }
+            case string {
+                leaf-list string-value {
+                    type string; 
+                    description "String option value";
+                }
+            }
+            case relays {
+                list relay-option-values {
+                    key "relay-option";
+                    description "A list of Relay Agent Options";
+                    leaf relay-option {
+                        type uint8; 
+                        description "Relay Option Code";
+                    }
+                    leaf value {
+                        type string;
+                        description "Relay Option Value";
+                    }
+                }
+            }
+            case client-identifier {
+                container ids {
+                    leaf hardware-type {
+                        type uint8;
+                        description "Hardware Type"; 
+                    }
+                    leaf string {
+                        type string; 
+                        description "Hardware address";
+                    }
+                }
+            }
+            
+            case csr {
+                leaf csr {
+                    type inet:ipv4-prefix; 
+                    description "IPv4 Prefix (leave the conversion to serialization)"; 
+                }
+            }
+            case binary {
+                leaf bin-value {
+                    type binary;
+                    description "Catch-all for everything else which we do not know";
+                }
+            }
+            /*
+            suboptions : hex encoded sub options
+            */
+        }
+    }
+
+    grouping dhcp-packet {
+        description "Format of DHCP Packet";
+        leaf op {
+            type uint8;
+            description "BOOTP op";
+        }
+        leaf htype {
+            type uint8;
+            description "Hardware Type";
+        }
+        leaf hlen {
+            type uint8;
+            description "Hardware Address Length";
+        }
+        leaf hops {
+            type uint8;
+            description "Relay Agent Hops";
+        }
+        leaf xid {
+            type uint32;
+            description "Xid";
+        }
+        leaf secs {
+            type uint16;
+            description "Seconds since the start of configuration";
+        }
+        leaf flags {
+            type uint16;
+            description "Flags - Broadcast or Unicast for reply";
+        }
+        leaf ciaddr {
+            type base-cmn:ip-address;
+            description "Client IP Address";
+        }
+        leaf yiaddr {
+            type base-cmn:ip-address;
+            description "Your (client) IP address";
+        }
+        leaf siaddr {
+            type base-cmn:ip-address;
+            description "Next Server address";
+        }
+        leaf giaddr {
+            type base-cmn:ip-address;
+            description "Relay Address";
+        }
+        leaf chaddr {
+            type binary;
+            description "Client Hardware Address";
+        }
+        leaf sname {
+            type string;
+            description "Server Name";
+        }
+        leaf file {
+            type string;
+            description "Boot File Name";
+        }
+        list dhcp-options {
+            key "option-order";
+            leaf option-order {
+                type uint8;
+                description "Dummy ordering field to order the list";
+            }
+            uses dhcp-option;
+        }
+    }
+
+    grouping comparison-data {
+        leaf operation {
+            type comparison-operation;
+            description "Operation for comparison";
+        }
+
+        leaf list-operation {
+            type comparison-operation;
+            description "Operation for comparison - list form options";
+        }
+
+        leaf direction {
+            type which-direction;
+            description "When to apply the processing";
+        }
+
+        uses dhcp-packet;
+    }
+
+
+
+    /*
+    * Configuration data nodes
+    */
+
+    augment "/if:interfaces/if:interface" {
+        when "if:type = 'ianaift:l2vlan'";
+
+            leaf dhcp-server {
+            type base-cmn:ip-address;
+            description
+                "A Server to forward requests for this interface when
+                 operating as a DHCP Relay.
+                 If this leaf is null, the agent will change the requests
+                 transparently before forwarding them at Layer 2.";
+            }
+
+            leaf trusted {
+            type string;
+            description
+                "A trusted interface for forwarding requests which have been
+                 snooped in MitM mode";
+            }
+            list delete {
+                key "priority";
+                description 
+                "Options to delete
+
+                 The implementation scans the dhcp data and selects an
+                 an option to delete. 
+
+                 Specifying only the option code will delete 
+                 regardless of value and comparison operation. 
+
+                 Specifying option values will use the 
+                 comparison-operation from op on the option data.
+                 If the option data is a list, the operation will be
+                 performed on all elements and accumulated according
+                 to list-op.
+                 If the comparison operation yields a true value, the
+                 option will be deleted.
+                ";
+                leaf priority {
+                    type uint32;
+                    description "Defines the order in which the rules are executed";
+                }
+                uses comparison-data;
+
+            }
+            list add {
+                key "priority";
+                description 
+                "Options to add
+                 The implementation scans the dhcp data using the same semantics as for
+                 delete. If the search returns true, the list of additions is executed.
+                ";
+                leaf priority {
+                    type uint32;
+                    description "Defines the order in which the rules are executed";
+                }
+                
+                uses comparison-data;
+
+                list additions {
+                    key "order";
+                    leaf order {
+                        type uint32;
+                        description "Defines the order in which the additions are processed";
+                    }
+                    uses dhcp-packet;
+                }
+            }
+        }
+}
