@@ -2,7 +2,7 @@
 This repository contains the YANG models which define the object model for all software components.
 
 ## Model overview
-Applications/scripts can use existing models, and build new models for behavior on the system. Read the _Application Programming Guide_ for more information on CPS interfaces.
+Applications/scripts can use existing models, and build new models for behavior on the system. See [Application Programming](https://github.com/open-switch/opx-docs/wiki/Application-programming) for more information on CPS interfaces.
 
 The YANG class parser goes through each file and generates:
 
@@ -107,4 +107,4 @@ The following set of models provides the networking access-related models/classe
 - `dell-base-packet.yang`            
 - `dell-interface.yang`
 
-(c) 2017 Dell
+(c) 2018 Dell Inc. or its subsidiaries. All Rights Reserved.
