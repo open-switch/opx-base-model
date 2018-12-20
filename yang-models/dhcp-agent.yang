@@ -20,8 +20,9 @@ module dhcp-agent {
         "This module contains a set of definitions to control
          a programmable Layer2 switch DHCP agent and/or DHCP Relay.";
 
-    revision 2018-04-26 {
+    revision 2018-12-20 {
         description "Initial revision.";
+        reference "TODO - OPX Specific model";
     }
 
     typedef comparison-operation {
@@ -48,27 +49,28 @@ module dhcp-agent {
                 value 6;
             }
             enum "GLOB" {
+                value 7;
                 description
                     "Return true regardless of values - intended for additions";
-                value 7;
             }
         }
+        description "Packet processing operands";
     }
 
     typedef which-direction {
         type enumeration {
             enum "UP" {
-                description "To Server";
                 value 0;
+                description "To Server";
             }
             enum "DOWN" {
-                description "To Client";
                 value 1;
+                description "To Client";
             }
         }
+        description "Packet processing direction for rulesets.";
     }
     grouping dhcp-option {
-        description "Format of DHCP options"; 
         leaf dhcp-option-code {
             type uint8;
             mandatory true;
@@ -175,6 +177,7 @@ module dhcp-agent {
                         type string; 
                         description "Hardware address";
                     }
+                    description "DHCP Client Identifier";
                 }
             }
             
@@ -190,10 +193,12 @@ module dhcp-agent {
                     description "Catch-all for everything else which we do not know";
                 }
             }
+            description "DHCP Option type";
             /*
             suboptions : hex encoded sub options
             */
         }
+        description "Format of DHCP options"; 
     }
 
     grouping dhcp-packet {
@@ -261,6 +266,7 @@ module dhcp-agent {
                 description "Dummy ordering field to order the list";
             }
             uses dhcp-option;
+            description "DHCP Options in the packet";
         }
     }
 
@@ -281,6 +287,7 @@ module dhcp-agent {
         }
 
         uses dhcp-packet;
+        description "Pipeline operation - rules to apply to a DHCP Packet";
     }
 
 
@@ -354,7 +361,9 @@ module dhcp-agent {
                         description "Defines the order in which the additions are processed";
                     }
                     uses dhcp-packet;
+                    description "List of options/values to inject into the packet";
                 }
             }
+            description "DHCP Agent control options for an interface";
         }
 }
