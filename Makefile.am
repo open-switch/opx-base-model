@@ -64,7 +64,8 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/system-status.yang \
     $(top_srcdir)/yang-models/ipsec-sad.yang \
     $(top_srcdir)/yang-models/tunnel.yang \
-    $(top_srcdir)/yang-models/app-ztd.yang
+    $(top_srcdir)/yang-models/app-ztd.yang \
+    $(top_srcdir)/yang-models/dhcp-agent.yang
 
 
 #Create VPATH for yang models
@@ -136,7 +137,8 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/system-status.cpp \
     @YANG_OUTPUT@/yang-models/ipsec-sad.cpp \
     @YANG_OUTPUT@/yang-models/tunnel.cpp \
-    @YANG_OUTPUT@/yang-models/app-ztd.cpp
+    @YANG_OUTPUT@/yang-models/app-ztd.cpp \
+    @YANG_OUTPUT@/yang-models/dhcp-agent.cpp
 
 YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/yumaworks-extensions.h \
@@ -203,7 +205,8 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/system-status.h \
     @YANG_OUTPUT@/ipsec-sad.h \
     @YANG_OUTPUT@/tunnel.h \
-    @YANG_OUTPUT@/app-ztd.h
+    @YANG_OUTPUT@/app-ztd.h \
+    @YANG_OUTPUT@/dhcp-agent.h
 
 BUILT_SOURCES = ${YANG_GENERATED_SRCS} ${YANG_GENERATED_HDRS}
 
@@ -274,7 +277,8 @@ lib_LTLIBRARIES = \
     libcpsclass_system-status.la \
     libcpsclass_ipsec-sad.la \
     libcpsclass_tunnel.la \
-    libcpsclass_app-ztd.la
+    libcpsclass_app-ztd.la \
+    libcpsclass_dhcp-agent.la
 
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
@@ -475,6 +479,9 @@ libcpsclass_tunnel_la_LIBADD = -lopx_cps_api_common
 
 libcpsclass_app_ztd_la_SOURCES = @YANG_OUTPUT@/app-ztd.cpp
 libcpsclass_app_ztd_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_dhcp_agent_la_SOURCES = @YANG_OUTPUT@/dhcp-agent.cpp
+libcpsclass_dhcp_agent_la_LIBADD = -lopx_cps_api_common
 
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang

@@ -2,7 +2,9 @@
 
 # Script to run unit test
 #
-sudo pip install pyang
+if ! which pyang >/dev/null 2>&1 ; then
+    sudo pip install pyang
+fi
 
 pyang -f tree yang-models/*.yang -p ./ -Wnone
 
