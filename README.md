@@ -1,7 +1,7 @@
-# opx-base-model
+## opx-base-model
 This repository contains the YANG models which define the object model for all software components.
 
-## Model overview
+### Model overview
 Applications/scripts can use existing models, and build new models for behavior on the system. Read the _Application Programming Guide_ for more information on CPS interfaces.
 
 The YANG class parser goes through each file and generates:
@@ -14,7 +14,7 @@ The YANG class parser goes through each file and generates:
 
 > **NOTE**: The name of the YANG model is generally reflected in the symbol prefix — class names, types, enums, and so on. We describe how to map YANG classes and attributes to C/C++ headers in the documentation.
 
-## Where are the outputs?
+### Where are the outputs?
 Good question...there are two main packages created from this source repository:
 
 - `libopx-base-model-dev` — model header files
@@ -26,7 +26,7 @@ The library metadata files are stored in the _usr/lib/x86_64-linux-gnu/_ directo
 
 You can see the metadata from Python using the `cps.type` API, or the `cps.info` API or one of the many other Python extension APIs.
 
-## Adding a new model
+### Add new model
 To add a new model to the system, add a model file into the _yang-model_ directory:
 
 **1**. Create a new YANG model (extension should be `.yang`).
@@ -37,19 +37,19 @@ To add a new model to the system, add a model file into the _yang-model_ directo
 
 **4**. Run the build.
 
-## Changing/enhancing a model
+### Change/enhance model
 Adding attributes and deleting attributes are as easy as modifying the model, and recompiling.
 
 The history files need to be kept in sync with the YANG model — that history file provides upgradability between model changes.
 
-## Using models
-### Platform example
+### Use models
+#### Platform example
 Use a class from the `dell-base-pas.yang` model:
 
 - The model prefix is `base-pas`, and the class we want to use in this example is _entity_
 - The key for the entity class (within the `dell-base-pas.yang`) is _base-pas/entity_
 
-### Networking example
+#### Networking example
 Let's say that an application needs to get the LAG interfaces via script (ignoring that the LAG can be queried through the Linux bonding commands). The interface class that holds the LAG information is in the `dell-base-if.yang` file.
 
 - In this file, the class is actually an augment of the `/if:interfaces/if:interface`
@@ -67,25 +67,25 @@ Using the `cps_get_oid.py` script you would use:   
 
     cps_get_oid.py target dell-base-if-cmn/if/interfaces/interface if/interfaces/interface/type=ianaift:ieee8023adLag
     
-## Models
-### Platform models
+### Models
+#### Platform models
 
 - `dell-base-platform-common.yang`
 - `dell-base-env-tempctl.yang`  
 - `dell-base-media.yang`            
 - `dell-base-pas.yang`
 
-### Management interface (eth0)
+#### Management interface (eth0)
 
 - `dell-base-mgmt-interface.yang`   
 
-### Network  models
+#### Network models
 
 - ACL and QoS configurations
 - `dell-base-acl.yang`  
 
-### Networking interfaces
-The following set of models provides the networking access-related models/classes:
+#### Networking interfaces
+This set of models provides the networking access-related models/classes:
 
 - `dell-base-if.yang`          
 - `dell-base-if-lag.yang`       
@@ -107,4 +107,4 @@ The following set of models provides the networking access-related models/classe
 - `dell-base-packet.yang`            
 - `dell-interface.yang`
 
-(c) 2017 Dell
+(c) 2019 Dell Inc. or its subsidiaries. All Rights Reserved.
