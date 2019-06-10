@@ -26,7 +26,27 @@ module dell-base-if-phy {
     description "This model augments the standard interface object(s) and adds
                  specific attributes and/or RPC for physical interfaces.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2019-03-06" {
+        description "Add MAC learning mode HW disable only.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2019-02-22" {
+        description "Adding 8x1 breakout mode for front panel port.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2019-01-23" {
+        description "Add profile-type attribute in front-panel-port list.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2019-01-18" {
+        description "Add port-group attribute in front-panel-port list to display the port-group the front-panel-port is part of.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-08-10" {
         description "Fixing pyang IETF errors and adding documentation to the model.";
@@ -57,6 +77,9 @@ module dell-base-if-phy {
 		 	enum BREAKOUT_1x1 {
                           value 4;
                         }
+		 	enum BREAKOUT_8x1 {
+                          value 5;
+                        }
 		}
                 description "Enumeration of all possible values of breakout modes";
     }
@@ -67,28 +90,36 @@ module dell-base-if-phy {
 
             enum DROP{
               value 1;
-                description "Drop packets with unkown source mac address. Do not learn, Do not forward";
+                description "Drop packets with unkown source mac address in both OS and HW. Do not learn, Do not forward";
             }
 
             enum DISABLE{
               value 2;
-                description "Do not learn new source MAC. Forward Based on destination MAC";
+                description "Do not learn new source MAC in both OS and HW. Forward Based on destination MAC";
             }
 
             enum HW{
               value 3;
-                description "Hardware Learning. Learn source MAC. Forward based on destination";
+                description "OS and Hardware Learning. Learn source MAC. Forward based on destination";
             }
 
             enum CPU_TRAP{
               value 4;
-                description "Trap packets with unknown source MAC to CPU. Do not learn. Do not forward";
+                description "Trap packets with unknown source MAC to CPU from HW. Do not learn.
+                    Do not forward.";
             }
 
             enum CPU_LOG{
               value 5;
-                description "Trap packets with unknown source MAC to CPU. Do not learn. Forward based on destination MAC";
+                description "Trap packets with unknown source MAC to CPU from HW. Do not learn.
+                    Forward based on destination MAC.";
             }
+
+            enum HW_DISABLE_ONLY{
+                value 6;
+                description "Do not learn new source MAC address only in the HW.";
+            }
+
         }
         description "Enumeration of all possible MAC-learning modes that can be configured on the interface.";
     }	
@@ -129,6 +160,16 @@ module dell-base-if-phy {
         leaf default-name {
         	type string;
         	description "This is the default name of the port.";
+        }
+
+        leaf port-group {
+            type string;
+            description "Name of the port-group the port is part of";
+        }
+
+        leaf profile-type {
+            type string;
+            description "Profile type of the port";
         }
 
         leaf mac-offset {

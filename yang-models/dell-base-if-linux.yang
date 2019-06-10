@@ -18,7 +18,12 @@ module dell-base-if-linux {
     description "This model augments the standard interface object(s) and adds
                  specific attributes and/or RPC for linux interfaces.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2018-12-05" {
+        description "Added the member interface index attribute for the bridge interface.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-08-10" {
         description "Fixing pyang IETF errors and adding documentation to the model.";
@@ -48,6 +53,10 @@ module dell-base-if-linux {
 			type base-cmn:interface-type;
 			description "The interface type as per Dell categorization.";
 		}
+        leaf mbr-ifindex {
+            type base-cmn:logical-ifindex;
+            description "The interface index of the member for this specific interface";
+        }
 	description "Augmenting the standard interface node to include additional attributes.";
     }	
 }

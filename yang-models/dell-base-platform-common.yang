@@ -26,9 +26,14 @@ module dell-base-platform-common {
 
   description "Common definitions for platform hardware
 
-  Copyright (c) 2015-2018 by Dell EMC,
+  Copyright (c) 2015-2019 by Dell EMC,
 
   All rights reserved.";
+
+  revision 2018-09-24 {
+    description "Adding enable/disable digital media monitoring.";
+    reference "Network Platform Abstraction";
+  }
 
   revision 2018-08-20 {
     description "Adding media attribute for wavelength in picometers. This was needed due to the ability of wavelengths to now be configured and read at the pico meter level.
@@ -1942,6 +1947,15 @@ module dell-base-platform-common {
       // Notification: no
       description "Applications should use this attribute to provide a reboot reason.";
     }
+    leaf dom {
+      type boolean;
+      config true;
+      // Qualifiers: observed, realtime, target
+      // Dependencies: None
+      // Persistent: N/A
+      // Notification: no
+      description "Enable/Disable digital media monitoring (dom)";
+    }
     description "Attributes of a chassis";
   }
 
@@ -2686,27 +2700,6 @@ module dell-base-platform-common {
       // Notification: No
       description "QSA adapter type connected is QSA when QSA28 is expected";
     }
-
-    leaf qsa28-expected {
-      type boolean;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: None
-      // Persistent: N/A
-      // Notification: No
-      description "QSA adapter type connected is QSA when QSA28 is expected";
-    }
-
-    leaf qsa28-expected {
-      description "QSA adapter type connected is QSA when QSA28 is expected";
-      type boolean;
-      config false;
-      // Qualifiers: observed, realtime
-      // Dependencies: None
-      // Persistent: N/A
-      // Notification: No
-    }
-
 
     leaf connector-separable {
       type boolean;

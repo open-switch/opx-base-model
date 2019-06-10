@@ -18,7 +18,7 @@ module bridge-domain {
                  It has attributes including MAC address, MTU, list of member-interfaces, mode (vlan aware/unaware) etc.
                  It also stores a set of statistics.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision 2018-07-26{
         description " Add bridge id";

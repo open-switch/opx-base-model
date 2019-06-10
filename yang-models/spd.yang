@@ -19,7 +19,7 @@ module spd {
     description "This model Security Policy Database (SPD) augments IETF IPsec and
                  adds security association grouping to policy database.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision 2018-08-17{
         description "Fixing pyang IETF errors and adding documentiation to the model.";

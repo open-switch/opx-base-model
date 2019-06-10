@@ -25,7 +25,7 @@ module dell-base-neighbor {
         "This model contains a collection of attributes and RPCs used for
         managing the switch neighbors.
 
-        Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+        Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision 2018-08-17 {
         description "Fixing pyang IETF errors and adding documentation to the model.";
@@ -163,10 +163,18 @@ module dell-base-neighbor {
         leaf enable {
             type boolean;
             default true;
-            description "This set to true to enable auto neighbor refresh and false otherwise.";
+            description "This is set to true to enable auto neighbor refresh upon neighbor
+                age-out and false otherwise.";
         }
+        leaf hw-mac-learn-enable {
+            type boolean;
+            default true;
+            description "This is set to true to enable auto neighbor refresh
+                when the associated MAC is not learnt in the HW and false otherwise.";
+        }
+
         description "This controls whether or not the auto neighbor refresh is enabled
-            for the stale neighbor.";
+            for the neighbor.";
     }
 
 }

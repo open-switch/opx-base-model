@@ -8,13 +8,34 @@ module dell-interface {
   import ietf-yang-types { prefix yang; }
   import iana-if-type { prefix "ianaift"; }
   import ietf-network-instance { prefix "ni"; }
-
+  import dell-yang-types { prefix dell-yang; }
   organization "Dell EMC";
   contact "http://www.dell.com/support";
 
   description "This model augments the standard interface and adds Dell EMC specific
     extensions. This model contains the entry point for the interface
     object extensions.";
+
+  revision "2019-01-21" {
+    description "This revision fixes warnings.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-12-03" {
+    description "This revision adds interface bandwidth utilization statistics.";
+    reference "Network Platform Abstraction";
+  }
+
+  revision "2018-11-26" {
+    description "Add ALL-VNI for clear counters RPC ";
+    reference "Network Platform Abstraction";
+  }
+
+  revision 2018-10-23 {
+    description "This revision adds the support for resilient hashing enable/disable for LAG globals.";
+    reference
+        "Network Platform Abstraction";
+  }
 
   revision "2018-09-18" {
     description "Add default-vlan leaf to vlan-globals ";
@@ -143,6 +164,7 @@ module dell-interface {
   augment "/if:interfaces" {
     container vlan-globals {
       presence "Enable default VLAN configurations";
+
       leaf default-vlan-id {
         type if:interface-ref;
         default "vlan1";
@@ -175,6 +197,27 @@ module dell-interface {
 
         description "Default VLAN configurations";
     }
+
+    container link_bundle_control {
+        leaf link-bundle-trigger-threshold {
+            description
+                "Threshold at which alarm for link bundle monitoring triggers
+                at.";
+            type dell-yang:percent;
+            default "60";
+        }
+    }
+
+    container lag-globals {
+      leaf resilient-hash-enable {
+        type boolean;
+        default false;
+        description "This is the global configuration that determines if resilient
+              hashing is enabled.";
+      }
+      description "LAG global configuration attributes";
+    }
+
     description "Extending the interfaces container to add Dell proprietary attributes";
   }
 
@@ -420,14 +463,18 @@ module dell-interface {
                 "the mode is not compatible with the existing member(s)";
             description
                     "lacp mode";
-            error-message
-                "the mode is not compatible with the existing member(s)";
             }
             description
                     "lacp mode";
           }
           description
                 "This has member interfaces";
+        }
+
+        leaf link-bundle-monitor {
+            type boolean;
+            description
+                "Enable/Disable link bundle monitoring";
         }
         description "This extension is focused on LAG attributes.";
   }
@@ -682,6 +729,7 @@ module dell-interface {
 
 
   augment "/if:interfaces-state/if:interface/if:statistics" {
+      when "../if:type = 'ianaift:ethernetCsmacd'";
 
         leaf if-in-vlan-discards {
             type yang:counter64;
@@ -868,23 +916,23 @@ module dell-interface {
             description "Number of Ethernet transmit packets of 9217 to 16383 octets";
         }
         leaf current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "Current port occupancy in bytes";
         }
         leaf watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "port occupancy watermark in bytes";
         }
         leaf shared-current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "current port shared occupancy in bytes";
         }
         leaf shared-watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "port shared coccupancy watermark in bytes";
         }
         leaf xoff-room-current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "current port xoff room occupancy in bytes";
         }
         leaf pause-rx-pkts {
@@ -979,13 +1027,66 @@ module dell-interface {
             description
                 "Rx LPI duration";
         }
+        leaf utilization-percentage {
+            type uint8 {
+                range "0..100";
+            }
+            description
+                "Utilization of port in total LAG bandwidth.";
+        }
         description "Interface counter attributes";
 
     }
 
+  augment "/if:interfaces-state/if:interface/if:statistics" {
+      when "../if:type = 'ianaift:ethernetCsmacd' or ../if:type = 'ianaift:ieee8023adLag' or "
+            + "../if:type = 'ianaift:fibreChannel'";
+
+      leaf in-bit-rate {
+          type yang:gauge64;
+          units "bits/second";
+          description
+              "Rate of ingress octets";
+      }
+      leaf in-pkt-rate {
+          type yang:gauge64;
+          units "packets/second";
+          description
+              "Rate of ingress packets";
+      }
+      leaf in-port-utilization {
+          type uint8 {
+              range "0..100";
+          }
+          description
+              "Rate of in line usage";
+      }
+      leaf out-bit-rate {
+          type yang:gauge64;
+          units "bits/second";
+          description
+              "Rate of egress octets";
+      }
+      leaf out-pkt-rate {
+          type yang:gauge64;
+          units "packets/second";
+          description
+              "Rate of egress packets";
+      }
+      leaf out-port-utilization {
+          type uint8 {
+              range "0..100";
+          }
+          description
+              "Rate of out line usage";
+      }
+  }
+
+
     augment "/if:interfaces-state/if:interface/if:statistics" {
         when "../if:type = 'ianaift:l2vlan' or ../if:type = 'ianaift:l3ipvlan' or "
-           + "../if:type = 'ianaift:softwareLoopback' or ../if:type = 'base-if:management'";
+           + "../if:type = 'ianaift:softwareLoopback' or ../if:type = 'base-if:management' or "
+           + "../if:type = 'ianaift:ethernetCsmacd' or ../if:type = 'ianaift:ieee8023adLag'";
 
         leaf in-pkts {
           type yang:counter64;
@@ -1128,6 +1229,20 @@ module dell-interface {
         }
         description
          "Extending the interfaces-state container to add various Fibre Channel statistics";
+    }
+
+    augment "/if:interfaces-state/if:interface/if:statistics" {
+        when "../if:type = 'ianaift:ieee8023adLag'";
+
+        leaf link-bundle-monitoring-alarm {
+            type boolean;
+            description
+                "Indicates whether or not the threshold for link bundle monitoring
+                has been passed. Only valid if link bundle monitoring is active
+                for the link bundle.";
+        }
+        description
+         "Extending the interfaces statistics container to provide link bundle alaram status";
     }
 
    grouping ipv4-stats {
@@ -1274,6 +1389,15 @@ module dell-interface {
    }
 
     augment "/if:interfaces-state/if:interface/if:statistics" {
+
+        leaf counters-last-clear {
+            type yang:timeticks;
+            description
+                "Time since last clear of counters";
+        }
+    }
+
+    augment "/if:interfaces-state/if:interface/if:statistics" {
         when "../if:type = 'ianaift:ethernetCsmacd'";
 
         leaf alignment-errors {
@@ -1405,6 +1529,12 @@ module dell-interface {
               "RFC 3635: EtherLike-MIB";
         }
 
+        leaf eee-last-clear {
+            type yang:timeticks;
+            description
+                "Time since last clear of EEE counters";
+        }
+
         uses ipv4-stats;
         uses ipv6-stats;
 
@@ -1452,6 +1582,12 @@ module dell-interface {
                 }
                 enum "ALL-FC" {
                   value 7;
+                }
+                enum "ALL-VNI" {
+                    value 8;
+                }
+                enum "ALL-VLANSUBINTERFACE" {
+                    value 9;
                 }
               }
               description "All interfaces of all types or single type";
@@ -1522,7 +1658,7 @@ module dell-interface {
         description
           "Set the led status of a specific interface";
 
-        // ATTRIBUTE PATH  : dell-if/clear-eee-counters
+        // ATTRIBUTE PATH  : dell-if/f-location-led
         // ==============
         //
         // INPUT           : dell-if/if-location-led/input/ifname  (specify the interface name),
@@ -1543,4 +1679,47 @@ module dell-interface {
         }
     }
 
+    rpc clear-pause-counters {
+        description "RPC for clearing LLFC/PFC interface counters. Input will be :
+                     all interfaces (all-intf = ALL), or
+                     a single interface name (or ifindex for base)";
+
+       // ATTRIBUTE PATH  : dell-if/clear-pause-counters
+       // ==============
+       //
+       // INPUT           : dell-if/clear-pause-counters/input/all-intf (specify the interface type),
+       // =====          OR dell-if/clear-pause-counters/input/ifname   (specify the interface name),
+       //                OR dell-if/clear-pause-counters/input/if-index (specify the if-index).
+       //
+       // OUTPUT          : None
+       // ======
+
+        input {
+            choice intf-choice {
+                case all-intf-case {
+                    leaf all-intf {
+                        type enumeration {
+                            enum "ALL" {
+                                value 1;
+                            }
+                        }
+                        description "All ethernet and fiberchannel interfaces";
+                    }
+                }
+                case ifname-case {
+                    leaf ifname {
+                        type if:interface-ref;
+                        description "Interface name";
+                    }
+                }
+                case ifindex-case {
+                    leaf ifindex {
+                        type int32;
+                        description "Interface index";
+                    }
+                }
+                description "Different choices of values for interface specific attributes";
+            }
+        }
+    }
 }

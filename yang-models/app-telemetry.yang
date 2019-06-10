@@ -1,0 +1,85 @@
+module app-telemetry{
+	
+	yang-version "1";
+	
+	// namespace
+	namespace "http://www.dellemc.com/networking/os10/app-telemetry";
+  	
+	prefix telemetry;
+   	
+	// import some basic types
+	import openconfig-telemetry { prefix oc-telemetry; }
+   	import ietf-interfaces { prefix if; }
+   	
+    // meta
+  	organization "Dell EMC";
+  	
+ 	contact
+		"http://www.dell.com/support";
+ 	
+	description 
+		"This module serves as an Enabler/Disabler of Dell EMC Telemetry
+        functionality";
+
+	revision 2018-10-30 {
+		description
+       		"Initial version.";
+      	reference "1.0";
+	}
+      
+	/*
+	 * Configurations
+  	 */
+
+	augment "/oc-telemetry:telemetry-system" {
+  		description "Enhance Enable/Disable Telemetry to openconfig-telemetry";
+      	leaf enable {
+     		type boolean;
+ 			default "false";
+			description "Enable/Disable Telemetry";
+		}
+ 	}
+
+	augment "/oc-telemetry:telemetry-system/oc-telemetry:subscriptions/oc-telemetry:persistent/oc-telemetry:subscription/oc-telemetry:config" {
+		description
+			"Adds Source Interface and TLS enable/disable option";
+     	leaf source-interface {
+      		type "if:interface-ref";
+        	description 
+        		"Source Interface from which VRF & IP information is derived, which will be used in the source of packets from the device to a telemetry collector destination. ";
+      	}
+   		leaf protocol-tls {
+     		type boolean;
+       		default "true";
+  			description 
+  				"Option to enable/disable TLS for the STREAM_PROTOCOL";
+      	}
+ 	}
+
+	augment "/oc-telemetry:telemetry-system/oc-telemetry:subscriptions/oc-telemetry:persistent/oc-telemetry:subscription/oc-telemetry:state" {
+ 		description
+ 			"state reason status";
+		leaf reason {
+   			type string;
+      		description
+      			"Valid if the status is inactive, provides the reason for inactive status.";
+      	}        
+		leaf isActive {
+   			type boolean;
+        	description
+        		"Provides the current subscription status, whether its active or inactive.";
+     	}  		
+	}
+          
+  rpc telemetry-debug {
+    description
+      "Set the telemetry debug to true/false";
+    input {
+      leaf debug{
+        type boolean;
+        description
+          "Enable/Disable debug field for telemetry agent";
+          }
+     }
+   }
+}

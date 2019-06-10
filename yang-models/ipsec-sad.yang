@@ -18,7 +18,7 @@ module ipsec-sad {
 
     description "This model - IPSec Security Association Database (SAD) - augments IETF IPSec and adds support for optional parameters.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision 2018-08-17 {
         description "Fixing pyang IETF errors and adding documentiation to the model.";

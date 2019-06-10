@@ -1,3 +1,30 @@
+opx-base-model (4.0.0) unstable; urgency=medium
+    
+  * Update: add FEC supported port speeds
+  * Update: add supported port speeds for CL91, CL108 and CL74-FC
+  * Feature: DHCP v4 and v6 Snooping support
+  * Update: introducing new MAC learning mode 1) os enable, hw disable 
+            2) os disable, hw enable for Isilon like use-cases where forwarding 
+            in HW takes place based on ACLs and kernel in the based on bridge MAC learning.
+  * Update: add the attribute to enable/disable the ARP/Nbr refresh for the HW MAC learning.
+  * Update: add profile-type attribute in port-group-state and front-panel-port list
+  * Update: add port-group attribute in the front-panel-port list
+  * Update: add profile-type attribute in port-group-state and front-panel-port list
+  * Update: addressed warnings and removed unused attribute. 
+  * Update: admin attribute change to non-mandatory in the trap base model 
+  * Bugfix: revision dates not in descending order in yang model files
+  * Bugfix: unable-to-apply-icmp-access-list to integration
+  * Update: add ICMPv6 protocol type
+  * Update: added support for multicast flood resrict feature
+  * Update: add trap_grp class for trap grp CPS support
+  * Update: initial proposal for NAS/NDI trap group object
+  * Bugfix: add new hashing algo for load balancing traffic
+  * Feature: initial checkin for openconfig data model
+  * Update: Copyright year
+  * Update: Upgrading major version due to introduction of backward incompatible changes
+
+ -- Dell EMC <ops-dev@lists.openswitch.net>  Thu, 5 Jun 2019 12:30:00 -0800
+
 opx-base-model (3.166.0) unstable; urgency=medium
 
   * Feature: Add support for Solution ID fields to identify support level

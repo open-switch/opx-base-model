@@ -1,8 +1,8 @@
 [global]
 category = cps_api_obj_CAT_INET_ADDRESS
-range-start = 19791872
-range-end = 19857408
-id = 302
+range-start = 20774912
+range-end = 20840448
+id = 317
 
 [inet-address:InetScopeType]
 INET_ADDRESS_INETSCOPETYPE_INTERFACELOCAL = 1

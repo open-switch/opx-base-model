@@ -18,7 +18,7 @@ module l2-multicast {
                  for managing L2 multicast. This feature works in conjunction with
                  IGMP/MLD Snooping support.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision "2018-08-17" {
         description "Fixing pyang IETF errors and adding documentation to the model.";
@@ -69,6 +69,31 @@ module l2-multicast {
                 description "The VLAN ID for which multicast group member cleanup will be done. If it is not
                              given, cleanup will work on all VLANs for specific interface.";
             }
+        }
+    }
+
+    container flood-restrict {
+        description "The unknown multicast traffic (IPv4/IPv6) are flooded to all VLAN members by default. If
+                     flood-restrict is enabled on specific VLAN, the unknown traffic from one port of this VLAN
+                     will be forwarded to those links that have active listeners in it (e.g. port connected with
+                     L3 multicast router).
+                     This container could be used to disable/enable flood-restrict on IPv4 and IPv6 multicast
+                     traffic for list of VLANs.";
+
+        list vlan-status {
+            key "vlan-id";
+
+            leaf vlan-id {
+                type base-cmn:vlan-id;
+                description "Specify VLAN for which flooding restrict will be configured.";
+            }
+
+            leaf enable {
+                type boolean;
+                description "Enable or disable flooding restrict for specific VLAN.";
+            }
+
+            description "Set flood-restrict status for specific VLAN.";
         }
     }
 }
