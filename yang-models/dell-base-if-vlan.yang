@@ -21,7 +21,7 @@ module dell-base-if-vlan {
     description "This model augments the standard interface object(s) and adds
                  specific attributes and/or RPC for VLAN interfaces.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision "2018-08-10" {
         description "Fixing pyang IETF errors and adding documentation to the model.";

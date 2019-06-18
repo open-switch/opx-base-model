@@ -10,7 +10,7 @@ module dell-base-port-group {
     description "This model contains Dell EMC specific port-group definition and its attributes
                  This model extends the dell-pg model.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision "2018-08-17" {
         description "Fixing pyang IETF errors and adding documentation to the model.";

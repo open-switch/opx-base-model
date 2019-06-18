@@ -11,18 +11,11 @@ module os-icmp-config {
     description "This model controls the ICMP unreachable message generation from
                  the OS for non-routable traffic.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision 2018-08-17 {
         description "Fixing pyang IETF errors and adding documentation to the model.";
         reference "Network Platform Abstraction";
-    }
-
-    revision 2018-07-05 {
-        description
-            "This revision adds the VRF name in the IP unreachable configuration.";
-        reference
-            "Network Platform Abstraction";
     }
 
     revision 2018-07-05 {
@@ -69,11 +62,6 @@ module os-icmp-config {
                 mandatory true;
                 description "This is set to true to enable ICMP unreachable message
                     generation for the non-routable traffic from the OS and false otherwise.";
-            }
-
-            leaf vrf-name {
-                type string;
-                description "VRF device name";
             }
 
             leaf vrf-name {

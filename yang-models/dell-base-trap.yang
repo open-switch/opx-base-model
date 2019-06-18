@@ -1,0 +1,116 @@
+module dell-base-trap {
+    namespace "http://www.dell.com/ns/amazon-river:0.1/cps/trap";
+    prefix "base-trap";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    organization "Dell EMC";
+
+    contact "http://www.dell.com/support";
+
+    description
+        "This module contains a collection of YANG definitions for managing traps for packets redirected to CPU.
+
+         Copyright (c) 2019 by Dell EMC, All rights reserved.";
+
+    revision 2018-11-20 {
+        description
+            "Initial version - Define the trap type and trap attributes for ACL logging";
+        reference "Network Platform Abstraction";
+    }
+
+    typedef trap-type {
+        type enumeration {
+            enum ACL {
+                value 1;
+                description "ACL logging trap";
+            }
+
+            enum SAMPLEPACKET {
+                value 2;
+                description "SAMPLE Flow trap";
+            }
+        }
+        description "Types of CPU traps";
+    }
+
+    list trap-group {
+        key "id";
+
+        //QUALIFIER : Target
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique trap-group Id generated upon Create request.
+                         Scope of this ID is within the trap-group table.
+                         Subsequent Modify or Delete requests require
+                         this Trap-group ID to be passed as the key.";
+        }
+
+        leaf queue-id {
+            type base-cmn:base-obj-id-type;
+            mandatory true;
+            description "Unique queue id assigned to this trap group for packets lifted to the CPU.";
+        }
+
+        leaf name {
+            type string {
+                length 32;
+            }
+            mandatory false;
+            description "name assigned to this trap group. Default is empty.";
+        }
+
+        leaf admin {
+            type boolean;
+            mandatory false;
+            default true;
+            description "Admin status of the trap group, UP/DOWN.";
+        }
+
+        description "This defines attributes of a CPU trap group.
+                     Trap can be organized into trap groups that are associated with
+                     a queue for packets trapped to CPU.";
+    }
+
+    list trap {
+        key "id";
+
+        //QUALIFIER : Target
+
+        leaf id {
+            type base-cmn:base-obj-id-type;
+            description "Unique Trap Id generated.
+                         Scope of this ID is within the trap table.
+                         Subsequent Modify or Delete requests require
+                         this Trap ID to be passed as the key.";
+        }
+
+        leaf type {
+            type trap-type;
+            mandatory true;
+            description "Trap type";
+        }
+
+        leaf name {
+            type string {
+                length 32;
+            }
+            mandatory false;
+            description "Name assigned to this trap. Default is empty.";
+        }
+
+        leaf trap-group-id {
+            type base-cmn:base-obj-id-type;
+            mandatory false;
+            description "Unique trap group assigned to this trap.";
+        }
+
+        description "This defines attributes of a CPU trap.
+                     The trap-id can be associated with packets redirected to CPU.";
+    }
+}
+
+

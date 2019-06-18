@@ -30,7 +30,17 @@ module dell-base-acl {
          to the TCAM based Policy Engine of the hardware. This YANG model defines various types
          of the ACL entries (match rules and actions) and various associated operations.
 
-         Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+         Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision 2018-11-30 {
+        description "Support ACL logging and extend the user defined trap to obj id";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-11-28 {
+        description "Added new match type to support multicast lookup status and marking";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2018-09-20 {
         description "Added support for new match type to filter packets based on type of bridge that
@@ -330,6 +340,16 @@ module dell-base-acl {
             enum BRIDGE_TYPE {
               value 47;
                 description "Match packet based on forwarding bridge type";
+            }
+            enum MCAST_ROUTE_DST_HIT {
+              value 48;
+                description "Multicast packet destination IP address match in IPMC routing
+                             table";
+            }
+
+            enum ROUTER_INTERFACE_USER_MARK {
+              value 49;
+                description "Match packet from marked L3 interface with specific class ID";
             }
         }
         description "Enumeration of all possible packet fields that can be
@@ -1192,6 +1212,13 @@ module dell-base-acl {
             type bridge-type;
             description "Value to specify packet forwarding bridge type to be matched";
         }
+
+        leaf MCAST_ROUTE_DST_HIT_VALUE {
+            when "../type = 'MCAST_ROUTE_DST_HIT'";
+            type boolean;
+            description "Value to specify multicast packet destination IP address match or not match
+                         in IPMC routing table";
+        }
 	description "List of paramaters to be matched against an ACL entry";
     }
 
@@ -1490,7 +1517,7 @@ module dell-base-acl {
 
         leaf SET_USER_TRAP_ID_VALUE {
             when "../type = 'SET_USER_TRAP_ID'";
-            type uint32;
+            type base-cmn:base-obj-id-type;
             description "User defined trap id value";
         }
 

@@ -24,6 +24,10 @@ module dell-base-l2-mac {
          Copyright(c) 2015-2018 by Dell EMC,
          All rights reserved.";
 
+    revision "2018-11-19"{
+        description "Add age-out-disable flag for MAC entry configuration." ;
+        reference "Network Platform Abstraction";
+    }
     revision "2018-09-12"{
         description "Add enum to support MAC address flush on a port
                      based on port and bridge.";
@@ -277,6 +281,13 @@ module dell-base-l2-mac {
             type boolean;
             description
                 "Whether the MAC entry is configured as static. It will not age out";
+        }
+
+        leaf age-out-disable {
+            type boolean;
+            default false;
+            description
+                "The MAC entry is configured with age out disabled in the kernel. MAC move is allowed.";
         }
 
         leaf actions {

@@ -10,7 +10,7 @@ module os-routing-events {
 
     description "This model augments the dell-base-routing YANG model for OS Route/Neighbor events.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision "2018-08-17" {
         description "Fixing pyang IETF errors and adding documentiation to the model.";

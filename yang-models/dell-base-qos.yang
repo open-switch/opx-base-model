@@ -12,6 +12,11 @@ module dell-base-qos {
     import ietf-inet-types {
         prefix "inet";
     }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
     organization
         "Dell EMC";
 
@@ -21,27 +26,37 @@ module dell-base-qos {
     description
         "This module contains a collection of YANG definitions for QoS objects
 
-         Copyright (c) 2015-2018 by Dell EMC,
+         Copyright (c) 2015-2019 by Dell EMC,
          All rights reserved.";
 
-    revision 2018-08-28 {
-        description "Support for Priority Flow Control (PFC) deadlock detection. 
-                     PFC deadlock occurrence in a network is inferred through detection of PFC 'storms' 
-                     at individual devices - namely detection of a large number of PFC frames received 
-                     in a short 'detection' time interval. 
-                     As a result of PFC deadlock detection, the system ignores the received 
-                     PFC pause frames and takes one of two actions: 
-                     DROP all incoming traffic for a certain 'recovery' time interval 
-                     or 
+    revision 2018-12-27 {
+        description "Modified stats key from port id to ifname.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-10-28 {
+        description "Support for Priority Flow Control (PFC) deadlock detection.
+                     PFC deadlock occurrence in a network is inferred through detection of PFC 'storms'
+                     at individual devices - namely detection of a large number of PFC frames received
+                     in a short 'detection' time interval.
+                     As a result of PFC deadlock detection, the system ignores the received
+                     PFC pause frames and takes one of two actions:
+                     DROP all incoming traffic for a certain 'recovery' time interval
+                     or
                      FORWARD all traffic during this recovery time interval";
         reference "Network Platform Abstraction";
     }
-    
+
     revision 2018-09-05 {
         description "Buffer statistics tracking enables taking snapshot of
                      queue/priroity group/pool buffer counters at same time in switch.
                      This will help to provide overall view of switch buffer utlization.
                      Adding option to get snapshot buffer counters.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-08-27 {
+        description "Modified stats key from port id to ifname.";
         reference "Network Platform Abstraction";
     }
 
@@ -693,7 +708,7 @@ module dell-base-qos {
     }
 
     list queue-stat {
-        key "port-id type queue-number mmu-index snapshot";
+        key "ifname type queue-number mmu-index snapshot";
 
         //QUALIFIER : Target
 
@@ -707,6 +722,12 @@ module dell-base-qos {
 
         leaf port-id {
             type base-cmn:logical-ifindex;
+            status obsolete;
+            description "Physical port to which this queue belongs.";
+        }
+
+        leaf ifname {
+            type if:interface-ref;
             description "Physical port to which this queue belongs.";
         }
 
@@ -1709,24 +1730,24 @@ module dell-base-qos {
         }
 
         leaf current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             config false;
             description "current shared buffer occupancy in bytes";
         }
 
         leaf watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "watermark in the shared buffer in bytes";
         }
 
         leaf xoff-headroom-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             config false;
             description "current headroom buffer occupancy in bytes";
         }
 
         leaf xoff-headroom-watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "watermark in the headroom buffer in bytes";
         }
 
@@ -1868,13 +1889,19 @@ module dell-base-qos {
     }
 
     list priority-group-stat {
-        key "port-id local-id mmu-index snapshot";
+        key "ifname local-id mmu-index snapshot";
 
         //QUALIFIER : Target
 
         leaf port-id {
             type base-cmn:logical-ifindex;
-            description "Physical port to which this queue belongs.";
+            status obsolete;
+            description "Physical port to which this priority queue belongs.";
+        }
+
+        leaf ifname {
+            type if:interface-ref;
+            description "Physical port to which this priority group belongs.";
         }
 
         leaf local-id {
@@ -1906,35 +1933,35 @@ module dell-base-qos {
         }
 
         leaf current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             config false;
             description "current priority group occupancy in bytes";
         }
 
         leaf watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "watermark of the priority group in bytes";
         }
 
         leaf shared-current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             config false;
             description "current priority group shared occupancy in bytes";
         }
 
         leaf shared-watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "shared occupancy watermark of the priority group in bytes";
         }
 
         leaf xoff-room-current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             config false;
             description "current priority group xoff room occupancy in bytes";
         }
 
         leaf xoff-room-watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "priority group xoff room occupancy watermark in bytes";
         }
 
@@ -2224,14 +2251,20 @@ module dell-base-qos {
     }
 
     list port-pool-stat {
-        key "port-id buffer-pool-id";
+        key "ifname buffer-pool-id";
         	
         //QUALIFIER : Target
 
         leaf port-id {
             type base-cmn:logical-ifindex;
+            status obsolete;
+            description "Physical port to which this port pool belongs.";
+        }
+
+        leaf ifname {
+            type if:interface-ref;
             description "Physical port on which QoS egress params are configured.
-                         Logical ports like LAG interfaces are not allowed.";
+                Logical ports like LAG interfaces are not allowed.";
         }
 
         leaf buffer-pool-id {
@@ -2336,23 +2369,23 @@ module dell-base-qos {
 
     grouping buffer-stat {
         leaf current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             config false;
             description "current buffer occupancy in bytes";
         }
 
         leaf watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "watermark bytes";
         }
 
         leaf shared-current-occupancy-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "current shared buffer occupancy in bytes";
         }
 
         leaf shared-watermark-bytes {
-            type yang:counter64;
+            type yang:gauge64;
             description "shared buffer occupancy watermark in bytes";
         }
         description "Different statistics related to buffering";

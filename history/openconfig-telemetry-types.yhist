@@ -1,0 +1,6 @@
+[global]
+category = cps_api_obj_CAT_OC_TELEMETRY_TYPES
+range-start = 20643840
+range-end = 20709376
+id = 315
+

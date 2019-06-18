@@ -22,7 +22,17 @@ module dell-base-if-common {
     description "This model augments the standard interface model and adds DellEMC
                  specific attributes and/or RPCs to it.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2018-11-19" {
+         description "Add Enumeration for UPDATE in the member-op.";
+         reference "Network Platform Abstraction";
+     }
+    revision "2018-10-03" {
+         description "Added parameters in get-mac-address rpc to support application based
+                      MAC address retrieval.";
+         reference "Network Platform Abstraction";
+    }
 
     revision "2018-09-07" {
          description "Adding front-panel-port id and subport-id into the interface state object.";
@@ -131,15 +141,39 @@ module dell-base-if-common {
                 value 2;
                 description "Operation to remove member";
             }
+            enum UPDATE {
+                value 3;
+                description "Operation to change the properties of membership";
+            }
         }
         description "Types of operations performed while updating interface configuration";
     }
 
+    // LAG specfic
+    augment "/if:interfaces/if:interface" {
+        when "if:type = 'ianaift:ieee8023adLag'";
+
+        list member-ports {
+          key "name";
+          leaf name {
+            type if:interface-ref;
+            must "/if:interfaces/if:interface[if:name = current()]"
+             +   "/if:type = 'ianaift:ethernetCsmacd'" {
+              error-message
+                "Only Ethernet interfaces can be added as member ports to a port-channel!";
+            }
+            description "interface name";
+          }
+          description
+                "This has member interfaces";
+        }
+        description "This extension is focused on LAG attributes.";
+    }
 
     rpc set-interface {
 
         description "This method is used to create, delete or set multiple types of interface. For
-                create operation, mac address will be allocated if it is not given within input argument.
+                create operation, MAC address will be allocated if it is not given within input argument.
                 Currently there is only one input argument which specified operation type, user should
                 use attributes of the model of corresponding interface type as extra input.
                 if:interface model is used as input for interface configuration.";
@@ -196,10 +230,69 @@ module dell-base-if-common {
     }
 
     rpc get-mac-address {
-        description "This method is used to get assgined mac address for different type of interfaces.
+        description "This method is used to get assgined MAC address for different type of interfaces.
                 User should give required attributes such as interface-name, type as input. The actual
-                attributes needed depends on requested interface type";
+                attributes needed depends on requested interface type.";
+
         // QUALIFIER  :  target
+        // ========
+        //
+        // OBJ PATH : dell-base-if-cmn/get-mac-address
+        // ========
+        //
+        // INPUT  :
+        // =====
+        // Default:
+        //    --------
+        //    Users could use additional attributes from other models (eg. if, base-if-phy etc.)
+        //    Eg.
+        //              base-if-phy/hardware-port/front-panel-port (For "interface" application and "front-panel" type)
+        //              base-if-phy/hardware-port/subport-id (For "interface" application and "front-panel" type)
+        //              base-if-vlan/if/interfaces/interface/id (For "interface" application and "vlan" type)
+        //              if/interfaces/interface/name (For "interface" application and "lag" type)
+        // OUTPUT :
+        // ======
+        // Default:
+        //    -------
+        //              dell-if/if/interfaces/interface/phys-address.
+
+        // Function specification :
+        // ======================
+        // This RPC method is implemented as internal service to allocate MAC addresses for front-panel,
+        // VLAN and LAG interfaces, as well as reserve MAC address being used in specific domain like FCoE
+        // and VxLAN management. The reserved MAC address range of multiple domains is defined in platform
+        // dependent configuration file. User could ask for allocated MAC address by giving application and type
+        // along with optional offset value (by default is 0) corresponding to different domain.
+
+        input {
+            leaf application {
+                type string;
+                default "interface";
+                description "Specify the name of application for assigned MAC address to be read. MAC address
+                             pool for each application is defined at platform dependent configuration file. If
+                             configuration file uses old format and there is no application based MAC address
+                             pool specified, the MAC address ranges inside are treat as under interface
+                             application.";
+            }
+
+            leaf type {
+                type string;
+                description "Specify the type name of MAC address pool to be used.";
+            }
+
+            leaf offset {
+                type uint32;
+                default 0;
+                description "Specify the offset value of MAC address to be read in MAC address pool.";
+            }
+        }
+
+        output {
+            leaf number-of-mac-addresses {
+                type uint32;
+                description "Give total number of MAC addresses allocated to specified application.";
+            }
+        }
     }
 
     augment "/dell-if:clear-counters/dell-if:input" {

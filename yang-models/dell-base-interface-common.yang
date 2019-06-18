@@ -14,7 +14,17 @@ module dell-base-interface-common {
 
     description "This model implements all the interface/port attributes and/or RPCs common to many other models.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2019-03-06" {
+        description "Add MAC learning mode HW disable only.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision "2018-12-10" {
+        description "Added 80GIGE speed for new double density media which use dual 40G banks";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-09-12" {
         description "Adding Virtual Network identity.";
@@ -23,14 +33,6 @@ module dell-base-interface-common {
 
     revision "2018-08-10" {
         description "Fixing pyang IETF errors and adding documentation to the model.";
-        reference "Network Platform Abstraction";
-    }
-
-    revision 2018-07-03 {
-        description
-            "Adding unicast, multicast and broadcast flooding enabled attribute to
-             remote endpoint to have fine grain control over the type of flooding to
-             be enabled on remote endpoint.";
         reference "Network Platform Abstraction";
     }
 
@@ -259,6 +261,10 @@ module dell-base-interface-common {
                 value 21;
                 description "1G FC data rate.";
             }
+            enum 80GIGE {
+                value 22;
+                description "80G Ethernet data rate.";
+            }
         }
         description "Enumeration of port speed.";
     }
@@ -462,28 +468,34 @@ module dell-base-interface-common {
 
             enum DROP{
               value 1;
-                description "Drop packets with unkown source MAC address. Do not learn, Do not forward";
+                description "Drop packets with unkown source MAC address in both OS and HW. Do not learn, Do not forward";
             }
 
             enum DISABLE{
               value 2;
-                description "Do not learn new source MAC address. Forward Based on destination MAC";
+                description "Do not learn new source MAC address in both OS and HW. Forward Based on destination MAC";
             }
 
             enum HW{
               value 3;
-                description "Hardware Learning. Learn source MAC address. Forward based on destination";
+                description "OS and Hardware Learning. Learn source MAC address. Forward based on destination";
             }
 
             enum CPU_TRAP{
               value 4;
-                description "Trap packets with unknown source MAC address to CPU. Do not learn. Do not forward";
+                description "Trap packets with unknown source MAC address to CPU from HW. Do not learn. Do not forward";
             }
 
             enum CPU_LOG{
               value 5;
-                description "Trap packets with unknown source MAC address to CPU. Do not learn. Forward based on destination MAC";
+                description "Trap packets with unknown source MAC address to CPU from HW. Do not learn. Forward based on destination MAC";
             }
+
+            enum HW_DISABLE_ONLY{
+                value 6;
+                description "Do not learn new source MAC address only in the HW.";
+            }
+
         }
         description "Enumeration of all possible MAC-learning modes that can be configured on the interface.";
 
@@ -573,7 +585,6 @@ module dell-base-interface-common {
 
            leaf flooding-enabled {
                type boolean;
-               status deprecated;
                config false;
                status deprecated;
                description "The remote endpoint address is part of flooding domain if this flag is set.

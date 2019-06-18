@@ -27,7 +27,36 @@ description
  This model contains a collection of YANG definitions for
  managing these routing objects
 
- Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+ Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+revision 2018-12-05 {
+     description "This revision adds an attribute in peer routing entry
+                  to allow control of ingress only termination.";
+     reference "Network Platform Abstraction";
+ }
+
+revision 2019-03-21 {
+     description "This revision adds the flags on nexthop entry for EVPN symmetric IRB
+         and BGP unnumbered interface requirements.";
+     reference "Network Platform Abstraction";
+}
+
+revision 2018-11-14 {
+     description "This revision adds the flags on neighbor entry for no age out requirement.";
+     reference "Network Platform Abstraction";
+}
+
+revision 2018-10-23 {
+    description
+        "This revision adds the support for resilient hashing enable/disable for routing globals.";
+    reference
+        "Network Platform Abstraction";
+}
+
+revision 2018-10-03 {
+        description "Adding fib statistics in hardware to model.";
+        reference "Network Platform Abstraction";
+}
 
 revision 2018-08-17 {
         description "Fixing pyang IETF errors and adding documentation to the model.";
@@ -44,13 +73,6 @@ revision 2018-08-10 {
 revision 2018-08-07 {
     description
         "This revision adds the VRF name in the neighbor entry.";
-    reference
-        "Network Platform Abstraction";
-}
-
-revision 2018-07-05 {
-    description
-        "This revision adds the VRF name in the IP unreachable configuration.";
     reference
         "Network Platform Abstraction";
 }
@@ -206,6 +228,35 @@ typedef nh-type {
    description "Possible types of the next hop";
  }
 
+typedef nbr-flags {
+    type enumeration {
+        /* Dont age out the neighbor when the MAC is learnt through .1d bridge's network port */
+        enum age_out_1d_bridge_remote_mac_disable {
+            value 1;
+        }
+        /* This helps to bring back the default behaviour for dynamic neighbor. */
+        enum age_out_enable {
+            value 2;
+        }
+        enum other {
+            value 3;
+        }
+    }
+   description "Possible flags of the neighbor";
+}
+
+typedef nh-flags {
+    type enumeration {
+        enum onlink{
+            value 1;
+            description "Pretend that the nexthop is directly attached to this link,
+                        even if it does not match any interface prefix.";
+        }
+    }
+   description "Possible flags of the nexthop";
+}
+
+
  typedef hash-info {
         type enumeration {
             enum mac-based {
@@ -351,6 +402,12 @@ typedef nh-type {
           default false;
           description "Flag indicating whether the NPU programming is done for this entry";
      }
+
+    leaf flags {
+      type nh-flags;
+      description "Nexthop flags";
+    }
+
     description "Set of attributes defining the next hop";
  }
 
@@ -521,7 +578,7 @@ grouping l3-neighbor-entry {
     }
 
     leaf flags {
-      type uint32;
+      type nbr-flags;
       description "Neighbor flags";
     }
     leaf state {
@@ -601,6 +658,15 @@ list obj {
  description "This grouping defines the routing domain object";
 }
 
+container routing-globals {
+  description "Routing and Forwarding global configuration attributes";
+
+  leaf resilient-hash-enable {
+    type boolean;
+    default false;
+    description "Value to specify if resilient hash is enabled or disabled";
+  }
+}
 
 /*
   * Route/Next-hop tracking service
@@ -859,6 +925,17 @@ grouping nexthop-tracking-object {
         type yang:mac-address;
         description "Peer MAC address";
      }
+
+     leaf ingress-only {
+        type boolean;
+        description
+                "Optional attribute to configure the ingress only termination
+                 for the peer routing entry on an interface. If the peer routing
+                 entry to be applied for both ingress termination and egress
+                 routing MAC, then this attribute should be set to false. This
+                 attribute can only be configured during create when ifname is valid.";
+     }
+
     description "This defines the peer routing enable/disable object";
   }
 
@@ -893,6 +970,34 @@ grouping nexthop-tracking-object {
 
     description "This defines the virtual routing configuration object";
   }
+
+  list fib-stats {
+    key "vrf-name af";
+
+    leaf vrf-name {
+        type string;
+        description "VRF instance name";
+    }
+
+    leaf af {
+        type base-cmn:af-type;
+        description "Address Family.";
+    }
+
+    leaf current-route-entries {
+        type uint32;
+        config false;
+        description "Number of current route entries in NPU";
+    }
+
+    leaf current-neighbour-entries {
+        type uint32;
+        config false;
+        description "Number of current neighbour entries in NPU";
+    }
+
+    description "This defines FIB statistics per address family or per VRF instance or per L3 logical/physical interface name.";
+}
 
   rpc route-nh-operation {
     description "RPC to append or delete nexthop(s) to/from an existing route.";

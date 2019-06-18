@@ -8,6 +8,12 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/rfc/iana-if-type.yang \
     $(top_srcdir)/common/dell/dell-yang-types.yang \
     $(top_srcdir)/common/dell/dell-extensions.yang \
+    $(top_scrdir)/openconfig/openconfig-telemetry.yang \
+    $(top_scrdir)/openconfig/openconfig-telemetry-types.yang \
+    $(top_scrdir)/openconfig/openconfig-extensions.yang \
+    $(top_scrdir)/openconfig/openconfig-inet-types.yang \
+    $(top_scrdir)/yang-models/app-telemetry.yang \
+    $(top_scrdir)/yang-models/dell-base-cleanup-events.yang \
     $(top_srcdir)/yang-models/dell-base-etl-common.yang \
     $(top_srcdir)/yang-models/dell-base-routing.yang \
     $(top_srcdir)/yang-models/dell-base-acl.yang \
@@ -40,9 +46,12 @@ YANG_PARSED_FILES = \
     $(top_srcdir)/yang-models/dell-base-port-group.yang \
     $(top_srcdir)/yang-models/dell-port-group.yang \
     $(top_srcdir)/yang-models/dell-base-alms.yang \
+    $(top_srcdir)/yang-models/dell-base-trap.yang \
+    $(top_srcdir)/yang-models/l3-multicast.yang \
     $(top_srcdir)/yang-models/acl-config.yang \
     $(top_srcdir)/yang-models/os-icmp-config.yang \
     $(top_srcdir)/yang-models/os-routing-events.yang \
+    $(top_srcdir)/yang-models/tam.yang \
     $(top_srcdir)/rfc/ietf-network-instance.yang \
     $(top_srcdir)/rfc/ietf-yang-library.yang \
     $(top_srcdir)/rfc/ietf-yang-schema-mount.yang \
@@ -68,7 +77,7 @@ YANG_PARSED_FILES = \
 
 
 #Create VPATH for yang models
-YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models
+YANG_DIRS = $(abs_srcdir)/common/yumaworks:$(abs_srcdir)/rfc:$(abs_srcdir)/common/dell:$(abs_srcdir)/yang-models:$(abs_srcdir)/openconfig
 vpath %.yang ${YANG_DIRS}
 
 YANG_GENERATED_SRCS = \
@@ -80,6 +89,7 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/iana-if-type.cpp \
     @YANG_OUTPUT@/dell-yang-types.cpp \
     @YANG_OUTPUT@/dell-extensions.cpp \
+    @YANG_OUTPUT@/dell-base-cleanup-events.cpp \
     @YANG_OUTPUT@/dell-base-etl-common.cpp \
     @YANG_OUTPUT@/dell-base-routing.cpp \
     @YANG_OUTPUT@/dell-base-acl.cpp \
@@ -112,6 +122,13 @@ YANG_GENERATED_SRCS = \
     @YANG_OUTPUT@/dell-base-port-group.cpp \
     @YANG_OUTPUT@/dell-port-group.cpp \
     @YANG_OUTPUT@/dell-base-alms.cpp \
+    @YANG_OUTPUT@/l3-multicast.cpp \
+    @YANG_OUTPUT@/openconfig-telemetry.cpp \
+    @YANG_OUTPUT@/openconfig-extensions.cpp \
+    @YANG_OUTPUT@/openconfig-inet-types.cpp \
+    @YANG_OUTPUT@/openconfig-telemetry-types.cpp \
+    @YANG_OUTPUT@/app-telemetry.cpp \
+    @YANG_OUTPUT@/tam.cpp \
     @YANG_OUTPUT@/acl-config.cpp \
     @YANG_OUTPUT@/os-icmp-config.cpp \
     @YANG_OUTPUT@/os-routing-events.cpp \
@@ -147,6 +164,7 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/iana-if-type.h \
     @YANG_OUTPUT@/dell-yang-types.h \
     @YANG_OUTPUT@/dell-extensions.h \
+    @YANG_OUTPUT@/dell-base-cleanup-events.h \
     @YANG_OUTPUT@/dell-base-etl-common.h \
     @YANG_OUTPUT@/dell-base-routing.h \
     @YANG_OUTPUT@/dell-base-acl.h \
@@ -177,8 +195,16 @@ YANG_GENERATED_HDRS = \
     @YANG_OUTPUT@/dell-base-udf.h \
     @YANG_OUTPUT@/dell-base-if-fc.h \
     @YANG_OUTPUT@/dell-base-port-group.h \
+    @YANG_OUTPUT@/dell-base-trap.h \
     @YANG_OUTPUT@/dell-port-group.h \
     @YANG_OUTPUT@/dell-base-alms.h \
+    @YANG_OUTPUT@/l3-multicast.h \
+    @YANG_OUTPUT@/openconfig-telemetry-types.h \
+    @YANG_OUTPUT@/openconfig-extensions.h \
+    @YANG_OUTPUT@/openconfig-inet-types.h \
+    @YANG_OUTPUT@/openconfig-telemetry.h \
+    @YANG_OUTPUT@/app-telemetry.h \
+    @YANG_OUTPUT@/tam.h \
     @YANG_OUTPUT@/acl-config.h \
     @YANG_OUTPUT@/os-icmp-config.h \
     @YANG_OUTPUT@/os-routing-events.h \
@@ -250,6 +276,7 @@ lib_LTLIBRARIES = \
     libcpsclass_dell-base-port-group.la \
     libcpsclass_dell-port-group.la \
     libcpsclass_dell-base-alms.la \
+    libcpsclass_dell-base-trap.la \
     libcpsclass_acl-config.la \
     libcpsclass_os-icmp-config.la \
     libcpsclass_os-routing-events.la \
@@ -274,7 +301,15 @@ lib_LTLIBRARIES = \
     libcpsclass_system-status.la \
     libcpsclass_ipsec-sad.la \
     libcpsclass_tunnel.la \
-    libcpsclass_app-ztd.la
+    libcpsclass_app-ztd.la \
+    libcpsclass_dell-base-cleanup-events.la \
+    libcpsclass_l3-multicast.la \
+    libcpsclass_openconfig-telemetry-types.la \
+    libcpsclass_openconfig-extensions.la \
+    libcpsclass_openconfig-inet-types.la \
+    libcpsclass_app-telemetry.la \
+    libcpsclass_tam.la \
+    libcpsclass_openconfig-telemetry.la
 
 
 AM_CPPFLAGS = -I@YANG_OUTPUT@ -I$(oldincludedir)/opx
@@ -401,6 +436,9 @@ libcpsclass_dell_port_group_la_LIBADD =   -lopx_cps_api_common
 libcpsclass_dell_base_alms_la_SOURCES = @YANG_OUTPUT@/dell-base-alms.cpp
 libcpsclass_dell_base_alms_la_LIBADD =   -lopx_cps_api_common
 
+libcpsclass_dell_base_trap_la_SOURCES = @YANG_OUTPUT@/dell-base-trap.cpp
+libcpsclass_dell_base_trap_la_LIBADD =   -lopx_cps_api_common
+
 libcpsclass_acl_config_la_SOURCES = @YANG_OUTPUT@/acl-config.cpp
 libcpsclass_acl_config_la_LIBADD =   -lopx_cps_api_common
 
@@ -476,6 +514,30 @@ libcpsclass_tunnel_la_LIBADD = -lopx_cps_api_common
 libcpsclass_app_ztd_la_SOURCES = @YANG_OUTPUT@/app-ztd.cpp
 libcpsclass_app_ztd_la_LIBADD = -lopx_cps_api_common
 
+libcpsclass_dell_base_cleanup_events_la_SOURCES = @YANG_OUTPUT@/dell-base-cleanup-events.cpp
+libcpsclass_dell_base_cleanup_events_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_l3_multicast_la_SOURCES = @YANG_OUTPUT@/l3-multicast.cpp
+libcpsclass_l3_multicast_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_openconfig_telemetry_types_la_SOURCES = @YANG_OUTPUT@/openconfig-telemetry-types.cpp
+libcpsclass_openconfig_telemetry_types_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_openconfig_extensions_la_SOURCES = @YANG_OUTPUT@/openconfig-extensions.cpp
+libcpsclass_openconfig_extentions_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_openconfig_inet_types_la_SOURCES = @YANG_OUTPUT@/openconfig-inet-types.cpp
+libcpsclass_openconfig_inet_types_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_app_telemetry_la_SOURCES = @YANG_OUTPUT@/app-telemetry.cpp
+libcpsclass_app_telemetry_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_tam_la_SOURCES = @YANG_OUTPUT@/tam.cpp
+libcpsclass_tam_la_LIBADD = -lopx_cps_api_common
+
+libcpsclass_openconfig_telemetry_la_SOURCES = @YANG_OUTPUT@/openconfig-telemetry.cpp
+libcpsclass_openconfig_telemetry_la_LIBADD = -lopx_cps_api_common
+
 @YANG_OUTPUT@/%.h @YANG_OUTPUT@/%.cpp: @YANG_OUTPUT@/%-stamp; @:
 @YANG_OUTPUT@/%-stamp: %.yang
 	@ rm -f @YANG_OUTPUT@/$*.cpp
@@ -490,8 +552,9 @@ clean-local:
 
 
 data_base_modeldir = /usr/share/opx/yang-models
-data_base_model_DATA = \
+data_base_model_DATA := \
     $(wildcard $(top_srcdir)/common/dell/*.yang) \
     $(wildcard $(top_srcdir)/common/yumaworks/*.yang) \
     $(wildcard $(top_srcdir)/rfc/*.yang) \
-    $(wildcard $(top_srcdir)/yang-models/*.yang)
+    $(wildcard $(top_srcdir)/yang-models/*.yang) \
+    $(wildcard $(top_srcdir)/openconfig/*.yang)

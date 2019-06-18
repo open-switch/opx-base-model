@@ -1,0 +1,70 @@
+module dell-base-cleanup-events {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-cleanup-events";
+    prefix base-cleanup;
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+    import dell-base-interface-common {
+        prefix "base-if";
+    }
+
+    organization "Dell EMC";
+    contact
+        "http://www.dell.com/support";
+    description
+        "This module contains a collection of common YANG derived RPC(Remote Procedure Call).
+        This can be augmented in other Base Yang modules to synchronously cleanup the routes
+        and other resources.
+
+        Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2018-11-19" {
+        description "Initial version";
+        reference "Network Platform Abstraction";
+    }
+
+    typedef event-type {
+        type enumeration {
+            enum INTERFACE_DELETE {
+                value 1;
+                description "Interface deletion Operation";
+            }
+            enum INTERFACE_MODE_CHANGE {
+                value 2;
+                description "Indicates interface mode change from L2 to L3 and vice versa";
+            }
+            enum VRF_DELETE {
+                value 3;
+                description "VRF deleteion";
+            }
+        }
+        description "Enumeration for possible synchronous events.";
+    }
+
+    rpc events {
+        description "This is common RPC defination for any synchronous events handling.
+                     The individual modules can augment this RPC and use it for common events.
+                     Example: On interface deletion L3 routing component and L3 multicast component
+                     has to cleanup few resources, these can just augment and use it,
+                     instead of defining new RPC with same contenet.";
+        input {
+            leaf op-type {
+                type event-type;
+                description "Indicates the type of operation.";
+            }
+            leaf if-name {
+                type if:interface-ref;
+                description "Interface name for which this event happened.";
+            }
+            leaf if-mode {
+                type base-if:mode;
+                description "Indicates interface mode in case of interface mode change operation.";
+            }
+            leaf vrf-name {
+                type string;
+                description "VRF instance name.";
+            }
+        }
+    }
+}

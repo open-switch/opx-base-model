@@ -21,7 +21,7 @@ module tunnel {
     description "This module defines the configuration data and operational
                  state data for managing tunnels in the system.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
     revision "2018-08-17" {
         description "Fixing pyang IETF errors and adding documentiation to the model.";

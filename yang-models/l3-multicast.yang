@@ -1,0 +1,202 @@
+module l3-multicast {
+    prefix "l3-mcast";
+    namespace "http://www.dellemc.com/networking/os10/l3-multicast";
+
+    import dell-base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+    import dell-base-cleanup-events {
+        prefix "base-cleanup";
+    }
+
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This module contains collection of YANG definitions for
+                 managing layer 3 multicast routing. Using this model multicast applications
+                 can enable Layer 3 multicast on VRF and per interface basis, configure and get
+                 multicast route and it's status.
+
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2018-11-19" {
+        description "Initial version.";
+        reference "Network Platform Abstraction";
+    }
+
+    /*
+    *  typedefs
+    */
+    typedef route-type {
+        type enumeration {
+            enum XG {
+              value 1;
+            }
+            enum SG {
+              value 2;
+            }
+            enum SGRpt {
+              value 3;
+            }
+        }
+        description "Indicates multicast route type, route can be group any source,
+                     Group and Source based";
+    }
+
+    list global {
+        key "vrf-name af";
+        leaf vrf-name {
+            type string;
+            description "VRF instance name.";
+        }
+        leaf af {
+            type base-cmn:af-type;
+            description "Address family to indicate IPv4 or IPv6.";
+        }
+        leaf status {
+            type boolean;
+            description "Layer 3 global multicast routing status for the VRF.
+                         0 indicates disable and 1 indicates enabled.";
+        }
+    }
+
+    container interfaces {
+      list interface {
+        key "vrf-name af name";
+        leaf vrf-name {
+            type string;
+            description "VRF instance name.";
+        }
+        leaf af {
+            type base-cmn:af-type;
+            description "Address family to indicate IPv4 or IPv6.";
+        }
+        leaf name {
+            type if:interface-ref;
+            description "Layer 3 interface name.";
+        }
+        leaf status {
+            type boolean;
+            description "Layer 3 multicast routing status on the interface.
+                         0 indicates disabled and 1 indicates enabled.";
+        }
+      }
+    }
+
+    grouping route {
+        leaf vrf-name {
+            type string;
+            description "VRF instance name.";
+        }
+        leaf af {
+            type base-cmn:af-type;
+            description "Address family to indicate IPv4 or IPv6.";
+        }
+        leaf rt-type {
+            type route-type;
+            description "Indicates multicast route type, (*,G),(S,G) or SGRpt.";
+        }
+        leaf group-ip {
+            type base-cmn:ip-address;
+            description "Multicast group IP address of the route entry.";
+        }
+        leaf source-ip {
+            type base-cmn:ip-address;
+            description "Source IP address of the route entry.";
+        }
+    }
+
+    container routes {
+      list route {
+        key "vrf-name af rt-type group-ip source-ip";
+
+        uses route;
+
+        leaf iif-name {
+            type if:interface-ref;
+            description "Multicast route incoming interface name. This indicates the expected interface
+                        on which the multicast route is expected to receive the multicast data packets.";
+        }
+        list oif {
+            key "name";
+            leaf name {
+            type if:interface-ref;
+            description "List of out going interfaces. This list indicates the set of interfaces
+                        on which multicast data packets expected to sent out.";
+            }
+            leaf exclude-interface {
+                type if:interface-ref;
+                description "Exclude specified L2 port from the forwarding list for a given
+                             layer 3 interface";
+            }
+        }
+        leaf data-to-cpu {
+            type boolean;
+            description "Indicates multicast data packets need to be given to CPU in addition to forwarding.
+                        Some multicast applications need multicast data packet to the application for end to end
+                        route setup. Based on the need multicast applications can set this. if this is set 1
+                        the request is made to the NPU to give these packets to CPU.";
+        }
+        leaf npu-prg-done {
+            type boolean;
+            config false;
+            description "Flag indicating whether this entry is programmed in NPU";
+        }
+      }
+    }
+
+    container routes-state {
+      config false;
+      description "Layer 3 multicast route state, currently used to check the route
+                   is active";
+
+      list route {
+        key "vrf-name af rt-type group-ip source-ip";
+
+        uses route;
+
+        leaf status {
+            type boolean;
+            description "Indicates route is active, it means the route is in use";
+        }
+      }
+    }
+
+    /* RPC for clearing L3 multicast routes */
+
+    rpc clear-l3-mcast-routes {
+
+      description "Clear Layer 3 multicast routes";
+      input {
+        leaf vrf-name {
+            type string;
+            mandatory true;
+            description "VRF instance name.";
+        }
+        leaf af {
+            type base-cmn:af-type;
+            mandatory true;
+            description "Address family to indicate IPv4 or IPv6.";
+        }
+        leaf group-ip {
+            type base-cmn:ip-address;
+            description "Multicast group IP address of the route entry to be deleted";
+        }
+        leaf source-ip {
+            type base-cmn:ip-address;
+            description "Source IP address of the route entry to be deleted.";
+        }
+      }
+    }
+
+    augment "/base-cleanup:events" {
+        description "RPC is used to synchronously cleanup Layer 3 multicast routes
+                     on cleanup events like interface delete, interface mode change
+                     and vrf deletion.";
+    }
+}

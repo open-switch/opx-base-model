@@ -14,7 +14,13 @@ module dell-base-ip {
 
     description "This model facilitates the IP configuration capabilities on the interfaces.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2018-11-16" {
+        description "This revision adds the ARP learning behaviour based on gratuitous ARP.";
+        reference "Network Platform Abstraction";
+    }
+
 
     revision "2018-08-10" {
         description "Fixing pyang IETF errors and adding documentation to the model.";
@@ -63,6 +69,22 @@ module dell-base-ip {
             }
         }
         description "Enumeration of all possible types of DAD modes";
+    }
+
+    typedef arp-learning-config {
+        type enumeration {
+            enum disable {
+                value 1;
+                description "Don't create new ARP entries in the ARP table based on gratuitous ARP
+                    when ARP entry is not present but update the ARP entry if already present.";
+            }
+            enum enable {
+                value 2;
+                description "Create new ARP entries in the ARP table based on gratuitous ARP when ARP entry is not present,
+                            also, update the ARP entry if already present.";
+            }
+        }
+        description "Enumeration of all possible types of ARP learning settings.";
     }
 
 	grouping common-ip-config-params {
@@ -127,7 +149,15 @@ module dell-base-ip {
 		    }
                     description "List of IPv4 addresses configured on the interface, uniquely identified
                                  by the key 'ip'.";
-		}		
+		}
+        leaf arp-accept {
+            type arp-learning-config;
+            default disable;
+            description "Defines behavior for gratuitous ARP frames whose IP is not
+                already present in the ARP table.";
+        }
+
+		
                 description "List of IPv4 configurations on the interface, uniquely identified
                              by the key 'name'.";
 	}

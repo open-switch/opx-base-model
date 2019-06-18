@@ -18,7 +18,12 @@ module dell-port-group {
                  a virtual and higher density port. This model contains Dell EMC specific
                  port-group definition and its associated attributes.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision "2019-01-23" {
+        description "Add profile-type attribute in port-group-state list.";
+        reference "Network Platform Abstraction";
+    }
 
     revision "2018-08-17" {
         description "Fixing pyang IETF errors and adding documentiation to the model.";
@@ -133,6 +138,11 @@ module dell-port-group {
             leaf id {
                 type string;
                 description "ID of the port group ";
+            }
+
+            leaf profile-type {
+                type string;
+                description "profile type of the port group ";
             }
 
             uses base-if:breakout-capabilities;

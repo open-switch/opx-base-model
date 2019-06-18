@@ -7,6 +7,10 @@ import dell-base-common {
     prefix "base-cmn";
 }
 
+import ietf-yang-types {
+    prefix "yang";
+}
+
 organization
 "Dell EMC";
 
@@ -16,10 +20,14 @@ contact
 description "This model contains a collection of YANG definitions for
              managing the global configuration and operational data for the NPU.
 
-             Copyright (c) 2015-2018 by Dell EMC,
+             Copyright (c) 2015-2019 by Dell EMC,
 
              All rights reserved.";
 
+revision 2018-11-12 {
+        description "Added new hashing algorithm enumerations.";
+        reference "Network Platform Abstraction";
+}
 revision 2018-10-12 {
         description "Added L3 RIF (Router Interface) table size and nexthop size attributes.";
         reference "Network Platform Abstraction";
@@ -29,6 +37,11 @@ revision 2018-10-12 {
 revision 2018-09-19 {
         description "Added L3 VXLAN (Virtual Extensible LAN) RIOT (Routing In and Out of Tunnel) enable/disable and
             the maximum number of RIFs and Nexthops when enabled.";
+        reference "Network Platform Abstraction";
+}
+
+revision 2018-09-06 {
+        description "Added switch level resource utilization statistics and counters";
         reference "Network Platform Abstraction";
 }
 
@@ -103,6 +116,27 @@ typedef hash-algorithm {
 	      enum "RANDOM" {
 	      	value 3;
 	      }
+          enum "XOR1" {
+              value 4;
+             }
+          enum "XOR2" {
+              value 5;
+             }
+          enum "XOR4" {
+              value 6;
+             }
+          enum "XOR8" {
+              value 7;
+             }
+          enum "CRC16cc" {
+              value 8;
+             }
+          enum "CRC32LSB" {
+              value 9;
+             }
+          enum "CRC32MSB" {
+              value 10;
+             }
     }
     description "Enumeration of all possible Hashing Algorithms";
 }
@@ -725,7 +759,48 @@ container switching-entities {
 
     description  "List of a set of switching attributes that define various operational attributes per switch-id.";
   }
-  description "switching entity configuration parameters.";
+
+  list switch-stats {
+    key "switch-id";
+	
+    leaf switch-id {
+        type base-cmn:logical-switch-id;
+        description "Switch Identifier";
+    }
+
+    leaf available-ipv4-route-entries {
+        type yang:gauge64;
+        config false;
+        description "Number of available IPv4 route entries in IPv4 routing table";
+    }
+
+    leaf available-ipv6-route-entries {
+        type yang:gauge64;
+        config false;
+        description "Number of available IPv6 route entries in IPv6 routing table";
+    }
+
+    leaf available-ipv4-neighbour-entries {
+        type yang:gauge64;
+        config false;
+        description "Number of available IPv4 neighbour entries in IPv4 neighbour table";
+    }
+
+    leaf available-ipv6-neighbour-entries {
+        type yang:gauge64;
+        config false;
+        description "Number of available IPv6 neighbour entries in IPv6 neighbour table";
+    }
+
+    leaf available-fdb-entries {
+        type yang:gauge64;
+        config false;
+        description "Number of available FDB entries in switch";
+    }
+
+    description  "List of switch resource counters per switch-id.";
+  }
+  description "switching entity configuration parameters and counters.";
 }
 
 

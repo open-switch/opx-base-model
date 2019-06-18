@@ -1,0 +1,11 @@
+[global]
+category = cps_api_obj_CAT_OC_INET
+range-start = 20512768
+range-end = 20578304
+id = 313
+
+[oc-inet:ip-version]
+OC_INET_IP_VERSION_UNKNOWN = 0
+OC_INET_IP_VERSION_IPV4 = 4
+OC_INET_IP_VERSION_IPV6 = 6
+

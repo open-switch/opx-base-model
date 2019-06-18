@@ -4,6 +4,10 @@ module system-status {
 
     prefix "system-status";
 
+    import dell-yang-types {
+      prefix common;
+    }
+
     organization "Dell EMC";
 
     contact "http://www.dell.com/support";
@@ -12,7 +16,17 @@ module system-status {
          "This module contains YANG definition for system status, which provides an overall system
           status as well as individual sensor details such as usage, threshold, and fault states.
 
-          Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+          Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
+
+    revision 2018-12-05{
+        description "Changed attr name from 'name' to 'proc-name' to solve disambiguation issue";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2018-10-31{
+        description "Added attributes for obtaining process info of running processes";
+        reference "Network Platform Abstraction";
+    }
 
     revision 2018-08-17{
         description "Fixing pyang IETF errors and adding documentiation to the model.";
@@ -83,6 +97,37 @@ module system-status {
 			config false;
 			description "This is the name to uniquely identify a node.";
 		}
+
+        list process-info {
+            key "param-type rank";
+    
+            leaf proc-name {
+                type string;
+                config false;
+                description "This is the process name";
+            }
+            leaf pid {
+                type uint32;
+                config false;
+                description "This is the process ID";
+            }
+            leaf param-type {
+                type sensor-type;
+                config false;
+                description "This is the type of process parameter being measured";
+            }
+            leaf usage-percent {
+                type common:xfloat;
+                config false;
+                description "This is the usage percentage of the specified process parameter type";
+            }
+            leaf rank {
+                type uint32;
+                config false;
+                description "This is the usage rank, as compared with other processes. Highest usage is 1, while lower usages are in increasing order";
+            }
+            description "A list of processes and their info";
+        }
 
 		list sensor {
 

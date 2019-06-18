@@ -9,7 +9,7 @@ module acl-config {
                  ACL using a yaml file. This yaml file contains set of user-defined ACL entries.
                  This model implements these ACL entries and the associated operations.
 
-                 Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";	
+                 Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";	
 
     revision 2018-04-12{
         description "Fixing pyang IETF errors and adding documentiation to the model.";

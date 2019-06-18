@@ -1,0 +1,105 @@
+
+module tam {
+    namespace "http://www.dellemc.com/networking/os10/tam";
+    prefix "tam";
+
+    organization "Dell EMC";
+
+    contact
+        "http://www.dell.com/support";
+
+    description
+        "This module contains a collection of YANG definitions for managing
+         telemetry and monitoring applications.";
+
+    revision 2018-09-07 {
+        description
+            "Initial revision";
+    }
+
+    typedef stat-type {
+        type enumeration {
+            enum "ALL" {
+                value 1;
+            }
+            enum "SWITCH_RESOURCES" {
+                value 2;
+            }
+            enum "ALL_INTERFACES" {
+                value 3;
+            }
+            enum "ALL_ETHERNET_INTERFCAES" {
+                value 4;
+            }
+            enum "ALL_LAG_INTERFCAES" {
+                value 5;
+            }
+            enum "ALL_VLAN_INTERFCAES" {
+                value 6;
+            }
+            enum "ALL_LOOPBACK_INTERFCAES" {
+                value 7;
+            }
+            enum "ALL_MGMT_INTERFCAES" {
+                value 8;
+            }
+            enum "ALL_FIBER_CHANNEL_INTERFCAES" {
+                value 9;
+            }
+            enum "ALL_VLANSUB_INTERFACES" {
+                value 10;
+            }
+            enum "ALL_QOS" {
+                value 11;
+            }
+            enum "ALL_QOS_QUEUE" {
+                value 12;
+            }
+            enum "ALL_QOS_PRIORITY_GROUP" {
+                value 13;
+            }
+            enum "ALL_QOS_BUFFER_POOL" {
+                value 14;
+            }
+            enum "ALL_BRIDGE_DOMAIN" {
+                value 15;
+            }
+            enum "ALL_TUNNELS" {
+                value 16;
+            }
+        }
+        description "Types of statistics monitoring";
+    }
+
+
+    container stats {
+
+        list monitor {
+            key "type";
+
+            leaf type {
+                type stat-type;
+                default ALL;
+                description "Statistics type to monitor";
+            }
+
+            leaf poll-enable {
+                type boolean;
+                default "true";
+                description "Statistics polling is enabled or disabled for monitor type.";
+            }
+
+            leaf poll-interval {
+                type uint32 {
+                    range "15..300";
+                }
+                units "seconds";
+                default "15";
+                description "Statistics polling interval for monitor type.";
+            }
+
+            description "This defines attributes for monitoring resource.";
+        }
+        description "This defines attributes of statistics.";
+    }
+}

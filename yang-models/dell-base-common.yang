@@ -9,7 +9,7 @@ module dell-base-common {
     "This module contains a collection of common YANG derived types used
      in other Base Yang modules.
 
-     Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+     Copyright (c) 2015-2019 by Dell EMC, All rights reserved.";
 
   revision "2018-09-18" {
     description "Added 8x1 breakout mode for new 8x25G and 8x10G modules.
